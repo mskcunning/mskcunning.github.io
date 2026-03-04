@@ -425,6 +425,127 @@
       </div>
     </div>
   </div>
+  activities-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; }
+  .activity-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:18px 20px;
+    display:flex; flex-direction:column; gap:10px;
+    transition:border-color .2s, transform .2s;
+    position:relative; overflow:hidden;
+  }
+  .activity-card::before { content:''; position:absolute; top:0; left:0; bottom:0; width:3px; }
+  .activity-card.green::before  { background:var(--accent); }
+  .activity-card.orange::before { background:var(--accent2); }
+  .activity-card.purple::before { background:var(--accent3); }
+  .activity-card.yellow::before { background:var(--yellow); }
+  .activity-card:hover { border-color:rgba(0,210,130,.35); transform:translateY(-2px); }
+  .activity-header { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .activity-badge {
+    font-family:'DM Mono',monospace; font-size:.58rem; letter-spacing:.1em;
+    padding:3px 8px; border-radius:2px; white-space:nowrap; flex-shrink:0;
+  }
+  .activity-badge.green  { background:rgba(0,210,130,.12);  color:var(--accent); }
+  .activity-badge.orange { background:rgba(249,115,22,.12);  color:var(--accent2); }
+  .activity-badge.purple { background:rgba(129,140,248,.12); color:var(--accent3); }
+  .activity-badge.yellow { background:rgba(251,191,36,.12);  color:var(--yellow); }
+  .activity-title { font-family:'Syne',sans-serif; font-weight:700; font-size:.92rem; color:var(--text); line-height:1.3; }
+  .activity-desc { font-size:.8rem; color:var(--muted); line-height:1.6; flex:1; }
+  .activity-link {
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'DM Mono',monospace; font-size:.68rem; letter-spacing:.06em;
+    color:var(--accent); text-decoration:none;
+    border:1px solid rgba(0,210,130,.25); border-radius:4px;
+    padding:6px 12px; transition:all .2s; width:fit-content;
+  }
+  .activity-link:hover { background:rgba(0,210,130,.08); border-color:var(--accent); }
+  .activity-link.empty { color:var(--muted); border-color:var(--border); cursor:default; pointer-events:none; font-style:italic; }
+  .activity-link .arrow { font-size:.75rem; }
+  .activity-day { font-family:'DM Mono',monospace; font-size:.62rem; color:var(--muted); margin-top:3px; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
+  .card, .skill-card { animation:fadeUp .5s ease both; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="eyebrow">Student Proficiency Guide</div>
+    <h1>Hidden in<br>Plain Sight</h1>
+    <div class="subtitle">Steganography — What You Need to Know & Do</div>
+    <div class="standard-tag">PLTW SEC · Activity 4.1.4</div>
+  </header>
+
+  <!-- SKILL CARDS -->
+  <div class="section-label">What You Need to Know</div>
+  <div class="grid-3" style="margin-bottom:24px;">
+    <div class="skill-card green" style="animation-delay:.05s">
+      <div class="skill-num">1</div>
+      <div class="skill-icon">🧠</div>
+      <h3>Foundational Concepts</h3>
+      <p>Steganography hides the <em>existence</em> of a message. Cryptography scrambles the message itself. Know the difference — and the terms <em>covert</em> and <em>overt</em>.</p>
+      <div class="tag-list">
+        <span class="tag green">covert</span>
+        <span class="tag green">overt</span>
+        <span class="tag green">vs. cryptography</span>
+      </div>
+    </div>
+    <div class="skill-card orange" style="animation-delay:.1s">
+      <div class="skill-num">2</div>
+      <div class="skill-icon">🔀</div>
+      <h3>Three Digital Types</h3>
+      <p><em>Substitution</em> (LSB in pixels), <em>insertion</em> (NTFS Alternate Data Streams), and <em>generation</em> (spam text). Know how each works and when each is used.</p>
+      <div class="tag-list">
+        <span class="tag orange">LSB</span>
+        <span class="tag orange">ADS</span>
+        <span class="tag orange">generation</span>
+      </div>
+    </div>
+    <div class="skill-card purple" style="animation-delay:.15s">
+      <div class="skill-num">3</div>
+      <div class="skill-icon">🔍</div>
+      <h3>Steganalysis</h3>
+      <p>Analyzing data for hidden content. Three categories: <em>detection</em> (knowing it exists), <em>decoding</em> (extracting it), and <em>erasing</em> (destroying it without the key).</p>
+      <div class="tag-list">
+        <span class="tag purple">detection</span>
+        <span class="tag purple">decoding</span>
+        <span class="tag purple">erasing</span>
+      </div>
+    </div>
+    <div class="skill-card green" style="animation-delay:.2s">
+      <div class="skill-num">4</div>
+      <div class="skill-icon">💾</div>
+      <h3>ADS — Insertion Method</h3>
+      <p>NTFS Alternate Data Streams attach hidden data to a file <em>without changing its size</em>. They don't transfer to non-NTFS systems — which limits and reveals them.</p>
+      <div class="tag-list">
+        <span class="tag green">NTFS</span>
+        <span class="tag green">echo &gt; file:stream</span>
+        <span class="tag green">dir /r</span>
+      </div>
+    </div>
+    <div class="skill-card orange" style="animation-delay:.25s">
+      <div class="skill-num">5</div>
+      <div class="skill-icon">🖼️</div>
+      <h3>Image Stego Tools</h3>
+      <p>Jphswin hides a covert file inside a JPG using a passphrase. stegbreak runs a dictionary attack to crack passphrases — showing exactly why weak passwords fail.</p>
+      <div class="tag-list">
+        <span class="tag orange">Jphswin</span>
+        <span class="tag orange">stegbreak</span>
+        <span class="tag orange">dictionary attack</span>
+      </div>
+    </div>
+    <div class="skill-card purple" style="animation-delay:.3s">
+      <div class="skill-num">6</div>
+      <div class="skill-icon">⚖️</div>
+      <h3>Watermarking vs. Stego</h3>
+      <p>Digital watermarking targets <em>Integrity</em> in the CIA triad — it embeds a small, permanent ownership signature. Steganography targets <em>Confidentiality</em>. Same technique, opposite goals.</p>
+      <div class="tag-list">
+        <span class="tag purple">CIA triad</span>
+        <span class="tag purple">integrity</span>
+        <span class="tag purple">confidentiality</span>
+      </div>
+    </div>
+  </div>
 
   <!-- CANVAS ANIMATION -->
   <div class="section-label">See It Happen</div>
