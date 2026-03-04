@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Steganography — Student Proficiency Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #0b0f12;
+    --surface: #111820;
+    --card:    #16202a;
+    --border:  rgba(0,210,130,0.13);
+    --accent:  #00d282;
+    --accent2: #f97316;
+    --accent3: #818cf8;
+    --text:    #e4ede8;
+    --muted:   #607a6e;
+    --green:   #34d399;
+    --red:     #f87171;
+    --yellow:  #fbbf24;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content:'';
+    position:fixed; inset:0; z-index:0;
+    background:
+      radial-gradient(ellipse 55% 40% at 15% 10%, rgba(0,210,130,.07) 0%, transparent 65%),
+      radial-gradient(ellipse 45% 45% at 85% 80%, rgba(129,140,248,.06) 0%, transparent 65%),
+      radial-gradient(ellipse 35% 35% at 60% 40%, rgba(249,115,22,.04) 0%, transparent 55%);
+    pointer-events:none;
+  }
+  .wrapper { position:relative; z-index:1; max-width:980px; margin:0 auto; padding:40px 24px 80px; }
+
+  /* Header */
+  header { text-align:center; padding:40px 0 50px; }
+  .eyebrow {
+    font-family:'DM Mono',monospace;
+    font-size:.7rem; letter-spacing:.2em; color:var(--accent);
+    text-transform:uppercase; display:inline-block; margin-bottom:16px;
+    padding:5px 14px; border:1px solid rgba(0,210,130,.3); border-radius:2px;
+  }
+  h1 {
+    font-family:'Syne',sans-serif;
+    font-size:clamp(2.2rem,5vw,3.6rem); font-weight:800; line-height:1.1;
+    background:linear-gradient(135deg,#e4ede8 30%,#00d282 100%);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    margin-bottom:18px;
+  }
+  .subtitle { font-family:'DM Mono',monospace; font-size:.8rem; color:var(--muted); letter-spacing:.05em; }
+  .standard-tag {
+    display:inline-block; margin-top:10px;
+    font-family:'DM Mono',monospace; font-size:.7rem;
+    color:var(--accent3); border:1px solid rgba(129,140,248,.3);
+    padding:4px 12px; border-radius:2px;
+  }
+
+  /* Section labels */
+  .section-label {
+    font-family:'Syne',sans-serif; font-size:.65rem; font-weight:700;
+    letter-spacing:.2em; text-transform:uppercase; color:var(--accent);
+    margin-bottom:20px; display:flex; align-items:center; gap:12px;
+  }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* Cards */
+  .card {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:12px; padding:28px 32px; margin-bottom:24px;
+  }
+  .card h2 { font-family:'Syne',sans-serif; font-size:1.25rem; font-weight:700; color:var(--text); margin-bottom:14px; }
+
+  /* Skill grid */
+  .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  @media(max-width:700px){ .grid-3{ grid-template-columns:1fr; } }
+
+  .skill-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:22px 22px 18px;
+    position:relative; overflow:hidden;
+    animation:fadeUp .5s ease both;
+  }
+  .skill-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+  .skill-card.green::before  { background:var(--accent); }
+  .skill-card.orange::before { background:var(--accent2); }
+  .skill-card.purple::before { background:var(--accent3); }
+  .skill-num { font-family:'Syne',sans-serif; font-size:2.2rem; font-weight:800; opacity:.1; position:absolute; top:12px; right:16px; }
+  .skill-icon { font-size:1.4rem; margin-bottom:10px; }
+  .skill-card h3 { font-family:'Syne',sans-serif; font-size:.95rem; font-weight:700; margin-bottom:8px; color:var(--text); }
+  .skill-card p { font-size:.85rem; color:var(--muted); line-height:1.65; }
+  .tag-list { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+  .tag { font-family:'DM Mono',monospace; font-size:.65rem; padding:3px 9px; border-radius:3px; letter-spacing:.03em; }
+  .tag.green  { background:rgba(0,210,130,.12); color:var(--accent); }
+  .tag.orange { background:rgba(249,115,22,.12); color:var(--accent2); }
+  .tag.purple { background:rgba(129,140,248,.12); color:var(--accent3); }
+
+  /* Canvas */
+  #stego-canvas { width:100%; height:280px; background:#0d1a14; border-radius:10px; display:block; cursor:pointer; }
+  .canvas-label { font-family:'DM Mono',monospace; font-size:.7rem; color:var(--muted); text-align:center; margin-top:8px; }
+
+  /* Data table */
+  .data-table { width:100%; border-collapse:collapse; font-size:.82rem; }
+  .data-table th {
+    font-family:'Syne',sans-serif; font-size:.65rem; font-weight:700;
+    text-transform:uppercase; letter-spacing:.1em; color:var(--muted);
+    padding:10px 14px; border-bottom:1px solid var(--border); text-align:left;
+  }
+  .data-table td {
+    padding:10px 14px; border-bottom:1px solid rgba(0,210,130,.06);
+    color:var(--text); font-family:'DM Mono',monospace; font-size:.78rem;
+  }
+  .data-table tr:hover td { background:rgba(0,210,130,.04); }
+  .dot { width:9px; height:9px; border-radius:50%; display:inline-block; }
+
+  /* Vocab */
+  .vocab-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; }
+  .vocab-item { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:16px 18px; }
+  .vocab-term { font-family:'Syne',sans-serif; font-weight:700; font-size:.85rem; color:var(--accent); margin-bottom:6px; }
+  .vocab-def { font-size:.8rem; color:var(--muted); line-height:1.6; }
+
+  /* Quiz */
+  .quiz-q { font-size:.95rem; line-height:1.6; margin-bottom:16px; color:var(--text); }
+  .quiz-options { display:grid; gap:8px; }
+  .quiz-btn {
+    background:var(--surface); border:1px solid var(--border); border-radius:8px;
+    padding:12px 16px; color:var(--text); font-family:'Lora',serif;
+    font-size:.85rem; text-align:left; cursor:pointer; transition:all .2s;
+  }
+  .quiz-btn:hover { border-color:var(--accent); background:rgba(0,210,130,.05); }
+  .quiz-btn.correct { border-color:var(--green); background:rgba(52,211,153,.1); color:var(--green); }
+  .quiz-btn.wrong   { border-color:var(--red);   background:rgba(248,113,113,.1); color:var(--red); }
+  .quiz-feedback { margin-top:14px; font-size:.85rem; padding:12px 16px; border-radius:8px; display:none; line-height:1.6; }
+  .quiz-feedback.show { display:block; }
+  .quiz-feedback.ok { background:rgba(52,211,153,.08); color:var(--green); border:1px solid rgba(52,211,153,.2); }
+  .quiz-feedback.no { background:rgba(248,113,113,.08); color:var(--red);   border:1px solid rgba(248,113,113,.2); }
+  .quiz-nav { margin-top:18px; display:flex; gap:10px; align-items:center; }
+  .quiz-nav-btn {
+    font-family:'Syne',sans-serif; font-size:.75rem; font-weight:700; letter-spacing:.08em;
+    text-transform:uppercase; padding:9px 20px; border-radius:6px; cursor:pointer;
+    border:1px solid var(--accent); color:var(--accent); background:transparent; transition:all .2s;
+  }
+  .quiz-nav-btn:hover { background:var(--accent); color:var(--bg); }
+  .quiz-counter { font-family:'DM Mono',monospace; font-size:.75rem; color:var(--muted); }
+  .progress-row { display:flex; gap:4px; margin-top:22px; }
+  .progress-pip { height:4px; flex:1; border-radius:2px; background:rgba(255,255,255,.08); transition:background .3s; }
+  .progress-pip.done    { background:var(--green); }
+  .progress-pip.current { background:var(--accent); }
+
+  /* Checklist */
+  .checklist { list-style:none; }
+  .checklist li {
+    display:flex; align-items:flex-start; gap:12px;
+    padding:12px 0; border-bottom:1px solid var(--border);
+    font-size:.88rem; line-height:1.6; color:var(--text);
+  }
+  .checklist li:last-child { border-bottom:none; }
+  .check-box {
+    width:20px; height:20px; min-width:20px;
+    border:1.5px solid var(--border); border-radius:4px;
+    background:var(--surface); cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:all .2s; margin-top:2px;
+  }
+  .check-box.checked { background:var(--green); border-color:var(--green); }
+  .check-box.checked::after { content:'✓'; color:#0b0f12; font-size:.75rem; font-weight:700; }
+  .checklist li.done > span { text-decoration:line-through; color:var(--muted); }
+
+  .tip {
+    font-family:'DM Mono',monospace; font-size:.72rem; color:var(--accent3);
+    padding:10px 14px; background:rgba(129,140,248,.07);
+    border-left:3px solid var(--accent3); border-radius:0 6px 6px 0;
+    margin-top:14px; line-height:1.6;
+  }
+
+  /* Activities */
+  .activities-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; }
+  .activity-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:18px 20px;
+    display:flex; flex-direction:column; gap:10px;
+    transition:border-color .2s, transform .2s;
+    position:relative; overflow:hidden;
+  }
+  .activity-card::before {
+    content:''; position:absolute; top:0; left:0; bottom:0; width:3px;
+  }
+  .activity-card.green::before  { background:var(--accent); }
+  .activity-card.orange::before { background:var(--accent2); }
+  .activity-card.purple::before { background:var(--accent3); }
+  .activity-card.yellow::before { background:var(--yellow); }
+  .activity-card:hover { border-color:rgba(0,210,130,.35); transform:translateY(-2px); }
+  .activity-header { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .activity-badge {
+    font-family:'DM Mono',monospace; font-size:.58rem; letter-spacing:.1em;
+    padding:3px 8px; border-radius:2px; white-space:nowrap; flex-shrink:0;
+  }
+  .activity-badge.green  { background:rgba(0,210,130,.12);  color:var(--accent); }
+  .activity-badge.orange { background:rgba(249,115,22,.12);  color:var(--accent2); }
+  .activity-badge.purple { background:rgba(129,140,248,.12); color:var(--accent3); }
+  .activity-badge.yellow { background:rgba(251,191,36,.12);  color:var(--yellow); }
+  .activity-title {
+    font-family:'Syne',sans-serif; font-weight:700;
+    font-size:.92rem; color:var(--text); line-height:1.3;
+  }
+  .activity-desc { font-size:.8rem; color:var(--muted); line-height:1.6; flex:1; }
+  .activity-link-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:2px; }
+  .activity-link {
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'DM Mono',monospace; font-size:.68rem; letter-spacing:.06em;
+    color:var(--accent); text-decoration:none;
+    border:1px solid rgba(0,210,130,.3); border-radius:4px;
+    padding:6px 12px; transition:all .2s;
+  }
+  .activity-link:hover { background:rgba(0,210,130,.08); border-color:var(--accent); }
+  .activity-link.empty { color:var(--muted); border-color:var(--border); }
+  .activity-link.active { color:var(--accent); border-color:rgba(0,210,130,.4); }
+  .link-edit-btn {
+    font-family:'DM Mono',monospace; font-size:.65rem; letter-spacing:.06em;
+    padding:5px 12px; border-radius:4px; border:1px dashed var(--border);
+    background:transparent; color:var(--muted); cursor:pointer; transition:all .2s;
+  }
+  .link-edit-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .link-input-row { display:none; align-items:center; gap:8px; flex-wrap:wrap; margin-top:6px; }
+  .link-input-row.show { display:flex; }
+  .link-input {
+    font-family:'DM Mono',monospace; font-size:.7rem;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:4px; color:var(--text); padding:7px 12px;
+    outline:none; width:300px; max-width:100%; transition:border-color .2s;
+  }
+  .link-input:focus { border-color:var(--accent); }
+  .link-input::placeholder { color:var(--muted); }
+  .link-save {
+    font-family:'DM Mono',monospace; font-size:.68rem; letter-spacing:.06em;
+    padding:7px 14px; border-radius:4px; border:1px solid var(--accent);
+    background:transparent; color:var(--accent); cursor:pointer; transition:all .2s;
+  }
+  .link-save:hover { background:var(--accent); color:var(--bg); }
+
+  /* Activities */
+  .activity-list { display:flex; flex-direction:column; }
+  .activity-row {
+    display:flex; gap:18px; align-items:flex-start;
+    padding:18px 0; border-bottom:1px solid var(--border);
+  }
+  .activity-dot {
+    width:10px; height:10px; min-width:10px; border-radius:50%;
+    margin-top:5px; box-shadow:0 0 8px currentColor;
+  }
+  .activity-body { flex:1; display:flex; flex-direction:column; gap:7px; }
+  .activity-meta { display:flex; align-items:center; gap:8px; }
+  .activity-badge {
+    font-family:'DM Mono',monospace; font-size:.58rem; letter-spacing:.1em;
+    padding:3px 8px; border-radius:2px; white-space:nowrap;
+  }
+  .activity-badge.green  { background:rgba(0,210,130,.12);  color:var(--accent); }
+  .activity-badge.orange { background:rgba(249,115,22,.12);  color:var(--accent2); }
+  .activity-badge.purple { background:rgba(129,140,248,.12); color:var(--accent3); }
+  .activity-badge.yellow { background:rgba(251,191,36,.12);  color:var(--yellow); }
+  .activity-day { font-family:'DM Mono',monospace; font-size:.62rem; color:var(--muted); }
+  .activity-title { font-family:'Syne',sans-serif; font-weight:700; font-size:.92rem; color:var(--text); line-height:1.3; }
+  .activity-desc { font-size:.82rem; color:var(--muted); line-height:1.6; }
+  .activity-link-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .activity-link {
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'DM Mono',monospace; font-size:.68rem; letter-spacing:.06em;
+    color:var(--accent); text-decoration:none;
+    border:1px solid rgba(0,210,130,.3); border-radius:4px;
+    padding:6px 12px; transition:all .2s; width:fit-content;
+  }
+  .activity-link:hover { background:rgba(0,210,130,.08); border-color:var(--accent); }
+  .activity-link.empty { color:var(--muted); border-color:var(--border); cursor:pointer; }
+  .activity-link.empty:hover { border-color:var(--accent); color:var(--accent); background:rgba(0,210,130,.05); }
+  .activity-link .arrow { font-size:.75rem; }
+  .link-input-row { display:none; align-items:center; gap:8px; flex-wrap:wrap; }
+  .link-input-row.show { display:flex; }
+  .link-input {
+    font-family:'DM Mono',monospace; font-size:.7rem;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:4px; color:var(--text); padding:6px 12px;
+    outline:none; width:300px; max-width:100%;
+    transition:border-color .2s;
+  }
+  .link-input:focus { border-color:var(--accent); }
+  .link-input::placeholder { color:var(--muted); }
+  .link-save {
+    font-family:'DM Mono',monospace; font-size:.68rem; letter-spacing:.06em;
+    padding:6px 14px; border-radius:4px; border:1px solid var(--accent);
+    background:transparent; color:var(--accent); cursor:pointer; transition:all .2s;
+  }
+  .link-save:hover { background:var(--accent); color:var(--bg); }
+
+  code {
+    font-family:'DM Mono',monospace; font-size:.82em; color:var(--accent);
+    background:rgba(0,210,130,.1); padding:1px 6px; border-radius:3px;
+  }
+
+
+  /* Activities */
+  .activities-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; }
+  .activity-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:18px 20px;
+    display:flex; flex-direction:column; gap:10px;
+    transition:border-color .2s, transform .2s;
+    position:relative; overflow:hidden;
+  }
+  .activity-card::before { content:''; position:absolute; top:0; left:0; bottom:0; width:3px; }
+  .activity-card.green::before  { background:var(--accent); }
+  .activity-card.orange::before { background:var(--accent2); }
+  .activity-card.purple::before { background:var(--accent3); }
+  .activity-card.yellow::before { background:var(--yellow); }
+  .activity-card:hover { border-color:rgba(0,210,130,.35); transform:translateY(-2px); }
+  .activity-header { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .activity-badge {
+    font-family:'DM Mono',monospace; font-size:.58rem; letter-spacing:.1em;
+    padding:3px 8px; border-radius:2px; white-space:nowrap; flex-shrink:0;
+  }
+  .activity-badge.green  { background:rgba(0,210,130,.12);  color:var(--accent); }
+  .activity-badge.orange { background:rgba(249,115,22,.12);  color:var(--accent2); }
+  .activity-badge.purple { background:rgba(129,140,248,.12); color:var(--accent3); }
+  .activity-badge.yellow { background:rgba(251,191,36,.12);  color:var(--yellow); }
+  .activity-title { font-family:'Syne',sans-serif; font-weight:700; font-size:.92rem; color:var(--text); line-height:1.3; }
+  .activity-desc { font-size:.8rem; color:var(--muted); line-height:1.6; flex:1; }
+  .activity-link {
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'DM Mono',monospace; font-size:.68rem; letter-spacing:.06em;
+    color:var(--accent); text-decoration:none;
+    border:1px solid rgba(0,210,130,.25); border-radius:4px;
+    padding:6px 12px; transition:all .2s; width:fit-content;
+  }
+  .activity-link:hover { background:rgba(0,210,130,.08); border-color:var(--accent); }
+  .activity-link.empty { color:var(--muted); border-color:var(--border); cursor:default; pointer-events:none; font-style:italic; }
+  .activity-link .arrow { font-size:.75rem; }
+  .activity-day { font-family:'DM Mono',monospace; font-size:.62rem; color:var(--muted); margin-top:3px; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
+  .card, .skill-card { animation:fadeUp .5s ease both; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="eyebrow">Student Proficiency Guide</div>
+    <h1>Hidden in<br>Plain Sight</h1>
+    <div class="subtitle">Steganography — What You Need to Know & Do</div>
+    <div class="standard-tag">PLTW SEC · Activity 4.1.4</div>
+  </header>
+
+  <!-- SKILL CARDS -->
+  <div class="section-label">What You Need to Know</div>
+  <div class="grid-3" style="margin-bottom:24px;">
+    <div class="skill-card green" style="animation-delay:.05s">
+      <div class="skill-num">1</div>
+      <div class="skill-icon">🧠</div>
+      <h3>Foundational Concepts</h3>
+      <p>Steganography hides the <em>existence</em> of a message. Cryptography scrambles the message itself. Know the difference — and the terms <em>covert</em> and <em>overt</em>.</p>
+      <div class="tag-list">
+        <span class="tag green">covert</span>
+        <span class="tag green">overt</span>
+        <span class="tag green">vs. cryptography</span>
+      </div>
+    </div>
+    <div class="skill-card orange" style="animation-delay:.1s">
+      <div class="skill-num">2</div>
+      <div class="skill-icon">🔀</div>
+      <h3>Three Digital Types</h3>
+      <p><em>Substitution</em> (LSB in pixels), <em>insertion</em> (NTFS Alternate Data Streams), and <em>generation</em> (spam text). Know how each works and when each is used.</p>
+      <div class="tag-list">
+        <span class="tag orange">LSB</span>
+        <span class="tag orange">ADS</span>
+        <span class="tag orange">generation</span>
+      </div>
+    </div>
+    <div class="skill-card purple" style="animation-delay:.15s">
+      <div class="skill-num">3</div>
+      <div class="skill-icon">🔍</div>
+      <h3>Steganalysis</h3>
+      <p>Analyzing data for hidden content. Three categories: <em>detection</em> (knowing it exists), <em>decoding</em> (extracting it), and <em>erasing</em> (destroying it without the key).</p>
+      <div class="tag-list">
+        <span class="tag purple">detection</span>
+        <span class="tag purple">decoding</span>
+        <span class="tag purple">erasing</span>
+      </div>
+    </div>
+    <div class="skill-card green" style="animation-delay:.2s">
+      <div class="skill-num">4</div>
+      <div class="skill-icon">💾</div>
+      <h3>ADS — Insertion Method</h3>
+      <p>NTFS Alternate Data Streams attach hidden data to a file <em>without changing its size</em>. They don't transfer to non-NTFS systems — which limits and reveals them.</p>
+      <div class="tag-list">
+        <span class="tag green">NTFS</span>
+        <span class="tag green">echo &gt; file:stream</span>
+        <span class="tag green">dir /r</span>
+      </div>
+    </div>
+    <div class="skill-card orange" style="animation-delay:.25s">
+      <div class="skill-num">5</div>
+      <div class="skill-icon">🖼️</div>
+      <h3>Image Stego Tools</h3>
+      <p>Jphswin hides a covert file inside a JPG using a passphrase. stegbreak runs a dictionary attack to crack passphrases — showing exactly why weak passwords fail.</p>
+      <div class="tag-list">
+        <span class="tag orange">Jphswin</span>
+        <span class="tag orange">stegbreak</span>
+        <span class="tag orange">dictionary attack</span>
+      </div>
+    </div>
+    <div class="skill-card purple" style="animation-delay:.3s">
+      <div class="skill-num">6</div>
+      <div class="skill-icon">⚖️</div>
+      <h3>Watermarking vs. Stego</h3>
+      <p>Digital watermarking targets <em>Integrity</em> in the CIA triad — it embeds a small, permanent ownership signature. Steganography targets <em>Confidentiality</em>. Same technique, opposite goals.</p>
+      <div class="tag-list">
+        <span class="tag purple">CIA triad</span>
+        <span class="tag purple">integrity</span>
+        <span class="tag purple">confidentiality</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CANVAS ANIMATION -->
+  <div class="section-label">See It Happen</div>
+  <div class="card" style="padding:20px;">
+    <h2 style="margin-bottom:12px;">LSB Substitution — Live Pixel Model <span style="font-size:.7rem;font-weight:400;color:var(--muted);font-family:'DM Mono',monospace;">  click a pixel to reveal its hidden bit</span></h2>
+    <canvas id="stego-canvas"></canvas>
+    <div class="canvas-label">Each square = one RGB pixel · Green outline = hidden data embedded in LSB · Red outline = no hidden data · Click to inspect</div>
+  </div>
+
+  <!-- DATA TABLE -->
+  <div class="section-label">Analyze This</div>
+  <div class="card">
+    <h2>Steganography vs. Digital Watermarking</h2>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:18px;">You must be able to compare these — knowing who uses each, why, and what security goal each serves.</p>
+    <table class="data-table">
+      <thead>
+        <tr><th>Characteristic</th><th>Steganography</th><th>Digital Watermarking</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CIA Triad Target</td>
+          <td><span class="dot" style="background:var(--accent);margin-right:6px;"></span>Confidentiality</td>
+          <td><span class="dot" style="background:var(--accent3);margin-right:6px;"></span>Integrity</td>
+        </tr>
+        <tr><td>Amount of Hidden Data</td><td>As much as possible</td><td>Small signature only</td></tr>
+        <tr>
+          <td>Ease of Detection</td>
+          <td><span class="dot" style="background:var(--green);margin-right:6px;"></span>Very difficult</td>
+          <td><span class="dot" style="background:var(--yellow);margin-right:6px;"></span>Not the priority</td>
+        </tr>
+        <tr><td>Ease of Removal</td><td>Very difficult</td><td>Very difficult</td></tr>
+        <tr><td>User's Goal</td><td>Hide information undetectably</td><td>Prove ownership / detect tampering</td></tr>
+        <tr><td>Attacker's Goal</td><td>Detect and decode the hidden data</td><td>Remove the watermark</td></tr>
+        <tr><td>Real-World Example</td><td>Criminal comms hidden in eBay images</td><td>Copyright marks in music / photos</td></tr>
+      </tbody>
+    </table>
+    <div class="tip">🔍 Key insight: steganography hides that a message exists at all. If you even suspect something is hidden — you've already completed step one of steganalysis: detection.</div>
+  </div>
+
+  <!-- VOCAB -->
+  <div class="section-label">Essential Vocabulary</div>
+  <div class="card">
+    <div class="vocab-grid">
+      <div class="vocab-item">
+        <div class="vocab-term">Steganography</div>
+        <div class="vocab-def">Hiding data inside other data so its existence is concealed. From Greek: "hidden writing."</div>
+      </div>
+      <div class="vocab-item">
+        <div class="vocab-term">Covert</div>
+        <div class="vocab-def">The secret message being hidden — not visible to a casual observer of the carrier.</div>
+      </div>
+      <div class="vocab-item">
+        <div class="vocab-term">Overt</div>
+        <div class="vocab-def">The innocent-looking carrier (image, spam email, shaved head) containing the hidden message.</div>
+      </div>
+      <div class="vocab-item">
+        <div class="vocab-term">LSB Substitution</div>
+        <div class="vocab-def">Replacing the least significant bit of each RGB channel with hidden data — a 1-bit shift across 16M+ colors is invisible to the eye.</div>
+      </div>
+      <div class="vocab-item">
+        <div class="vocab-term">ADS (NTFS)</div>
+        <div class="vocab-def">Alternate Data Streams — hidden data attached to a file without changing its visible size. NTFS file system only.</div>
+      </div>
+      <div class="vocab-item">
+        <div class="vocab-term">Steganalysis</div>
+        <div class="vocab-def">The science of detecting hidden content. Three categories: detection, decoding, erasing.</div>
+      </div>
+      <div class="vocab-item">
+        <div class="vocab-term">Generation Stego</div>
+        <div class="vocab-def">The covert message drives generation of an innocent-looking overt message — like spam email text.</div>
+      </div>
+      <div class="vocab-item">
+        <div class="vocab-term">Digital Watermark</div>
+        <div class="vocab-def">A small permanent embedded signature proving ownership. Targets Integrity in the CIA triad, not Confidentiality.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVITIES -->
+  <div class="section-label">Activities</div>
+  <div class="card">
+    <h2 style="margin-bottom:6px;">Lab Activities</h2>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:22px;">Each activity maps to a skill group. Click <strong style="color:var(--accent)">+ Add Link</strong> to attach a URL — once saved it becomes a live button students can open directly.</p>
+    <div class="activity-list">
+
+      <div class="activity-row">
+        <div class="activity-dot" style="background:var(--accent)"></div>
+        <div class="activity-body">
+          <div class="activity-meta"><span class="activity-badge green">Skills 1 &amp; 2</span><span class="activity-day">Day 1</span></div>
+          <div class="activity-title">Steganography History &amp; Concepts</div>
+          <div class="activity-desc">Introduction to the definition of steganography, covert vs. overt terminology, and historical examples from 450 BC through WWII. Distinguish steganography from cryptography.</div>
+          <div class="activity-link-row">
+            <a class="activity-link empty" id="btn-1" href="#" onclick="return false;">↗ Open Activity</a>
+            <button class="link-edit-btn" onclick="toggleInput('1')">+ Add Link</button>
+          </div>
+          <div class="link-input-row" id="input-1">
+            <input class="link-input" id="url-1" type="url" placeholder="Paste activity URL here…">
+            <button class="link-save" onclick="saveLink('1')">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="activity-row">
+        <div class="activity-dot" style="background:var(--accent2)"></div>
+        <div class="activity-body">
+          <div class="activity-meta"><span class="activity-badge orange">Skill 3</span><span class="activity-day">Day 2</span></div>
+          <div class="activity-title">ADS Lab — Alternate Data Streams</div>
+          <div class="activity-desc">Use Windows Command Prompt to create a file, attach a hidden ADS stream, verify the unchanged file size, retrieve the stream, and detect it with <code>dir /r</code>.</div>
+          <div class="activity-link-row">
+            <a class="activity-link empty" id="btn-2" href="#" onclick="return false;">↗ Open Activity</a>
+            <button class="link-edit-btn" onclick="toggleInput('2')">+ Add Link</button>
+          </div>
+          <div class="link-input-row" id="input-2">
+            <input class="link-input" id="url-2" type="url" placeholder="Paste activity URL here…">
+            <button class="link-save" onclick="saveLink('2')">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="activity-row">
+        <div class="activity-dot" style="background:var(--accent3)"></div>
+        <div class="activity-body">
+          <div class="activity-meta"><span class="activity-badge purple">Skill 4</span><span class="activity-day">Day 2</span></div>
+          <div class="activity-title">Generation Steganography — spammimic.com</div>
+          <div class="activity-desc">Encode a covert message into spam-style text using spammimic.com, exchange with a partner, and decode their message. Discuss the strengths and weaknesses of generation steganography.</div>
+          <div class="activity-link-row">
+            <a class="activity-link empty" id="btn-3" href="#" onclick="return false;">↗ Open Activity</a>
+            <button class="link-edit-btn" onclick="toggleInput('3')">+ Add Link</button>
+          </div>
+          <div class="link-input-row" id="input-3">
+            <input class="link-input" id="url-3" type="url" placeholder="Paste activity URL here…">
+            <button class="link-save" onclick="saveLink('3')">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="activity-row">
+        <div class="activity-dot" style="background:var(--yellow)"></div>
+        <div class="activity-body">
+          <div class="activity-meta"><span class="activity-badge yellow">Skills 5 &amp; 6</span><span class="activity-day">Day 3</span></div>
+          <div class="activity-title">Image Steganography — Jphswin</div>
+          <div class="activity-desc">Select 5 images, write a covert text file, and hide it inside one image using Jphswin with a dictionary-word passphrase. Copy all to C:\Stego and visually compare original vs. stego images.</div>
+          <div class="activity-link-row">
+            <a class="activity-link empty" id="btn-4" href="#" onclick="return false;">↗ Open Activity</a>
+            <button class="link-edit-btn" onclick="toggleInput('4')">+ Add Link</button>
+          </div>
+          <div class="link-input-row" id="input-4">
+            <input class="link-input" id="url-4" type="url" placeholder="Paste activity URL here…">
+            <button class="link-save" onclick="saveLink('4')">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="activity-row">
+        <div class="activity-dot" style="background:var(--accent)"></div>
+        <div class="activity-body">
+          <div class="activity-meta"><span class="activity-badge green">Skills 5 &amp; 6</span><span class="activity-day">Day 4</span></div>
+          <div class="activity-title">Steganalysis — stegbreak Dictionary Attack</div>
+          <div class="activity-desc">Run stegbreak against a partner's JPG images using a dictionary file to crack the passphrase. Extract the hidden file using Jphswin. Explain how the dictionary attack works technically.</div>
+          <div class="activity-link-row">
+            <a class="activity-link empty" id="btn-5" href="#" onclick="return false;">↗ Open Activity</a>
+            <button class="link-edit-btn" onclick="toggleInput('5')">+ Add Link</button>
+          </div>
+          <div class="link-input-row" id="input-5">
+            <input class="link-input" id="url-5" type="url" placeholder="Paste activity URL here…">
+            <button class="link-save" onclick="saveLink('5')">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="activity-row" style="border-bottom:none;">
+        <div class="activity-dot" style="background:var(--accent3)"></div>
+        <div class="activity-body">
+          <div class="activity-meta"><span class="activity-badge purple">All Skills</span><span class="activity-day">Day 4</span></div>
+          <div class="activity-title">Real-World Research &amp; Reflection</div>
+          <div class="activity-desc">Research how criminal organizations use steganography on image-sharing sites and how law enforcement responds. Write a reflection connecting a real-world event to the concepts and tools from this activity.</div>
+          <div class="activity-link-row">
+            <a class="activity-link empty" id="btn-6" href="#" onclick="return false;">↗ Open Activity</a>
+            <button class="link-edit-btn" onclick="toggleInput('6')">+ Add Link</button>
+          </div>
+          <div class="link-input-row" id="input-6">
+            <input class="link-input" id="url-6" type="url" placeholder="Paste activity URL here…">
+            <button class="link-save" onclick="saveLink('6')">Save</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section-label">Check Your Understanding</div>
+  <div class="card" id="quiz-card">
+    <h2 style="margin-bottom:18px;">Quick Quiz</h2>
+    <div id="q-text" class="quiz-q"></div>
+    <div id="q-options" class="quiz-options"></div>
+    <div id="q-feedback" class="quiz-feedback"></div>
+    <div class="quiz-nav">
+      <button class="quiz-nav-btn" id="next-btn" style="display:none" onclick="nextQ()">Next →</button>
+      <span class="quiz-counter" id="q-counter"></span>
+    </div>
+    <div class="progress-row" id="q-progress"></div>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div class="section-label">Proficiency Checklist</div>
+  <div class="card">
+    <h2 style="margin-bottom:4px;">Can you do all of these?</h2>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px;">Click each item when you're confident — use this as your self-assessment before the lab is graded.</p>
+    <ul class="checklist">
+      <li onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span>Explain the difference between steganography and cryptography using the terms <em>covert</em> and <em>overt</em>.</span>
+      </li>
+      <li onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span>Describe how LSB substitution works and why a 1-bit change across an RGB pixel is invisible to the human eye.</span>
+      </li>
+      <li onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span>Use Windows Command Prompt to create a file, attach a hidden ADS stream, verify the file size didn't change, and retrieve the stream with <code>more &lt; file.txt:mystream</code>.</span>
+      </li>
+      <li onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span>Use <code>dir /r</code> to detect the presence of an Alternate Data Stream on a file.</span>
+      </li>
+      <li onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span>Encode a message using spammimic.com and decode a partner's generation-steganography message.</span>
+      </li>
+      <li onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span>Hide a covert text file inside a JPG image using Jphswin and explain why the passphrase choice matters for security.</span>
+      </li>
+      <li onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span>Run stegbreak to perform a brute-force dictionary attack on JPG files, crack the passphrase, and extract the hidden file.</span>
+      </li>
+      <li onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span>Compare steganography and digital watermarking across: CIA triad target, amount of data, ease of detection, and real-world use.</span>
+      </li>
+      <li onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span>Name the three categories of steganalysis and explain which is the hardest — and why.</span>
+      </li>
+      <li onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span>Explain how criminal organizations use steganography and describe at least one way law enforcement counteracts it.</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ACTIVITIES -->
+  <div class="section-label">Activities</div>
+  <div class="card">
+    <h2 style="margin-bottom:6px;">Lab Activities</h2>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:20px;">Links to each activity you will complete during this unit. Click to open — paste in a URL to link your own activity files.</p>
+    <div class="activities-grid">
+
+      <div class="activity-card green">
+        <div class="activity-header">
+          <div>
+            <div class="activity-title">Historical Steganography & Concepts</div>
+            <div class="activity-day">Day 1 &middot; Foundations</div>
+          </div>
+          <span class="activity-badge green">KNOW</span>
+        </div>
+        <p class="activity-desc">Explore historical examples from 450 BC to WWII. Label covert vs. overt, distinguish steganography from cryptography, and complete Check Your Understanding questions.</p>
+        <a href="#" class="activity-link empty"><span>Link activity</span><span class="arrow">&#8594;</span></a>
+      </div>
+
+      <div class="activity-card orange">
+        <div class="activity-header">
+          <div>
+            <div class="activity-title">ADS Command-Line Lab</div>
+            <div class="activity-day">Day 2 &middot; Insertion Steganography</div>
+          </div>
+          <span class="activity-badge orange">LAB</span>
+        </div>
+        <p class="activity-desc">Use Windows Command Prompt to create a file, attach a hidden Alternate Data Stream, verify the file size is unchanged, and retrieve hidden content with <code>more</code> and <code>dir /r</code>.</p>
+        <a href="#" class="activity-link empty"><span>Link activity</span><span class="arrow">&#8594;</span></a>
+      </div>
+
+      <div class="activity-card purple">
+        <div class="activity-header">
+          <div>
+            <div class="activity-title">Generation Stego &mdash; spammimic.com</div>
+            <div class="activity-day">Day 2 &middot; Generation Steganography</div>
+          </div>
+          <span class="activity-badge purple">LAB</span>
+        </div>
+        <p class="activity-desc">Encode a secret message as spam text, exchange with a partner, and decode their message. Discuss the strengths and weaknesses of generation steganography.</p>
+        <a href="https://spammimic.com" class="activity-link" target="_blank"><span>Open spammimic.com</span><span class="arrow">&#8599;</span></a>
+      </div>
+
+      <div class="activity-card green">
+        <div class="activity-header">
+          <div>
+            <div class="activity-title">Watermarking vs. Steganography</div>
+            <div class="activity-day">Day 3 &middot; CIA Triad Comparison</div>
+          </div>
+          <span class="activity-badge green">NOTEBOOK</span>
+        </div>
+        <p class="activity-desc">Complete the comparison chart. Identify which CIA triad element each technique targets and explain why. Note which scenarios call for steganography vs. watermarking.</p>
+        <a href="#" class="activity-link empty"><span>Link activity</span><span class="arrow">&#8594;</span></a>
+      </div>
+
+      <div class="activity-card orange">
+        <div class="activity-header">
+          <div>
+            <div class="activity-title">Hiding Data with Jphswin</div>
+            <div class="activity-day">Day 3 &middot; Image Steganography</div>
+          </div>
+          <span class="activity-badge orange">LAB</span>
+        </div>
+        <p class="activity-desc">Create a covert text file, select five JPG images, hide the file in one image using Jphswin and a dictionary-word passphrase. Perform visual comparison of all images.</p>
+        <a href="#" class="activity-link empty"><span>Link activity</span><span class="arrow">&#8594;</span></a>
+      </div>
+
+      <div class="activity-card purple">
+        <div class="activity-header">
+          <div>
+            <div class="activity-title">stegbreak &mdash; Dictionary Attack</div>
+            <div class="activity-day">Day 4 &middot; Steganalysis</div>
+          </div>
+          <span class="activity-badge purple">LAB</span>
+        </div>
+        <p class="activity-desc">Run stegbreak against a partner's JPG folder using the dictionary and rules.ini. Identify which images have hidden data, crack the passphrase, and extract the covert file using Jphswin.</p>
+        <a href="#" class="activity-link empty"><span>Link activity</span><span class="arrow">&#8594;</span></a>
+      </div>
+
+      <div class="activity-card yellow">
+        <div class="activity-header">
+          <div>
+            <div class="activity-title">Real-World Research</div>
+            <div class="activity-day">Day 4 &middot; Implications</div>
+          </div>
+          <span class="activity-badge yellow">RESEARCH</span>
+        </div>
+        <p class="activity-desc">Research how criminal organizations hide messages in images on public sites. Document how law enforcement detects covert channels. Find a recent news article and summarize the connection to today's lab.</p>
+        <a href="#" class="activity-link empty"><span>Link activity</span><span class="arrow">&#8594;</span></a>
+      </div>
+
+      <div class="activity-card green">
+        <div class="activity-header">
+          <div>
+            <div class="activity-title">Conclusion Reflection</div>
+            <div class="activity-day">Day 4 &middot; Synthesis</div>
+          </div>
+          <span class="activity-badge green">WRITING</span>
+        </div>
+        <p class="activity-desc">Map a personal or historical data-hiding experience to one of the three steganography categories. Connect technical concepts to cybersecurity ethics in a written reflection.</p>
+        <a href="#" class="activity-link empty"><span>Link activity</span><span class="arrow">&#8594;</span></a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ══════════════════════════════════════
+   CANVAS — pixel grid with hidden LSBs
+══════════════════════════════════════ */
+const canvas = document.getElementById('stego-canvas');
+const ctx    = canvas.getContext('2d');
+
+function resize() {
+  canvas.width  = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+resize();
+window.addEventListener('resize', () => { resize(); initPixels(); });
+
+const COLS = 26, ROWS = 9;
+let pixels = [], tick = 0;
+
+function initPixels() {
+  pixels = [];
+  const pw = canvas.width / COLS;
+  const ph = canvas.height / ROWS;
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      pixels.push({
+        x: c * pw, y: r * ph, w: pw, h: ph,
+        r: 55  + Math.floor(Math.random() * 130),
+        g: 100 + Math.floor(Math.random() * 110),
+        b: 65  + Math.floor(Math.random() * 120),
+        hasHidden: Math.random() < 0.24,
+        revealed: false
+      });
+    }
+  }
+}
+
+canvas.addEventListener('click', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = (e.clientX - rect.left) * (canvas.width  / rect.width);
+  const my = (e.clientY - rect.top)  * (canvas.height / rect.height);
+  pixels.forEach(p => {
+    if (mx >= p.x && mx < p.x + p.w && my >= p.y && my < p.y + p.h) {
+      p.revealed = !p.revealed;
+    }
+  });
+});
+
+function loop() {
+  tick++;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // background
+  const bg = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  bg.addColorStop(0, '#0d1a14');
+  bg.addColorStop(1, '#0b1820');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  pixels.forEach(p => {
+    ctx.fillStyle = `rgb(${p.r},${p.g},${p.b})`;
+    ctx.fillRect(p.x + .5, p.y + .5, p.w - 1, p.h - 1);
+
+    if (p.revealed) {
+      if (p.hasHidden) {
+        const pulse = .55 + .45 * Math.sin(tick * .09);
+        ctx.strokeStyle = `rgba(0,210,130,${pulse})`;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(p.x + 1, p.y + 1, p.w - 2, p.h - 2);
+        ctx.font = `bold ${Math.min(p.w, p.h) * .38}px 'DM Mono', monospace`;
+        ctx.fillStyle = `rgba(0,210,130,${.7 + pulse * .3})`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('1', p.x + p.w / 2, p.y + p.h / 2);
+      } else {
+        ctx.strokeStyle = 'rgba(248,113,113,.55)';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(p.x + 1, p.y + 1, p.w - 2, p.h - 2);
+        ctx.font = `bold ${Math.min(p.w, p.h) * .38}px 'DM Mono', monospace`;
+        ctx.fillStyle = 'rgba(248,113,113,.8)';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('0', p.x + p.w / 2, p.y + p.h / 2);
+      }
+    }
+  });
+
+  ctx.font = '11px DM Mono, monospace';
+  ctx.fillStyle = 'rgba(96,122,110,.6)';
+  ctx.textAlign = 'left';
+  ctx.fillText('← click pixels to inspect LSBs', 10, 18);
+
+  requestAnimationFrame(loop);
+}
+initPixels();
+loop();
+
+
+/* ══════════════════════════════════════
+   QUIZ
+══════════════════════════════════════ */
+const questions = [
+  {
+    q: "What is the fundamental difference between steganography and cryptography?",
+    options: [
+      "Steganography scrambles a message so it can't be read; cryptography hides it inside another file",
+      "Steganography hides the existence of a message; cryptography makes the message unreadable",
+      "They are the same — both protect data from being intercepted",
+      "Cryptography is illegal; steganography is not"
+    ],
+    correct: 1,
+    feedback: "✓ Correct. Steganography conceals that a message exists at all. Cryptography scrambles it — but an observer still knows a message was sent. Both can be used together for layered security."
+  },
+  {
+    q: "A student runs:   echo hidden data > file.txt:mystream   — then checks the file size with the dir command. What should they observe?",
+    options: [
+      "The file size doubles because the hidden stream is appended to the file",
+      "The command throws an error — NTFS does not support this syntax",
+      "The file size stays the same — ADS data is not reflected in NTFS file size",
+      "The original file is deleted and replaced with the stream data"
+    ],
+    correct: 2,
+    feedback: "✓ Exactly. Alternate Data Streams attach to a file's metadata, not its primary data stream — so the reported size is unchanged. That invisibility is exactly what makes ADS useful for insertion steganography."
+  },
+  {
+    q: "You run stegbreak with a dictionary file against a folder of JPG images. What type of attack is this — and what is stegbreak actually doing?",
+    options: [
+      "A man-in-the-middle attack — intercepting image files in transit over the network",
+      "SQL injection — manipulating how image metadata is queried",
+      "A brute-force dictionary attack — trying every word in the dictionary as a passphrase to extract hidden data",
+      "A social engineering attack — tricking the user into revealing the passphrase"
+    ],
+    correct: 2,
+    feedback: "✓ Right. stegbreak tries every word in the dictionary as a passphrase against each JPG image. This is why the lab uses a simple dictionary word intentionally — to show how fast weak passphrases are cracked."
+  },
+  {
+    q: "Digital watermarking targets which part of the CIA triad — and why is it different from steganography?",
+    options: [
+      "Confidentiality — it hides who created the file",
+      "Availability — it ensures the file is always accessible online",
+      "Integrity — it embeds a tamper-evident ownership signature, not a secret message",
+      "It targets all three parts of the CIA triad equally"
+    ],
+    correct: 2,
+    feedback: "✓ Correct. A watermark proves WHO created something and can detect tampering — that's Integrity. Steganography hides a secret message — that's Confidentiality. Same underlying technique, completely different security goal."
+  },
+  {
+    q: "Of the three steganalysis categories — detection, decoding, and erasing — which is considered the hardest, and why?",
+    options: [
+      "Erasing — because you have to find and extract the data before you can remove it",
+      "Detection — because hidden data is always completely invisible and undetectable",
+      "Decoding — because you must reverse an unknown encoding process without knowing the tool or passphrase used",
+      "All three are equally difficult for a trained forensic analyst"
+    ],
+    correct: 2,
+    feedback: "✓ Yes. Decoding requires knowing both the tool used AND the passphrase. Even stegbreak fails if the passphrase is not in the dictionary. Detection confirms something is hidden — decoding reveals what it says."
+  }
+];
+
+let current = 0, answered = false;
+
+function renderQ() {
+  const q = questions[current];
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('q-counter').textContent = `Question ${current + 1} of ${questions.length}`;
+  const opts = document.getElementById('q-options');
+  opts.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-btn';
+    btn.textContent = opt;
+    btn.onclick = () => answer(i);
+    opts.appendChild(btn);
+  });
+  document.getElementById('q-feedback').className = 'quiz-feedback';
+  document.getElementById('next-btn').style.display = 'none';
+  answered = false;
+  renderProgress();
+}
+
+function answer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const btns = document.querySelectorAll('.quiz-btn');
+  btns[idx].classList.add(idx === q.correct ? 'correct' : 'wrong');
+  btns[q.correct].classList.add('correct');
+  const fb = document.getElementById('q-feedback');
+  fb.textContent = idx === q.correct ? q.feedback : '✗ Not quite. ' + q.feedback;
+  fb.className = 'quiz-feedback show ' + (idx === q.correct ? 'ok' : 'no');
+  document.getElementById('next-btn').style.display = current < questions.length - 1 ? 'block' : 'none';
+  renderProgress();
+}
+
+function nextQ() { current++; renderQ(); }
+
+function renderProgress() {
+  const bar = document.getElementById('q-progress');
+  bar.innerHTML = '';
+  questions.forEach((_, i) => {
+    const pip = document.createElement('div');
+    pip.className = 'progress-pip' + (i < current ? ' done' : i === current ? ' current' : '');
+    bar.appendChild(pip);
+  });
+}
+
+renderQ();
+
+
+/* ══════════════════════════════════════
+   ACTIVITY LINKS
+══════════════════════════════════════ */
+function toggleInput(id) {
+  const row = document.getElementById('input-' + id);
+  row.classList.toggle('show');
+  if (row.classList.contains('show')) {
+    document.getElementById('url-' + id).focus();
+  }
+}
+
+function saveLink(id) {
+  const input = document.getElementById('url-' + id);
+  const url = input.value.trim();
+  if (!url) return;
+  const btn = document.getElementById('btn-' + id);
+  btn.href = url;
+  btn.setAttribute('onclick', "window.open(this.href,'_blank'); return false;");
+  btn.classList.remove('empty');
+  btn.classList.add('active');
+  btn.textContent = '↗ Open Activity';
+  document.getElementById('input-' + id).classList.remove('show');
+}
+
+function toggleCheck(li) {
+  li.querySelector('.check-box').classList.toggle('checked');
+  li.classList.toggle('done');
+}
+</script>
+</body>
+</html>
