@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity 4.2.2 – Data Integrity · Complete Lab Worksheet</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,300&display=swap');
+
+:root {
+  --black:   #1a1a2e;
+  --purple:  #4a2c7a;
+  --plum:    #7b4db8;
+  --pale:    #c8a8f0;
+  --accent:  #a855f7;
+  --stripe:  #f3eeff;
+  --nbg:     #ede4ff;
+  --ibg:     #f9f6ff;
+  --mono: 'Space Mono', monospace;
+  --body: 'DM Sans', sans-serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--body);background:#fff;color:var(--black);font-size:13.5px;line-height:1.65}
+
+/* ── PRINT ─────────────────────────────────────────── */
+@media print{
+  .no-print{display:none!important}
+  body{font-size:11px}
+  .pg{page-break-before:always}
+  .reading-block,.dir-block{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  textarea{border:1px solid #aaa!important;background:#fff!important}
+  .ss-box{border:1.5px dashed #aaa!important}
+  .step-circle{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .section-head{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+/* ── STICKY TOOLBAR ─────────────────────────────────── */
+.toolbar{
+  position:sticky;top:0;z-index:200;
+  background:var(--black);border-bottom:3px solid var(--accent);
+  padding:8px 36px;display:flex;align-items:center;justify-content:space-between;gap:12px
+}
+.toolbar p{font-size:10px;color:var(--pale);font-family:var(--mono);letter-spacing:.5px}
+.btn{background:var(--accent);color:#fff;border:none;padding:7px 18px;border-radius:4px;
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;
+  text-transform:uppercase;transition:background .2s}
+.btn:hover{background:#9333ea}
+
+/* ── HEADER ─────────────────────────────────────────── */
+header{
+  background:var(--black);color:#fff;
+  padding:28px 40px 22px;display:flex;align-items:flex-start;gap:20px;
+  border-bottom:5px solid var(--accent);position:relative;overflow:hidden
+}
+header::before{
+  content:'';position:absolute;right:-60px;top:-60px;
+  width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(168,85,247,.22) 0%,transparent 70%)
+}
+.badge{background:var(--accent);color:#fff;font-family:var(--mono);font-size:10px;
+  font-weight:700;letter-spacing:2px;padding:4px 10px;border-radius:3px;flex-shrink:0;margin-top:5px}
+header h1{font-family:var(--mono);font-size:21px;font-weight:700;letter-spacing:-.5px;line-height:1.2}
+header h1 span{display:block;font-size:12px;font-weight:400;color:var(--pale);
+  letter-spacing:1px;margin-top:5px;font-family:var(--body)}
+
+/* ── STUDENT INFO ───────────────────────────────────── */
+.stu{background:var(--stripe);border-bottom:1px solid #e0d4f8;
+  padding:16px 40px;display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px}
+.fg label{display:block;font-size:9px;font-family:var(--mono);letter-spacing:1.5px;
+  color:var(--purple);text-transform:uppercase;margin-bottom:4px;font-weight:700}
+.fg input{width:100%;border:none;border-bottom:2px solid var(--plum);background:transparent;
+  font-family:var(--body);font-size:13px;padding:3px 0;color:var(--black);outline:none}
+.fg input:focus{border-bottom-color:var(--accent)}
+
+/* ── OBJECTIVES BAR ─────────────────────────────────── */
+.objs{background:var(--purple);color:#fff;padding:12px 40px;
+  display:flex;gap:24px;flex-wrap:wrap;align-items:center}
+.objs strong{font-family:var(--mono);font-size:9px;letter-spacing:2px;
+  color:var(--pale);text-transform:uppercase}
+.obj{display:flex;align-items:center;gap:6px;font-size:12px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0}
+
+/* ── MAIN ───────────────────────────────────────────── */
+main{padding:28px 40px;max-width:980px;margin:0 auto}
+
+/* ── SECTION HEADERS ────────────────────────────────── */
+.section-head{
+  background:var(--purple);color:#fff;padding:11px 20px;
+  display:flex;align-items:center;gap:12px;
+  border-radius:8px 8px 0 0
+}
+.snum{background:var(--accent);font-family:var(--mono);font-size:11px;font-weight:700;
+  padding:2px 9px;border-radius:3px;min-width:28px;text-align:center}
+.section-head h2{font-family:var(--mono);font-size:12px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase}
+.section-wrap{border:1px solid #e0d4f8;border-radius:8px;overflow:hidden;
+  margin-bottom:36px;box-shadow:0 2px 10px rgba(74,44,122,.07)}
+.section-body{padding:22px 26px}
+
+/* ── READING BLOCKS ─────────────────────────────────── */
+.reading-block{
+  background:linear-gradient(135deg,#faf8ff 0%,#f3eeff 100%);
+  border:1px solid #d8c8f4;border-radius:8px;
+  padding:18px 22px;margin-bottom:20px
+}
+.reading-block h3{
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;
+  color:var(--purple);text-transform:uppercase;font-weight:700;
+  margin-bottom:12px;display:flex;align-items:center;gap:8px
+}
+.reading-block h3::before{content:'📖';font-size:14px}
+.reading-block p{font-size:13px;margin-bottom:10px;color:#2a1a3e}
+.reading-block p:last-child{margin-bottom:0}
+.reading-block ul{padding-left:20px;font-size:13px}
+.reading-block ul li{margin-bottom:6px}
+.reading-block .callout{
+  background:#fff;border-left:3px solid var(--accent);
+  padding:10px 14px;border-radius:0 6px 6px 0;
+  font-size:12.5px;margin:10px 0;color:#2a1a3e
+}
+.reading-block .callout strong{font-family:var(--mono);font-size:10px;
+  letter-spacing:1px;color:var(--purple);display:block;margin-bottom:4px}
+
+/* ── DIRECTION BLOCKS ───────────────────────────────── */
+.dir-block{
+  background:var(--black);border-radius:8px;
+  padding:16px 20px;margin-bottom:20px;color:#fff
+}
+.dir-block h3{
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;
+  color:var(--pale);text-transform:uppercase;font-weight:700;
+  margin-bottom:14px;display:flex;align-items:center;gap:8px
+}
+.dir-block h3::before{content:'🔧';font-size:13px}
+
+/* ── INDIVIDUAL STEPS ───────────────────────────────── */
+.step{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+.step-circle{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--accent);color:#fff;
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px
+}
+.step-circle.range{width:auto;min-width:44px;border-radius:15px;padding:0 8px;font-size:10px}
+.step-text{flex:1;font-size:13px;color:#fff;line-height:1.6;padding-top:4px}
+.step-text code{font-family:var(--mono);font-size:11.5px;background:rgba(255,255,255,.15);
+  padding:1px 5px;border-radius:3px}
+.step-text ul{padding-left:18px;margin-top:6px}
+.step-text ul li{margin-bottom:4px;font-size:12.5px}
+.step-text .warn{
+  background:rgba(240,165,0,.18);border-left:3px solid #f0a500;
+  padding:7px 12px;border-radius:0 5px 5px 0;
+  font-size:12px;margin:8px 0;color:#ffe8a0
+}
+.step-text .warn strong{color:#f0c040;font-family:var(--mono);font-size:10px;letter-spacing:1px}
+
+/* ── RESPONSE / NOTEBOOK AREAS ──────────────────────── */
+.response-area{
+  background:linear-gradient(135deg,#f3eeff 0%,#ede4ff 100%);
+  border:1px solid #d0b8f8;border-radius:8px;
+  padding:18px 22px;margin-bottom:20px
+}
+.response-area h3{
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;
+  color:var(--purple);text-transform:uppercase;font-weight:700;
+  margin-bottom:14px;display:flex;align-items:center;gap:8px
+}
+.response-area h3::before{content:'📓';font-size:14px}
+.q{margin-bottom:16px}
+.q label{display:block;font-weight:500;margin-bottom:6px;font-size:13px}
+.q label .qn{font-family:var(--mono);font-size:11px;color:var(--purple);font-weight:700;margin-right:4px}
+textarea{
+  width:100%;border:2px solid #e0d4f8;border-radius:6px;
+  padding:10px 12px;font-family:var(--body);font-size:13px;resize:vertical;
+  background:var(--ibg);color:var(--black);outline:none;
+  transition:border-color .2s;line-height:1.6
+}
+textarea:focus{border-color:var(--accent);background:#fff}
+
+/* ── HASH / COMPARISON TABLES ───────────────────────── */
+.tbl{width:100%;border-collapse:collapse;margin:12px 0;font-size:12.5px}
+.tbl th{background:var(--black);color:#fff;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:1px;padding:8px 12px;text-align:left}
+.tbl td{border:1px solid #e0d4f8;padding:7px 10px;vertical-align:middle}
+.tbl tr:nth-child(even) td{background:#faf8ff}
+.tbl .fn{font-family:var(--mono);font-size:11px;color:var(--purple);font-weight:700}
+.tbl input{width:100%;border:none;border-bottom:1.5px solid #c0a8e8;
+  background:transparent;font-family:var(--mono);font-size:11px;
+  padding:2px 0;outline:none}
+.tbl input:focus{border-bottom-color:var(--accent)}
+.tbl-head-purple th{background:var(--purple)}
+
+/* ── SCREENSHOT BOXES ───────────────────────────────── */
+.ss-wrap{margin:12px 0}
+.ss-wrap .ss-label{
+  background:var(--plum);color:#fff;font-family:var(--mono);
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:5px 12px;display:flex;align-items:center;gap:7px;
+  border-radius:6px 6px 0 0
+}
+.ss-box{
+  border:2px dashed var(--plum);border-top:none;background:#faf8ff;
+  border-radius:0 0 6px 6px;overflow:hidden
+}
+.ss-area{
+  min-height:110px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:8px;padding:16px;
+  cursor:pointer;position:relative
+}
+.ss-area input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.ss-area .icon{font-size:26px;opacity:.3}
+.ss-area p{font-size:10.5px;color:#9078c0;font-family:var(--mono);letter-spacing:.5px;text-align:center}
+.ss-area img{max-width:100%;max-height:340px;border-radius:4px;display:none}
+
+/* ── CONCLUSION QUESTIONS ───────────────────────────── */
+.concl-q{background:var(--black);color:#fff;border-radius:8px;padding:20px 24px;margin-bottom:18px}
+.concl-q .cnum{font-family:var(--mono);font-size:9px;letter-spacing:2px;
+  color:var(--pale);text-transform:uppercase;margin-bottom:8px;display:block}
+.concl-q p{font-size:13.5px;font-weight:500;margin-bottom:12px}
+.concl-q textarea{background:rgba(255,255,255,.09);border:1.5px solid rgba(255,255,255,.15);color:#fff}
+.concl-q textarea:focus{border-color:var(--accent);background:rgba(255,255,255,.13)}
+.concl-q textarea::placeholder{color:rgba(255,255,255,.3)}
+
+/* ── SPOILER ────────────────────────────────────────── */
+.spoiler{border:2px solid var(--plum);border-radius:6px;overflow:hidden;margin:12px 0}
+.sp-toggle{width:100%;background:var(--purple);color:#fff;border:none;
+  padding:10px 16px;text-align:left;font-family:var(--mono);font-size:11px;
+  letter-spacing:1.5px;cursor:pointer;text-transform:uppercase;
+  display:flex;justify-content:space-between;align-items:center}
+.sp-toggle:hover{background:var(--plum)}
+.sp-content{display:none;padding:14px 18px;background:#fff8f8;font-size:12.5px}
+.sp-content.open{display:block}
+.sp-content ul{padding-left:18px}
+.sp-content ul li{margin-bottom:5px}
+.sp-content code{font-family:var(--mono);font-size:11.5px;background:#ede4ff;
+  padding:1px 5px;border-radius:3px;color:var(--purple)}
+
+/* ── MISC ───────────────────────────────────────────── */
+code{font-family:var(--mono);font-size:11.5px;background:#ede4ff;
+  padding:1px 5px;border-radius:3px;color:var(--purple)}
+hr.pg{border:none;border-top:2px dashed #c8a8f0;margin:30px 0}
+.divider{height:1px;background:linear-gradient(to right,var(--accent),transparent);margin:8px 0 18px}
+.hash-example{
+  display:flex;align-items:stretch;gap:0;font-family:var(--mono);
+  font-size:11.5px;margin:10px 0;border-radius:6px;overflow:hidden;border:1px solid #d8c8f4
+}
+.he-input{background:#fff;padding:8px 12px;flex:1;color:var(--black);border-right:1px solid #d8c8f4}
+.he-arrow{background:var(--purple);color:#fff;padding:8px 12px;display:flex;align-items:center;font-size:13px}
+.he-output{background:var(--black);color:#a8f0c8;padding:8px 12px;flex:1;letter-spacing:.5px}
+.prop-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.prop-card{background:#fff;border:1px solid #d8c8f4;border-radius:6px;padding:10px 14px;
+  font-size:12.5px;border-left:3px solid var(--accent)}
+.prop-card strong{display:block;font-family:var(--mono);font-size:10px;
+  letter-spacing:1px;color:var(--purple);margin-bottom:4px;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR -->
+<div class="toolbar no-print">
+  <p>Complete all steps in order. Upload or paste screenshots in each capture box. Use Print / Save PDF to submit.</p>
+  <button class="btn" onclick="window.print()">🖨 Print / Save PDF</button>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="badge">PLTW SEC</div>
+  <div>
+    <h1>Activity 4.2.2 — Data Integrity
+      <span>Cybersecurity · Unit 4 · Data Authentication, Hashing &amp; Validation</span>
+    </h1>
+  </div>
+</header>
+
+<!-- STUDENT INFO -->
+<div class="stu">
+  <div class="fg"><label>Student Name</label><input type="text" placeholder="First Last"></div>
+  <div class="fg"><label>Date</label><input type="text" placeholder="MM / DD / YYYY"></div>
+  <div class="fg"><label>Period / Block</label><input type="text"></div>
+</div>
+
+<!-- OBJECTIVES -->
+<div class="objs">
+  <strong>Goals</strong>
+  <div class="obj"><div class="dot"></div><span>Understand data authentication and validation</span></div>
+  <div class="obj"><div class="dot"></div><span>Practice hashing techniques</span></div>
+  <div class="obj"><div class="dot"></div><span>Validate and authenticate data using hashing</span></div>
+</div>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  PART 1 — DATA AUTHENTICATION & VALIDATION  (Reading + Q)     -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section-wrap">
+  <div class="section-head"><div class="snum">Part 1</div><h2>Data Authentication &amp; Validation</h2></div>
+  <div class="section-body">
+
+    <div class="reading-block">
+      <h3>Why does data integrity matter?</h3>
+      <p>When someone agrees to a contract—like a car lease or apartment rental—they sign their name to authenticate the document. But what if someone sends you a <em>file</em> on a computer? How do you know it's authentic?</p>
+      <p>When you receive a file from a friend, you need to verify that it really came from them <strong>and</strong> that the file is in its original, unaltered form. A file could be changed or corrupted while in transit, while being copied, or while in storage. Even files that <em>look</em> the same can be different in their content.</p>
+      <p>The most common way to authenticate and validate files is to use mathematical encryption functions called <strong>cryptographic hash functions</strong>. A hash function creates a <em>fixed-size representation</em> of data that is unique to that data. Any minor change to the data results in a completely different hash value.</p>
+    </div>
+
+    <div class="response-area">
+      <h3>Check Your Understanding</h3>
+      <div class="q">
+        <label><span class="qn">Q1.</span> In your own words, explain why you can't just open a file to check if it's been tampered with. What problem does hashing solve?</label>
+        <textarea rows="3" placeholder="Your answer…"></textarea>
+      </div>
+      <div class="q">
+        <label><span class="qn">Q2.</span> Give a real-world example (other than the contract example above) where verifying a file's authenticity would matter.</label>
+        <textarea rows="3" placeholder="Your answer…"></textarea>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  PART 2 — HASHING  (Reading + Q)                             -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section-wrap">
+  <div class="section-head"><div class="snum">Part 2</div><h2>Hashing</h2></div>
+  <div class="section-body">
+
+    <div class="reading-block">
+      <h3>What is a cryptographic hash function?</h3>
+      <p>A cryptographic hash function (called <strong>hashing</strong>) is an algorithm with two key characteristics:</p>
+      <ul>
+        <li><strong>It maps data of any size to a fixed-size string</strong> (the hash value). Whether you hash a single word or an entire hard drive, the output is always the same length.</li>
+        <li><strong>It uses a one-way function.</strong> A one-way function is easy to compute in one direction but infeasible to reverse. You cannot calculate the original data from the hash alone.</li>
+      </ul>
+      <p style="margin-top:10px;">The input to a hash function is called the <strong>message</strong>. The output is called the <strong>message digest</strong> (or simply, the hash). Notice how even a tiny change produces a completely different hash:</p>
+      <div class="hash-example"><div class="he-input">The quick brown fox</div><div class="he-arrow">→</div><div class="he-output">48E195AB</div></div>
+      <div class="hash-example"><div class="he-input">The quick brown fob</div><div class="he-arrow">→</div><div class="he-output">20CFC056</div></div>
+      <div class="callout">
+        <strong>Two ways to crack a hash</strong>
+        You can attempt a <em>brute-force search</em> by trying all possible inputs, or use a <em>rainbow table</em>—a pre-built lookup table of known hash values—to try to find a match. Both methods are computationally expensive for strong hashes.
+      </div>
+    </div>
+
+    <div class="reading-block">
+      <h3>The 5 properties of an ideal hash function</h3>
+      <div class="prop-grid">
+        <div class="prop-card"><strong>1. Deterministic</strong>The same message always produces the same hash value, every time.</div>
+        <div class="prop-card"><strong>2. Fast to compute</strong>Calculating a hash value for any message should be quick.</div>
+        <div class="prop-card"><strong>3. One-way (irreversible)</strong>It is infeasible to reverse a hash to find the original message.</div>
+        <div class="prop-card"><strong>4. Avalanche effect</strong>A tiny change to the message (even one character) produces a completely different hash.</div>
+      </div>
+      <div class="prop-card" style="margin-top:0"><strong>5. Collision-resistant</strong>It is extremely unlikely that two different messages will produce the same hash value (called a <em>collision</em>).</div>
+      <div class="callout" style="margin-top:12px">
+        <strong>Why collisions are rare</strong>
+        With a 32-bit hash there are 2<sup>32</sup> (~4.3 billion) possible values. A 64-bit hash has 2<sup>64</sup> (~18.4 quintillion) possible values. This makes accidental collisions virtually impossible for real-world use.
+      </div>
+    </div>
+
+    <div class="reading-block">
+      <h3>Collisions &amp; The Birthday Problem</h3>
+      <p>While hash collisions are extremely rare, they are theoretically possible. The <strong>birthday problem</strong> is a statistical puzzle: in a room of just 23 people, there is a ~50% chance that two people share the same birthday. With 30 people it rises to over 70%. At 41 people, over 90%.</p>
+      <p>This happens because what matters is the number of <em>pairs</em>, not the number of people. With 23 people there are 253 possible pairs [formula: n(n−1)/2]. Each pair is a chance at a match.</p>
+      <p>The same logic applies to hashes: as the number of hashes grows, the odds of a collision increase—but because hash <em>spaces</em> are astronomically large (billions to quintillions of possible values), reaching a meaningful collision probability requires an impractical number of hashes.</p>
+      <div class="callout">
+        <strong>Key insight</strong>
+        The birthday problem involves any two <em>random</em> inputs colliding—not one specific input matching another. A colliding hash would likely represent completely unreadable, nonsensical data rather than a meaningful file.
+      </div>
+    </div>
+
+    <div class="reading-block">
+      <h3>MD5 vs SHA-1 — Common Hash Algorithms</h3>
+      <p>The two most common hash algorithms used in digital forensics are <strong>MD5</strong> (Message Digest 5) and <strong>SHA-1</strong> (Secure Hash Algorithm 1). Both have all five properties of an ideal hash function, but differ in strength and speed.</p>
+      <table class="tbl" style="margin-top:10px">
+        <thead><tr><th>Property</th><th>MD5</th><th>SHA-1</th></tr></thead>
+        <tbody>
+          <tr><td>Digest length</td><td>128 bits</td><td>160 bits</td></tr>
+          <tr><td>Security level</td><td>Less secure</td><td>More secure</td></tr>
+          <tr><td>Iterations to produce hash</td><td>64</td><td>80</td></tr>
+          <tr><td>Speed</td><td>Faster</td><td>Slower</td></tr>
+          <tr><td>Operations to find original message</td><td>2<sup>128</sup></td><td>2<sup>160</sup></td></tr>
+          <tr><td>Operations to find any collision</td><td>2<sup>64</sup></td><td>2<sup>80</sup></td></tr>
+          <tr><td>Successful attacks reported</td><td>Yes (collisions known)</td><td>Not yet reported</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="response-area">
+      <h3>Check Your Understanding</h3>
+      <div class="q">
+        <label><span class="qn">Q3.</span> List the 5 properties of an ideal hash function from memory (don't peek!).</label>
+        <textarea rows="5" placeholder="1. &#10;2. &#10;3. &#10;4. &#10;5. "></textarea>
+      </div>
+      <div class="q">
+        <label><span class="qn">Q4.</span> Explain the birthday problem in your own words. How does it relate to hash collisions?</label>
+        <textarea rows="3" placeholder="Your answer…"></textarea>
+      </div>
+      <div class="q">
+        <label><span class="qn">Q5 (Reflection).</span> Why is the birthday problem <em>not</em> a major practical concern for modern hash algorithms like SHA-1?</label>
+        <textarea rows="3" placeholder="Hint: think about the size of the hash space…"></textarea>
+      </div>
+      <div class="q">
+        <label><span class="qn">Q6.</span> Using the formula n(n−1)/2, calculate the number of pairs in a group of 23 people. Show your work.</label>
+        <textarea rows="3" placeholder="Work: &#10;&#10;Answer: "></textarea>
+      </div>
+      <div class="q">
+        <label><span class="qn">Q7.</span> You need to authenticate files in a forensic investigation. Would you prefer MD5 or SHA-1? Why?</label>
+        <textarea rows="3" placeholder="Your answer…"></textarea>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="pg">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  PART 3 — EXPLORING HASHES  (Lab Steps 1–16)                 -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section-wrap">
+  <div class="section-head"><div class="snum">Part 3</div><h2>Exploring Hashes — Lab Steps 1–16</h2></div>
+  <div class="section-body">
+
+    <!-- Steps 1–9 -->
+    <div class="dir-block">
+      <h3>Setting up your Hash Lab files</h3>
+      <div class="step">
+        <div class="step-circle">1</div>
+        <div class="step-text">Launch the <a href="https://my.pltw.org/cyber/lab/422" target="_blank" style="color:#a8f0c8;font-weight:700;text-decoration:underline;">PLTW Security Lab 4.2.2 – Data Integrity</a>.</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">2</div>
+        <div class="step-text">Create a folder on the desktop named <code>Hash Lab</code>.</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">3</div>
+        <div class="step-text">In File Explorer, navigate to <code>C:\Windows\System32</code> and launch <code>notepad.exe</code>.
+          <div class="warn"><strong>Tip:</strong> You may need to enable "File name extensions" under the View tab in File Explorer to see file extensions like .exe and .txt.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-circle">4</div>
+        <div class="step-text">In Notepad, type exactly: <code>This is a test.</code> (no quotes)</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">5</div>
+        <div class="step-text">Click <strong>File → Save As…</strong> and save to your <code>Hash Lab</code> folder as <code>Test1.txt</code>.</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">6</div>
+        <div class="step-text">Use <strong>File → New</strong> to create a second file. Type exactly: <code>This is a test!</code> (exclamation point, no quotes)</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">7</div>
+        <div class="step-text">Save this file to <code>Hash Lab</code> as <code>Test2.txt</code>.</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">8</div>
+        <div class="step-text">Create a third file. Type exactly: <code>This is a test. </code> — notice the <strong>space after the period</strong>.</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">9</div>
+        <div class="step-text">Save this file to <code>Hash Lab</code> as <code>Test3.txt</code>.</div>
+      </div>
+    </div>
+
+    <!-- Step 10 -->
+    <div class="dir-block">
+      <h3>Creating a copy</h3>
+      <div class="step">
+        <div class="step-circle">10</div>
+        <div class="step-text">
+          In File Explorer, open your <code>Hash Lab</code> folder:
+          <ul>
+            <li>Right-click <code>Test1.txt</code> → <strong>Copy</strong>, then <strong>Paste</strong> to create a copy in the same folder.</li>
+            <li>Rename the new copy to <code>Copy1.txt</code>.</li>
+          </ul>
+          You now have 4 files: <code>Test1.txt</code>, <code>Test2.txt</code>, <code>Test3.txt</code>, <code>Copy1.txt</code>.
+        </div>
+      </div>
+    </div>
+
+    <!-- Screenshot 1 -->
+    <div class="ss-wrap">
+      <div class="ss-label">📸 Screenshot 1 — Hash Lab folder showing all 4 files</div>
+      <div class="ss-box">
+        <div class="ss-area" onclick="this.querySelector('input').click()">
+          <input type="file" accept="image/*" onchange="previewImg(this)">
+          <div class="icon">📷</div>
+          <p>Click to upload · or hover here and paste (Ctrl+V)</p>
+          <img alt="preview">
+        </div>
+      </div>
+    </div>
+
+    <!-- Steps 11–15 -->
+    <div class="dir-block">
+      <h3>Running HashMyFiles</h3>
+      <div class="step">
+        <div class="step-circle">11</div>
+        <div class="step-text">
+          Navigate to <code>Desktop/Activities/A422_Files</code> and launch the <strong>HashMyFiles</strong> executable.
+          <div class="warn"><strong>Security warning:</strong> If a security prompt appears, click <strong>Run</strong> to confirm.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-circle">12</div>
+        <div class="step-text">Select <strong>File → Add Folder</strong>, then navigate to and select your <code>Desktop/Hash Lab</code> folder. Click <strong>OK</strong>. The four files will appear with their MD5 and SHA-1 hash values.</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">13</div>
+        <div class="step-text">Select all files in the list using <strong>Ctrl+A</strong>.</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">14</div>
+        <div class="step-text">Go to <strong>File → Save Selected Items</strong> and save a file to your desktop named <code>[YourName]_A422_Test.txt</code>.</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">15</div>
+        <div class="step-text">Observe the output file you just saved — it contains the filename, hash values, and other file metadata.</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">16</div>
+        <div class="step-text">Download the output file to your local school machine:
+          <ul>
+            <li>Copy the file from the <code>C:\</code> drive.</li>
+            <li>Paste it into the Downloads folder under the G on GUACAMOLE RDP.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screenshot 2 -->
+    <div class="ss-wrap">
+      <div class="ss-label">📸 Screenshot 2 — HashMyFiles showing all 4 files with MD5 and SHA-1 columns visible</div>
+      <div class="ss-box">
+        <div class="ss-area" onclick="this.querySelector('input').click()">
+          <input type="file" accept="image/*" onchange="previewImg(this)">
+          <div class="icon">📷</div>
+          <p>Click to upload · or hover here and paste (Ctrl+V)</p>
+          <img alt="preview">
+        </div>
+      </div>
+    </div>
+
+    <!-- Record hash values -->
+    <div class="response-area">
+      <h3>Record Your Hash Values</h3>
+      <p style="font-size:13px;margin-bottom:12px;">Type or paste the hash values you see in HashMyFiles:</p>
+      <table class="tbl">
+        <thead><tr><th>Filename</th><th>MD5 Hash Value</th><th>SHA-1 Hash Value</th></tr></thead>
+        <tbody>
+          <tr><td class="fn">Test1.txt</td><td><input type="text" placeholder="paste hash here"></td><td><input type="text" placeholder="paste hash here"></td></tr>
+          <tr><td class="fn">Test2.txt</td><td><input type="text" placeholder="paste hash here"></td><td><input type="text" placeholder="paste hash here"></td></tr>
+          <tr><td class="fn">Test3.txt</td><td><input type="text" placeholder="paste hash here"></td><td><input type="text" placeholder="paste hash here"></td></tr>
+          <tr><td class="fn">Copy1.txt</td><td><input type="text" placeholder="paste hash here"></td><td><input type="text" placeholder="paste hash here"></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Notebook questions -->
+    <div class="response-area">
+      <h3>Computer Science Notebook — Steps 13–15</h3>
+      <div class="q">
+        <label><span class="qn">Q8.</span> Looking at Test1, Test2, and Test3 — the text is nearly identical but hashes are completely different. Which property of an ideal hash function does this demonstrate? Explain.</label>
+        <textarea rows="3" placeholder="Your answer…"></textarea>
+      </div>
+      <div class="q">
+        <label><span class="qn">Q9.</span> Compare <code>Test1.txt</code> and <code>Copy1.txt</code> — do they have the same or different hash values? What does this prove about hashing?</label>
+        <textarea rows="3" placeholder="Your answer…"></textarea>
+      </div>
+      <div class="q">
+        <label><span class="qn">Q10.</span> In the saved output file, you can see each file's name and timestamp alongside its hash. Does changing the filename or timestamp change the hash value? How do you know?</label>
+        <textarea rows="3" placeholder="Your answer…"></textarea>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="pg">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  PART 4 — DATA VALIDATION  (Lab Steps 17–25)                 -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section-wrap">
+  <div class="section-head"><div class="snum">Part 4</div><h2>Data Validation — Lab Steps 17–25</h2></div>
+  <div class="section-body">
+
+    <div class="reading-block">
+      <h3>Using hashing for data validation</h3>
+      <p>Hashing can be used to <strong>validate</strong> data over time. If you calculate the hash of a file, save that hash value, and then hash the same file again later—the values should match. If they do match, the file is unchanged. If they don't match, something was altered.</p>
+      <p>This is how forensic investigators and security professionals can prove files were not tampered with after collection.</p>
+    </div>
+
+    <!-- Steps 17–20 -->
+    <div class="dir-block">
+      <h3>Creating a Baseline</h3>
+      <div class="step">
+        <div class="step-circle">17</div>
+        <div class="step-text">In the security lab, open your <code>Hash Lab</code> folder and open all four files.</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">18</div>
+        <div class="step-text">
+          In <strong>at least three</strong> of the files, add a paragraph or two of additional text after the existing sentence.
+          <div class="warn"><strong>Note:</strong> The content doesn't matter — a homework list, poem, or anything you like. The goal is simply to change the file.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-circle">19</div>
+        <div class="step-text">Switch to HashMyFiles and click <strong>Refresh</strong> (or the refresh icon) to update the hash values for the modified files.</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">20</div>
+        <div class="step-text">Select all files (Ctrl+A) and go to <strong>File → Save Selected Items</strong>. Save the output as <code>[YourName]_A422_Baseline</code>. This is your <strong>baseline</strong> — the trusted starting state.</div>
+      </div>
+    </div>
+
+    <!-- Screenshot 3 -->
+    <div class="ss-wrap">
+      <div class="ss-label">📸 Screenshot 3 — HashMyFiles after adding content (your Baseline hash values)</div>
+      <div class="ss-box">
+        <div class="ss-area" onclick="this.querySelector('input').click()">
+          <input type="file" accept="image/*" onchange="previewImg(this)">
+          <div class="icon">📷</div>
+          <p>Click to upload · or hover here and paste (Ctrl+V)</p>
+          <img alt="preview">
+        </div>
+      </div>
+    </div>
+
+    <!-- Record baseline -->
+    <div class="response-area">
+      <h3>Record Baseline Hash Values</h3>
+      <table class="tbl">
+        <thead class="tbl-head-purple"><tr><th>Filename</th><th>MD5 — Baseline</th><th>Changed from original? (Y/N)</th></tr></thead>
+        <tbody>
+          <tr><td class="fn">Test1.txt</td><td><input type="text"></td><td><input type="text"></td></tr>
+          <tr><td class="fn">Test2.txt</td><td><input type="text"></td><td><input type="text"></td></tr>
+          <tr><td class="fn">Test3.txt</td><td><input type="text"></td><td><input type="text"></td></tr>
+          <tr><td class="fn">Copy1.txt</td><td><input type="text"></td><td><input type="text"></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Steps 21–22 -->
+    <div class="dir-block">
+      <h3>The Secret Change — Can you detect it?</h3>
+      <div class="step">
+        <div class="step-circle range">21</div>
+        <div class="step-text">
+          <strong>One team member only:</strong> While others look away, make minor changes to exactly <strong>two</strong> of the test files:
+          <ul>
+            <li>Overwrite a character with a space, un-capitalize a letter, swap a letter for a symbol, etc.</li>
+            <li><strong>Do NOT add or delete characters</strong> — the file size must stay the same.</li>
+            <li>Try not to make the changes obvious (change only a few characters).</li>
+            <li>Open the <em>other</em> files, do not change them, and just save — this updates only the timestamp.</li>
+          </ul>
+          <div class="warn"><strong>Important:</strong> After your changes, each file should have the exact same number of characters as before. Close all open files when done.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-circle range">22</div>
+        <div class="step-text"><strong>Everyone else:</strong> Use HashMyFiles to refresh and compare hashes against your Baseline. Identify which files changed.</div>
+      </div>
+    </div>
+
+    <!-- Screenshot 4 -->
+    <div class="ss-wrap">
+      <div class="ss-label">📸 Screenshot 4 — HashMyFiles after the secret changes. Which files show different hashes?</div>
+      <div class="ss-box">
+        <div class="ss-area" onclick="this.querySelector('input').click()">
+          <input type="file" accept="image/*" onchange="previewImg(this)">
+          <div class="icon">📷</div>
+          <p>Click to upload · or hover here and paste (Ctrl+V)</p>
+          <img alt="preview">
+        </div>
+      </div>
+    </div>
+
+    <div class="response-area">
+      <h3>Detect the Changes</h3>
+      <div class="q">
+        <label><span class="qn">Q11.</span> Which files had their <em>content</em> changed (different hash from baseline)? Which files only had their timestamp updated?</label>
+        <textarea rows="3" placeholder="Changed content (different hash): &#10;Timestamp only (same hash): "></textarea>
+      </div>
+      <div class="q">
+        <label><span class="qn">Q12.</span> What are <em>all</em> the ways you could determine which files were changed?</label>
+        <textarea rows="3" placeholder="Your answer…"></textarea>
+      </div>
+      <div class="q">
+        <label><span class="qn">Q13.</span> What is the <em>quickest</em> method to detect whether a file changed? What would be the best approach for very large files, and why?</label>
+        <textarea rows="3" placeholder="Your answer…"></textarea>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Steps 23–25 -->
+    <div class="dir-block">
+      <h3>Hashing System32 — Creating a System Baseline</h3>
+      <div class="step">
+        <div class="step-circle">23</div>
+        <div class="step-text">In HashMyFiles, click <strong>Clear All</strong> to remove the current file list.</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">24</div>
+        <div class="step-text">
+          Click <strong>File → Add Folder</strong> and select the <code>C:\Windows\System32</code> folder.
+          <div class="warn"><strong>Note:</strong> System32 contains thousands of files — hashing may take a minute or more. Watch the status bar at the bottom of the HashMyFiles window to track progress.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-circle">25</div>
+        <div class="step-text">Once complete, select all files (Ctrl+A) and save the output as <code>[YourName]_A422_System32_Baseline</code> on your desktop.</div>
+      </div>
+    </div>
+
+    <!-- Screenshot 5 -->
+    <div class="ss-wrap">
+      <div class="ss-label">📸 Screenshot 5 — HashMyFiles hashing System32 (status bar visible or completed list)</div>
+      <div class="ss-box">
+        <div class="ss-area" onclick="this.querySelector('input').click()">
+          <input type="file" accept="image/*" onchange="previewImg(this)">
+          <div class="icon">📷</div>
+          <p>Click to upload · or hover here and paste (Ctrl+V)</p>
+          <img alt="preview">
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="pg">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  PART 5 — SYSTEM32 INVESTIGATION  (Lab Steps 26–28)          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section-wrap">
+  <div class="section-head"><div class="snum">Part 5</div><h2>System32 Investigation — Lab Steps 26–28</h2></div>
+  <div class="section-body">
+
+    <div class="dir-block">
+      <h3>The Hidden Change — Forensic Investigation</h3>
+      <div class="step">
+        <div class="step-circle">26</div>
+        <div class="step-text">Minimize the HashMyFiles window. Choose one team member to read and execute the Hidden Hint below. <strong>All other team members look away!</strong></div>
+      </div>
+
+      <!-- SPOILER -->
+      <div class="spoiler no-print" style="margin:12px 0 16px">
+        <button class="sp-toggle" onclick="toggleSpoiler(this)">
+          🔒 Hidden Hint — Assigned Person Only · Click to Reveal <span>▼</span>
+        </button>
+        <div class="sp-content">
+          <ul>
+            <li>In <code>C:\Windows\System32</code>, find <code>notepad.exe</code>.</li>
+            <li>Rename it to <code>writething.exe</code>.</li>
+            <li>Also in <code>C:\Windows\System32</code>, copy and paste <code>mspaint.exe</code>.</li>
+            <li>Rename the copy to <code>notepad.exe</code>.</li>
+            <li>Close File Explorer and hide this hint!</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-circle">27</div>
+        <div class="step-text">All other team members: use HashMyFiles (and any other tools available to you) to determine what changed in the System32 folder. Re-hash the folder and compare to your System32 Baseline.</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">28</div>
+        <div class="step-text">When the investigation is complete, close and terminate the security lab.</div>
+      </div>
+    </div>
+
+    <!-- Screenshot 6 -->
+    <div class="ss-wrap">
+      <div class="ss-label">📸 Screenshot 6 — HashMyFiles after System32 changes. Highlight or note the rows that differ from baseline.</div>
+      <div class="ss-box">
+        <div class="ss-area" onclick="this.querySelector('input').click()">
+          <input type="file" accept="image/*" onchange="previewImg(this)">
+          <div class="icon">📷</div>
+          <p>Click to upload · or hover here and paste (Ctrl+V)</p>
+          <img alt="preview">
+        </div>
+      </div>
+    </div>
+
+    <div class="response-area">
+      <h3>Computer Science Notebook — System32 Investigation</h3>
+      <div class="q">
+        <label><span class="qn">Q14.</span> Which files in System32 showed a <em>changed</em> hash value compared to your baseline? List them.</label>
+        <textarea rows="3" placeholder="Your answer…"></textarea>
+      </div>
+      <div class="q">
+        <label><span class="qn">Q15.</span> What files were <em>added</em> to the System32 folder?</label>
+        <textarea rows="2" placeholder="Your answer…"></textarea>
+      </div>
+      <div class="q">
+        <label><span class="qn">Q16.</span> Based on your hash comparison alone, explain what you think happened in the System32 folder. What was substituted or renamed?</label>
+        <textarea rows="4" placeholder="Your answer…"></textarea>
+      </div>
+      <div class="q">
+        <label><span class="qn">Q17.</span> In a real-world attack, why would replacing <code>notepad.exe</code> with a different program (like mspaint, or worse—malware) be dangerous? What could an attacker accomplish?</label>
+        <textarea rows="4" placeholder="Your answer…"></textarea>
+      </div>
+      <div class="q">
+        <label><span class="qn">Q18.</span> How do hash-based file monitoring tools help defenders detect this kind of attack on a live system?</label>
+        <textarea rows="3" placeholder="Your answer…"></textarea>
+      </div>
+    </div>
+
+    <div class="reading-block" style="margin-top:4px">
+      <h3>Wrap-Up</h3>
+      <p>Cryptographic hash functions and tools like HashMyFiles are essential in digital forensics. Along with a <strong>chain of custody record</strong>, hashing proves that data collected during a forensic investigation is trusted and unaltered from the moment it was collected.</p>
+    </div>
+
+  </div>
+</div>
+
+<hr class="pg">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  PART 6 — CONCLUSION QUESTIONS                                -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section-wrap">
+  <div class="section-head"><div class="snum">Part 6</div><h2>Conclusion Questions</h2></div>
+  <div class="section-body">
+    <p style="margin-bottom:18px;font-size:13px;">Answer in complete sentences. Use specific evidence and examples from this activity to support your responses.</p>
+
+    <div class="concl-q">
+      <span class="cnum">Conclusion · Question 1</span>
+      <p>What are the <em>limits</em> of hashing as a method for verifying that files haven't changed? When might hashing alone not be enough?</p>
+      <textarea rows="5" placeholder="Your answer…"></textarea>
+    </div>
+
+    <div class="concl-q">
+      <span class="cnum">Conclusion · Question 2</span>
+      <p>If asked in a court of law: <em>"How can you verify that the digital data you collected is accurate and authentic at the time it was collected?"</em> — How would you answer?</p>
+      <textarea rows="5" placeholder="Your answer…"></textarea>
+    </div>
+
+    <div class="concl-q">
+      <span class="cnum">Conclusion · Question 3 — Attack or Defend</span>
+      <p><em>"Digital evidence is always accurate."</em> — Take a clear position (attack or defend this statement) and support your answer with at least two specific examples from this activity.</p>
+      <textarea rows="6" placeholder="I (attack / defend) this statement because…"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  OPTIONAL EXTENSION                                           -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section-wrap">
+  <div class="section-head"><div class="snum">★</div><h2>Optional Extension — Blockchain &amp; Hashing</h2></div>
+  <div class="section-body">
+    <div class="reading-block">
+      <h3>Extension Activity</h3>
+      <p>Review the <strong>Blockchain</strong> resource in your General Student Resources for more examples of how hash algorithms are implemented in real-world systems. Then answer the questions below.</p>
+    </div>
+    <div class="response-area">
+      <h3>Extension Questions</h3>
+      <div class="q">
+        <label><span class="qn">E1.</span> How does blockchain technology use hashing to ensure data integrity across a chain of records? Give at least one specific example.</label>
+        <textarea rows="4" placeholder="Your answer…"></textarea>
+      </div>
+      <div class="q">
+        <label><span class="qn">E2.</span> What would happen to a blockchain if someone modified a single transaction block in the middle of the chain? Why can't this go undetected?</label>
+        <textarea rows="4" placeholder="Your answer…"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;padding:24px 0 32px;font-family:var(--mono);font-size:10px;color:#a090c0;letter-spacing:1.5px">
+  PLTW CYBERSECURITY · ACTIVITY 4.2.2 · DATA INTEGRITY · BVT
+</div>
+
+</main>
+
+<script>
+function previewImg(input) {
+  if (!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const area = input.closest('.ss-area');
+    const img = area.querySelector('img');
+    area.querySelector('.icon').style.display = 'none';
+    area.querySelector('p').style.display = 'none';
+    img.src = e.target.result;
+    img.style.display = 'block';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function toggleSpoiler(btn) {
+  const c = btn.nextElementSibling;
+  c.classList.toggle('open');
+  btn.querySelector('span').textContent = c.classList.contains('open') ? '▲' : '▼';
+}
+
+// Paste image into whichever ss-area the mouse is over (or first one)
+document.addEventListener('paste', e => {
+  const items = e.clipboardData?.items;
+  if (!items) return;
+  for (const item of items) {
+    if (item.type.startsWith('image/')) {
+      const blob = item.getAsFile();
+      const area = document.querySelector('.ss-area:hover') || document.querySelector('.ss-area');
+      if (!area) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = area.querySelector('img');
+        const ic = area.querySelector('.icon');
+        const p = area.querySelector('p');
+        if (ic) ic.style.display = 'none';
+        if (p) p.style.display = 'none';
+        img.src = ev.target.result;
+        img.style.display = 'block';
+      };
+      reader.readAsDataURL(blob);
+      e.preventDefault();
+      break;
+    }
+  }
+});
+</script>
+</body>
+</html>
