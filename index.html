@@ -84,13 +84,6 @@
     letter-spacing: .04em;
   }
 
-  .hero-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 28px;
-  }
-
   .meta-field {
     display: flex;
     flex-direction: column;
@@ -244,63 +237,11 @@
     letter-spacing: .04em;
   }
 
-  /* ── EVIDENCE SECTION ── */
-  .evidence-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-
+  /* ── REFLECTION STARS ── */
   @media (max-width: 600px) {
-    .evidence-grid { grid-template-columns: 1fr; }
     .hero { padding: 32px 20px 28px; }
-    .hero-meta { gap: 12px; }
     .main { padding: 24px 16px 60px; }
   }
-
-  .evidence-box {
-    background: var(--surface);
-    border: 1.5px dashed var(--border);
-    border-radius: 10px;
-    padding: 20px 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: border-color .2s, background .2s;
-    position: relative;
-  }
-
-  .evidence-box:hover {
-    border-color: var(--accent);
-    background: rgba(91,106,245,.05);
-  }
-
-  .evidence-box input[type="file"] {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-  }
-
-  .evidence-icon { font-size: 26px; }
-
-  .evidence-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  .evidence-desc {
-    font-size: 12px;
-    color: var(--muted);
-  }
-
-  /* ── REFLECTION STARS ── */
   .star-rating {
     display: flex;
     gap: 6px;
@@ -466,24 +407,7 @@
   <h1>Arduino Smart Home<br><span>IoT Capstone Project</span></h1>
   <p class="hero-sub">Blackstone Valley RVT — Information Technology · Academic Year 2024–25</p>
 
-  <div class="hero-meta">
-    <div class="meta-field">
-      <span class="meta-label">Student Name</span>
-      <input class="meta-input" type="text" placeholder="First Last" />
-    </div>
-    <div class="meta-field">
-      <span class="meta-label">Class Period</span>
-      <input class="meta-input" type="text" placeholder="e.g., Period 3" />
-    </div>
-    <div class="meta-field">
-      <span class="meta-label">Date Submitted</span>
-      <input class="meta-input" type="date" />
-    </div>
-    <div class="meta-field">
-      <span class="meta-label">Teacher</span>
-      <input class="meta-input" type="text" value="Ms. Duquette" readonly style="opacity:.6;cursor:default;" />
-    </div>
-  </div>
+
 </header>
 
 <!-- ══════════════ MAIN ══════════════ -->
@@ -656,70 +580,102 @@ Example: The final system successfully transmitted temperature and humidity data
     <div class="card-header">
       <div class="card-icon icon-amber">📎</div>
       <span class="card-title">Evidence</span>
-      <span class="card-hint">Show your work</span>
+      <span class="card-hint">OneDrive links to your work</span>
     </div>
     <div class="card-body">
 
-      <p style="font-size:13px; color:var(--muted); margin-bottom:18px;">
-        Attach or link evidence of your work. Aim for <strong style="color:var(--text);">at least 3 types</strong> of evidence.
-        For your digital portfolio, you may upload files, paste links, or embed screenshots.
+      <p style="font-size:13px; color:var(--muted); margin-bottom:22px;">
+        Upload your evidence files to your <strong style="color:var(--text);">BVT OneDrive</strong>, then paste the shareable links below.
+        To get a link: right-click the file → <em>Share</em> → <em>Copy Link</em>. Make sure sharing is set to <strong style="color:var(--green);">"Anyone with the link can view."</strong>
       </p>
 
-      <div class="evidence-grid">
+      <div style="display:flex; flex-direction:column; gap:20px;">
 
-        <div class="evidence-box">
-          <input type="file" accept="image/*" />
-          <span class="evidence-icon">📸</span>
-          <span class="evidence-label">Photo — Completed Build</span>
-          <span class="evidence-desc">Photo of your assembled circuit / smart home box</span>
+        <!-- Video Walkthrough -->
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:18px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+            <span style="font-size:22px;">🎬</span>
+            <div>
+              <p style="font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:#fff;">Video Walkthrough</p>
+              <p style="font-size:12px; color:var(--muted);">A short screen recording or phone video demonstrating your working system. Narrate what each component does as you show it.</p>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <span class="meta-label">OneDrive Link</span>
+            <input class="meta-input" type="url" placeholder="https://bvtschools-my.sharepoint.com/..." />
+          </div>
+          <div style="margin-top:10px;">
+            <span class="meta-label" style="display:block; margin-bottom:6px;">Notes (what does the video show?)</span>
+            <input class="meta-input" type="text" placeholder="e.g., Full demo of both devices communicating, LCD display, and browser control panel" />
+          </div>
         </div>
 
-        <div class="evidence-box">
-          <input type="file" accept="video/*,image/*" />
-          <span class="evidence-icon">🎬</span>
-          <span class="evidence-label">Video Demo</span>
-          <span class="evidence-desc">Screen recording or phone video of working system</span>
+        <!-- Commented Code -->
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:18px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+            <span style="font-size:22px;">💻</span>
+            <div>
+              <p style="font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:#fff;">Commented Source Code</p>
+              <p style="font-size:12px; color:var(--muted);">Your <code style="background:var(--card); padding:1px 5px; border-radius:3px; font-family:var(--mono); font-size:11px;">.ino</code> sketch file(s) with comments explaining each section. Every major block of code should have a comment describing what it does and why.</p>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div>
+              <span class="meta-label" style="display:block; margin-bottom:6px;">Device A Sketch — OneDrive Link</span>
+              <input class="meta-input" type="url" placeholder="https://bvtschools-my.sharepoint.com/..." />
+            </div>
+            <div>
+              <span class="meta-label" style="display:block; margin-bottom:6px;">Device B Sketch — OneDrive Link</span>
+              <input class="meta-input" type="url" placeholder="https://bvtschools-my.sharepoint.com/..." />
+            </div>
+          </div>
+          <div style="margin-top:14px; background:rgba(91,106,245,.08); border:1px solid rgba(91,106,245,.2); border-radius:8px; padding:12px;">
+            <p style="font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:6px;">💡 Commenting Checklist</p>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <label class="component-item" style="background:transparent; border:none; padding:2px 0;"><input type="checkbox" class="component-check" /> File header comment: name, date, description of what the sketch does</label>
+              <label class="component-item" style="background:transparent; border:none; padding:2px 0;"><input type="checkbox" class="component-check" /> Each <code style="font-family:var(--mono); font-size:11px;">#include</code> explains what library is used and why</label>
+              <label class="component-item" style="background:transparent; border:none; padding:2px 0;"><input type="checkbox" class="component-check" /> Each global variable has a comment explaining its purpose</label>
+              <label class="component-item" style="background:transparent; border:none; padding:2px 0;"><input type="checkbox" class="component-check" /> <code style="font-family:var(--mono); font-size:11px;">setup()</code> and <code style="font-family:var(--mono); font-size:11px;">loop()</code> have section comments</label>
+              <label class="component-item" style="background:transparent; border:none; padding:2px 0;"><input type="checkbox" class="component-check" /> Each function has a comment describing what it does</label>
+            </div>
+          </div>
         </div>
 
-        <div class="evidence-box">
-          <input type="file" accept=".ino,.txt,.zip" />
-          <span class="evidence-icon">💻</span>
-          <span class="evidence-label">Source Code</span>
-          <span class="evidence-desc">.ino sketch file(s) for Device A and/or Device B</span>
-        </div>
-
-        <div class="evidence-box">
-          <input type="file" accept=".html,.zip" />
-          <span class="evidence-icon">🌐</span>
-          <span class="evidence-label">HTML Dashboard</span>
-          <span class="evidence-desc">Your browser-based control panel file</span>
-        </div>
-
-        <div class="evidence-box">
-          <input type="file" accept="image/*,.pdf" />
-          <span class="evidence-icon">📐</span>
-          <span class="evidence-label">Wiring Diagram</span>
-          <span class="evidence-desc">Schematic or Fritzing diagram of your circuit</span>
-        </div>
-
-        <div class="evidence-box">
-          <input type="file" accept="image/*,.pdf,.docx" />
-          <span class="evidence-icon">📝</span>
-          <span class="evidence-label">Other Evidence</span>
-          <span class="evidence-desc">Serial monitor screenshots, debug logs, notes, etc.</span>
+        <!-- Photos -->
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:18px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+            <span style="font-size:22px;">📸</span>
+            <div>
+              <p style="font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:#fff;">Project Photos</p>
+              <p style="font-size:12px; color:var(--muted);">Upload photos to a OneDrive folder and share the folder link, or link individual photos. Include at least 3 photos showing different stages/angles of your build.</p>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div>
+              <span class="meta-label" style="display:block; margin-bottom:6px;">📁 OneDrive Photo Folder Link <span style="color:var(--green);">(recommended — share the whole folder)</span></span>
+              <input class="meta-input" type="url" placeholder="https://bvtschools-my.sharepoint.com/..." />
+            </div>
+            <p style="font-size:11.5px; color:var(--muted); font-family:var(--mono); letter-spacing:.04em;">— OR link individual photos —</p>
+            <div>
+              <span class="meta-label" style="display:block; margin-bottom:6px;">Photo 1 — Completed build / full circuit</span>
+              <input class="meta-input" type="url" placeholder="https://bvtschools-my.sharepoint.com/..." />
+            </div>
+            <div>
+              <span class="meta-label" style="display:block; margin-bottom:6px;">Photo 2 — Close-up detail (wiring, sensors, LCD, etc.)</span>
+              <input class="meta-input" type="url" placeholder="https://bvtschools-my.sharepoint.com/..." />
+            </div>
+            <div>
+              <span class="meta-label" style="display:block; margin-bottom:6px;">Photo 3 — System in action (LCD reading, dashboard open, etc.)</span>
+              <input class="meta-input" type="url" placeholder="https://bvtschools-my.sharepoint.com/..." />
+            </div>
+            <div>
+              <span class="meta-label" style="display:block; margin-bottom:6px;">Photo 4 — Additional (optional)</span>
+              <input class="meta-input" type="url" placeholder="https://bvtschools-my.sharepoint.com/..." />
+            </div>
+          </div>
         </div>
 
       </div>
-
-      <div style="margin-top:20px;">
-        <p style="font-size:12px; color:var(--muted); font-family:var(--mono); letter-spacing:.04em; margin-bottom:8px;">ADDITIONAL LINKS (GitHub, Google Drive, video URL, etc.):</p>
-        <div style="display:flex; flex-direction:column; gap:8px;">
-          <input class="meta-input" type="url" placeholder="https://github.com/yourusername/iot-smarthome" />
-          <input class="meta-input" type="url" placeholder="https://drive.google.com/..." />
-          <input class="meta-input" type="url" placeholder="Additional link..." />
-        </div>
-      </div>
-
     </div>
   </div>
 
