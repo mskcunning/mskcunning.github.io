@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IoT Smart Home Capstone — Digital Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --card: #1a1e2a;
+    --border: #252b3b;
+    --accent: #5b6af5;
+    --accent2: #8b5cf6;
+    --green: #22d3a0;
+    --amber: #f59e0b;
+    --text: #e2e8f0;
+    --muted: #7a8599;
+    --mono: 'Space Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 70% 0%, rgba(91,106,245,0.15) 0%, transparent 65%),
+                radial-gradient(ellipse at 10% 90%, rgba(139,92,246,0.10) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .chip {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    background: rgba(91,106,245,.15);
+    color: var(--accent);
+    border: 1px solid rgba(91,106,245,.35);
+    border-radius: 4px;
+    padding: 3px 10px;
+    margin-bottom: 18px;
+  }
+
+  .hero h1 {
+    font-family: var(--mono);
+    font-size: clamp(22px, 4vw, 34px);
+    font-weight: 700;
+    line-height: 1.2;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+
+  .hero h1 span {
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    color: var(--muted);
+    font-size: 13.5px;
+    font-family: var(--mono);
+    letter-spacing: .04em;
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 28px;
+  }
+
+  .meta-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 160px;
+  }
+
+  .meta-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .meta-input {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    width: 100%;
+    transition: border-color .2s;
+    outline: none;
+  }
+
+  .meta-input:focus { border-color: var(--accent); }
+  .meta-input::placeholder { color: var(--muted); }
+
+  /* ── MAIN LAYOUT ── */
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  /* ── SECTION CARDS ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,.02);
+  }
+
+  .card-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .icon-blue  { background: rgba(91,106,245,.2);  color: var(--accent); }
+  .icon-green { background: rgba(34,211,160,.2);  color: var(--green); }
+  .icon-amber { background: rgba(245,158,11,.2);  color: var(--amber); }
+  .icon-purple{ background: rgba(139,92,246,.2);  color: var(--accent2); }
+
+  .card-title {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .card-hint {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  textarea.field {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.7;
+    padding: 14px 16px;
+    resize: vertical;
+    min-height: 100px;
+    outline: none;
+    transition: border-color .2s;
+  }
+
+  textarea.field:focus { border-color: var(--accent); }
+  textarea.field::placeholder { color: var(--muted); }
+
+  /* ── COMPONENTS GRID ── */
+  .components-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+  }
+
+  .component-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
+  .component-check {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* ── REFLECTION PROMPTS ── */
+  .prompt-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .prompt-item label {
+    display: block;
+    font-size: 12.5px;
+    font-family: var(--mono);
+    color: var(--muted);
+    margin-bottom: 6px;
+    letter-spacing: .04em;
+  }
+
+  /* ── EVIDENCE SECTION ── */
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  @media (max-width: 600px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+    .hero { padding: 32px 20px 28px; }
+    .hero-meta { gap: 12px; }
+    .main { padding: 24px 16px 60px; }
+  }
+
+  .evidence-box {
+    background: var(--surface);
+    border: 1.5px dashed var(--border);
+    border-radius: 10px;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+    position: relative;
+  }
+
+  .evidence-box:hover {
+    border-color: var(--accent);
+    background: rgba(91,106,245,.05);
+  }
+
+  .evidence-box input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .evidence-icon { font-size: 26px; }
+
+  .evidence-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .evidence-desc {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ── REFLECTION STARS ── */
+  .star-rating {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .star {
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--border);
+    transition: color .15s;
+    user-select: none;
+  }
+
+  .star.active { color: var(--amber); }
+
+  /* ── SKILLS TABLE ── */
+  .skills-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .skills-table th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 12px 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .skills-table td {
+    padding: 10px 12px 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,.04);
+    font-size: 13.5px;
+    vertical-align: middle;
+  }
+
+  .skills-table tr:last-child td { border-bottom: none; }
+
+  .skill-bar-wrap {
+    width: 100%;
+    background: var(--surface);
+    border-radius: 99px;
+    height: 6px;
+    overflow: hidden;
+  }
+
+  .skill-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 99px;
+    width: 0;
+    transition: width .8s ease;
+  }
+
+  /* ── PRINT BUTTON ── */
+  .actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 10px 22px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: opacity .2s, transform .1s;
+  }
+
+  .btn:hover { opacity: .85; }
+  .btn:active { transform: scale(.97); }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  /* ── STATUS BADGE ── */
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .status-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 4px;
+  }
+
+  .badge-green { background: rgba(34,211,160,.15); color: var(--green); border: 1px solid rgba(34,211,160,.3); }
+  .badge-amber { background: rgba(245,158,11,.15); color: var(--amber); border: 1px solid rgba(245,158,11,.3); }
+  .badge-blue  { background: rgba(91,106,245,.15); color: var(--accent); border: 1px solid rgba(91,106,245,.3); }
+
+  .select-field {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 6px 10px;
+    outline: none;
+  }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    body { background: #fff; color: #111; }
+    .card { border: 1px solid #ccc; page-break-inside: avoid; }
+    .hero { background: #f5f7ff; border-bottom: 1px solid #ccc; }
+    .btn, .actions { display: none; }
+    textarea.field, .meta-input, .select-field { border: 1px solid #ccc; color: #111; background: #fff; }
+    .evidence-box { border: 1px solid #ccc; }
+    * { color: inherit; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ HERO ══════════════ -->
+<header class="hero">
+  <div class="chip">📡 Digital Portfolio · IoT Capstone</div>
+  <h1>Arduino Smart Home<br><span>IoT Capstone Project</span></h1>
+  <p class="hero-sub">Blackstone Valley RVT — Information Technology · Academic Year 2024–25</p>
+
+  <div class="hero-meta">
+    <div class="meta-field">
+      <span class="meta-label">Student Name</span>
+      <input class="meta-input" type="text" placeholder="First Last" />
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Class Period</span>
+      <input class="meta-input" type="text" placeholder="e.g., Period 3" />
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Date Submitted</span>
+      <input class="meta-input" type="date" />
+    </div>
+    <div class="meta-field">
+      <span class="meta-label">Teacher</span>
+      <input class="meta-input" type="text" value="Ms. Duquette" readonly style="opacity:.6;cursor:default;" />
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<main class="main">
+
+  <!-- 1 · PROJECT NAME -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-blue">🏷</div>
+      <span class="card-title">Project Name</span>
+    </div>
+    <div class="card-body">
+      <input class="meta-input" type="text"
+        placeholder="e.g., Arduino Smart Home IoT Capstone — Device A/B Integration"
+        style="width:100%; font-size:16px;" />
+      <p style="font-size:12px; color:var(--muted); margin-top:10px;">
+        Give your project a clear, specific title that reflects what it does.
+      </p>
+    </div>
+  </div>
+
+  <!-- 2 · DESCRIPTION -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-blue">📋</div>
+      <span class="card-title">Project Description</span>
+      <span class="card-hint">What is it?</span>
+    </div>
+    <div class="card-body">
+      <textarea class="field" rows="5"
+        placeholder="Describe the project in your own words. What does the system do? What components are involved? How do the parts communicate with each other?
+
+Example: This project is a two-device IoT smart home system built with Arduino MEGA2560 boards and ESP8266 Wi-Fi modules. Device A collects sensor data (temperature, humidity, gas levels, RFID card scans) and transmits it wirelessly to Device B, which displays the data on an LCD screen and triggers actuators like a buzzer and LEDs..."></textarea>
+
+      <div style="margin-top:16px;">
+        <p style="font-size:12px; color:var(--muted); font-family:var(--mono); letter-spacing:.04em; margin-bottom:10px;">HARDWARE/SOFTWARE USED — check all that apply:</p>
+        <div class="components-grid">
+          <label class="component-item"><input type="checkbox" class="component-check" /> Arduino MEGA2560</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> ESP8266 Wi-Fi</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> DHT11 Sensor</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> Gas Sensor</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> RFID Module</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> 1602 LCD (I2C)</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> Servo Motor</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> Keypad</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> LED (R/G/B)</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> Buzzer</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> ArduinoJson Lib</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> HTML Dashboard</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> Python HTTP Server</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> Arduino IDE</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 · GOAL -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-purple">🎯</div>
+      <span class="card-title">Project Goal</span>
+      <span class="card-hint">What were you trying to accomplish?</span>
+    </div>
+    <div class="card-body">
+      <textarea class="field" rows="4"
+        placeholder="What was the purpose of this project? What problem does it solve? Who would benefit from a system like this?
+
+Example: The goal was to design and build a functional IoT system that simulates a real smart home, allowing a user to monitor environmental conditions and control home devices remotely through a browser-based dashboard..."></textarea>
+
+      <div style="margin-top:16px; display:flex; flex-direction:column; gap:10px;">
+        <p style="font-size:12px; color:var(--muted); font-family:var(--mono); letter-spacing:.04em;">LEARNING STANDARDS ADDRESSED:</p>
+        <label class="component-item" style="max-width:100%;">
+          <input type="checkbox" class="component-check" /> Apply programming concepts (variables, functions, libraries) in a real-world embedded system
+        </label>
+        <label class="component-item" style="max-width:100%;">
+          <input type="checkbox" class="component-check" /> Integrate hardware and software to create a network-connected device
+        </label>
+        <label class="component-item" style="max-width:100%;">
+          <input type="checkbox" class="component-check" /> Troubleshoot and debug technical problems systematically
+        </label>
+        <label class="component-item" style="max-width:100%;">
+          <input type="checkbox" class="component-check" /> Communicate technical information clearly (documentation & presentation)
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 · OUTCOME -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-green">✅</div>
+      <span class="card-title">Project Outcome</span>
+      <span class="card-hint">What actually happened?</span>
+    </div>
+    <div class="card-body">
+
+      <div class="status-row">
+        <span style="font-size:12.5px; color:var(--muted);">Overall project status:</span>
+        <select class="select-field" onchange="updateBadge(this)">
+          <option value="">— select —</option>
+          <option value="complete">✅ Fully Complete</option>
+          <option value="partial">⚠️ Partially Complete</option>
+          <option value="in-progress">🔧 Still In Progress</option>
+        </select>
+        <span id="status-badge" class="status-badge" style="display:none;"></span>
+      </div>
+
+      <textarea class="field" rows="5"
+        placeholder="Describe what you actually built and how well it worked. Did all the features function as planned? What worked well? Be honest — partial success is still learning!
+
+Example: The final system successfully transmitted temperature and humidity data from Device A to Device B over Wi-Fi using the ArduinoJson library. The LCD displayed real-time readings and the gas sensor triggered the buzzer reliably. The RFID scanner read card UIDs and sent them to the LCD. The web dashboard allowed remote LED control from a browser..."></textarea>
+
+      <div style="margin-top:16px;">
+        <p style="font-size:12px; color:var(--muted); font-family:var(--mono); letter-spacing:.04em; margin-bottom:10px;">FEATURE CHECKLIST — mark what worked:</p>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <label class="component-item"><input type="checkbox" class="component-check" /> Device A ↔ Device B Wi-Fi communication working</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> Temperature/humidity displayed on LCD</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> Gas sensor triggers buzzer alarm</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> RFID card UID displayed on LCD</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> LED controlled from web browser</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> HTML dashboard loads and sends commands</label>
+          <label class="component-item"><input type="checkbox" class="component-check" /> Code compiles and uploads without errors</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 · CHALLENGES & REFLECTION -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-amber">🧠</div>
+      <span class="card-title">Challenges &amp; Reflection</span>
+      <span class="card-hint">What did you learn?</span>
+    </div>
+    <div class="card-body">
+      <div class="prompt-list">
+        <div class="prompt-item">
+          <label>BIGGEST CHALLENGE YOU FACED:</label>
+          <textarea class="field" rows="3"
+            placeholder="Describe the hardest problem you ran into. Was it a wiring issue, a library conflict, a logic error, a network problem? How did you find out what was wrong?"></textarea>
+        </div>
+        <div class="prompt-item">
+          <label>HOW YOU SOLVED IT (OR TRIED TO):</label>
+          <textarea class="field" rows="3"
+            placeholder="Walk through your troubleshooting process. What did you try first? What resources did you use (datasheet, forums, teacher, trial &amp; error)?"></textarea>
+        </div>
+        <div class="prompt-item">
+          <label>WHAT WOULD YOU DO DIFFERENTLY?</label>
+          <textarea class="field" rows="3"
+            placeholder="If you started this project over, what would you change? What advice would you give a student just starting this project?"></textarea>
+        </div>
+        <div class="prompt-item">
+          <label>HOW DOES THIS CONNECT TO A REAL-WORLD IT CAREER?</label>
+          <textarea class="field" rows="3"
+            placeholder="Where might you use these skills professionally? Think about roles like IoT developer, network technician, embedded systems engineer, cybersecurity analyst (think about the security of these connected devices!)..."></textarea>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;">
+        <p style="font-size:12px; color:var(--muted); font-family:var(--mono); letter-spacing:.04em; margin-bottom:8px;">RATE YOUR CONFIDENCE IN THESE AREAS (click stars):</p>
+        <div id="skills-wrap">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 · EVIDENCE -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-amber">📎</div>
+      <span class="card-title">Evidence</span>
+      <span class="card-hint">Show your work</span>
+    </div>
+    <div class="card-body">
+
+      <p style="font-size:13px; color:var(--muted); margin-bottom:18px;">
+        Attach or link evidence of your work. Aim for <strong style="color:var(--text);">at least 3 types</strong> of evidence.
+        For your digital portfolio, you may upload files, paste links, or embed screenshots.
+      </p>
+
+      <div class="evidence-grid">
+
+        <div class="evidence-box">
+          <input type="file" accept="image/*" />
+          <span class="evidence-icon">📸</span>
+          <span class="evidence-label">Photo — Completed Build</span>
+          <span class="evidence-desc">Photo of your assembled circuit / smart home box</span>
+        </div>
+
+        <div class="evidence-box">
+          <input type="file" accept="video/*,image/*" />
+          <span class="evidence-icon">🎬</span>
+          <span class="evidence-label">Video Demo</span>
+          <span class="evidence-desc">Screen recording or phone video of working system</span>
+        </div>
+
+        <div class="evidence-box">
+          <input type="file" accept=".ino,.txt,.zip" />
+          <span class="evidence-icon">💻</span>
+          <span class="evidence-label">Source Code</span>
+          <span class="evidence-desc">.ino sketch file(s) for Device A and/or Device B</span>
+        </div>
+
+        <div class="evidence-box">
+          <input type="file" accept=".html,.zip" />
+          <span class="evidence-icon">🌐</span>
+          <span class="evidence-label">HTML Dashboard</span>
+          <span class="evidence-desc">Your browser-based control panel file</span>
+        </div>
+
+        <div class="evidence-box">
+          <input type="file" accept="image/*,.pdf" />
+          <span class="evidence-icon">📐</span>
+          <span class="evidence-label">Wiring Diagram</span>
+          <span class="evidence-desc">Schematic or Fritzing diagram of your circuit</span>
+        </div>
+
+        <div class="evidence-box">
+          <input type="file" accept="image/*,.pdf,.docx" />
+          <span class="evidence-icon">📝</span>
+          <span class="evidence-label">Other Evidence</span>
+          <span class="evidence-desc">Serial monitor screenshots, debug logs, notes, etc.</span>
+        </div>
+
+      </div>
+
+      <div style="margin-top:20px;">
+        <p style="font-size:12px; color:var(--muted); font-family:var(--mono); letter-spacing:.04em; margin-bottom:8px;">ADDITIONAL LINKS (GitHub, Google Drive, video URL, etc.):</p>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <input class="meta-input" type="url" placeholder="https://github.com/yourusername/iot-smarthome" />
+          <input class="meta-input" type="url" placeholder="https://drive.google.com/..." />
+          <input class="meta-input" type="url" placeholder="Additional link..." />
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 7 · STUDENT DECLARATION -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-green">✍️</div>
+      <span class="card-title">Student Declaration</span>
+    </div>
+    <div class="card-body">
+      <label class="component-item" style="max-width:100%; gap:12px;">
+        <input type="checkbox" class="component-check" style="width:18px;height:18px;" />
+        <span style="font-size:13.5px;">I confirm that this portfolio entry represents my own work. All code, wiring, and documentation was completed by me (or clearly credits collaborators). I understand this may be included in my digital portfolio.</span>
+      </label>
+      <div style="display:flex; gap:16px; margin-top:16px; flex-wrap:wrap;">
+        <div class="meta-field">
+          <span class="meta-label">Digital Signature (type full name)</span>
+          <input class="meta-input" type="text" placeholder="Type your full name" style="font-style:italic;" />
+        </div>
+        <div class="meta-field">
+          <span class="meta-label">Date</span>
+          <input class="meta-input" type="date" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8 · TEACHER FEEDBACK (read-only section) -->
+  <div class="section-divider">Teacher Use Only</div>
+
+  <div class="card" style="border-color: rgba(91,106,245,.3);">
+    <div class="card-header">
+      <div class="card-icon icon-blue">🏫</div>
+      <span class="card-title">Teacher Feedback</span>
+    </div>
+    <div class="card-body">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;">
+        <div class="meta-field">
+          <span class="meta-label">Score / Grade</span>
+          <input class="meta-input" type="text" placeholder="e.g., 92/100" />
+        </div>
+        <div class="meta-field">
+          <span class="meta-label">Graded By</span>
+          <input class="meta-input" type="text" placeholder="Teacher name" />
+        </div>
+      </div>
+      <textarea class="field" rows="4" placeholder="Teacher comments and feedback..."></textarea>
+      <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+        <span class="status-badge badge-green" style="cursor:pointer;" onclick="toggleBadge(this)">✅ Ready for Portfolio</span>
+        <span class="status-badge badge-amber" style="cursor:pointer; opacity:.4;" onclick="toggleBadge(this)">⚠️ Needs Revision</span>
+        <span class="status-badge badge-blue"  style="cursor:pointer; opacity:.4;" onclick="toggleBadge(this)">🌟 Distinguished Work</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <button class="btn btn-ghost" onclick="clearForm()">🗑 Clear Form</button>
+    <button class="btn btn-primary" onclick="window.print()">🖨 Print / Save PDF</button>
+  </div>
+
+</main>
+
+<script>
+// ── Star ratings ──
+const skillAreas = [
+  'Hardware Wiring & Assembly',
+  'Arduino Programming (C++)',
+  'Library Integration',
+  'Network / Wi-Fi Debugging',
+  'HTML / Web Dashboard',
+  'Problem-Solving & Debugging',
+];
+
+const wrap = document.getElementById('skills-wrap');
+skillAreas.forEach((skill, si) => {
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;align-items:center;gap:14px;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;';
+  row.innerHTML = `<span style="font-size:13px;min-width:220px;">${skill}</span>
+    <div class="star-rating" data-si="${si}">
+      ${[1,2,3,4,5].map(n=>`<span class="star" data-val="${n}" title="${n} star${n>1?'s':''}">★</span>`).join('')}
+    </div>`;
+  wrap.appendChild(row);
+});
+
+document.querySelectorAll('.star-rating').forEach(group => {
+  group.querySelectorAll('.star').forEach(star => {
+    star.addEventListener('click', () => {
+      const val = +star.dataset.val;
+      group.querySelectorAll('.star').forEach(s => {
+        s.classList.toggle('active', +s.dataset.val <= val);
+      });
+    });
+    star.addEventListener('mouseover', () => {
+      const val = +star.dataset.val;
+      group.querySelectorAll('.star').forEach(s => {
+        s.style.color = +s.dataset.val <= val ? 'var(--amber)' : '';
+      });
+    });
+    star.addEventListener('mouseout', () => {
+      group.querySelectorAll('.star').forEach(s => { s.style.color = ''; });
+    });
+  });
+});
+
+// ── Status badge ──
+function updateBadge(sel) {
+  const badge = document.getElementById('status-badge');
+  const map = {
+    complete: ['✅ Complete', 'badge-green'],
+    partial:  ['⚠️ Partial',  'badge-amber'],
+    'in-progress': ['🔧 In Progress', 'badge-blue'],
+  };
+  if (map[sel.value]) {
+    badge.className = 'status-badge ' + map[sel.value][1];
+    badge.textContent = map[sel.value][0];
+    badge.style.display = '';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+// ── Teacher badge toggle ──
+function toggleBadge(el) {
+  document.querySelectorAll('.card:last-of-type .status-badge').forEach(b => b.style.opacity = '.4');
+  el.style.opacity = '1';
+}
+
+// ── Clear ──
+function clearForm() {
+  if (!confirm('Clear all fields? This cannot be undone.')) return;
+  document.querySelectorAll('input[type="text"], input[type="date"], input[type="url"], textarea').forEach(el => el.value = '');
+  document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+  document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+}
+</script>
+</body>
+</html>
