@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unity C# Code Commenting Worksheet — Interactive</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0f;
+    --white: #f4f3ef;
+    --purple: #5c2d8e;
+    --purple-light: #7b42b8;
+    --purple-pale: #ede8f7;
+    --gray: #c8c5bc;
+    --gray-dark: #3a3840;
+    --accent: #c6a84b;
+    --line: #d6d2c8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: #e8e6e0;
+    color: var(--black);
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 20px 0 60px;
+  }
+
+  /* ── TOOLBAR (screen only) ── */
+  .toolbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: var(--purple);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 24px;
+    font-family: 'Syne', sans-serif;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  }
+  .toolbar-title {
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+  .toolbar-subtitle {
+    font-size: 10px;
+    opacity: 0.75;
+    margin-top: 1px;
+  }
+  .toolbar-actions { display: flex; gap: 10px; align-items: center; }
+
+  .btn {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 5px;
+    padding: 7px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-clear {
+    background: rgba(255,255,255,0.15);
+    color: white;
+  }
+  .btn-clear:hover { background: rgba(255,255,255,0.25); }
+  .btn-save {
+    background: var(--accent);
+    color: var(--black);
+  }
+  .btn-save:hover { background: #d4b85a; transform: translateY(-1px); }
+
+  /* ── PAGE ── */
+  .page {
+    width: 8.5in;
+    min-height: 11in;
+    margin: 52px auto 20px;
+    padding: 0.55in 0.6in;
+    background: var(--white);
+    box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+  }
+
+  /* ── HEADER ── */
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    border-bottom: 3px solid var(--purple);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+  }
+  .header-left h1 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--purple);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+  .header-left p {
+    font-size: 11px;
+    color: var(--gray-dark);
+    margin-top: 2px;
+  }
+  .header-right { font-size: 11px; color: var(--gray-dark); text-align: right; }
+  .header-field {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-bottom: 5px;
+  }
+  .header-field label { font-weight: 700; white-space: nowrap; }
+  .header-field input {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    border: none;
+    border-bottom: 1.5px solid var(--black);
+    background: transparent;
+    width: 150px;
+    padding: 1px 4px;
+    outline: none;
+    color: var(--black);
+  }
+  .header-field input:focus { border-bottom-color: var(--purple); background: var(--purple-pale); }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: var(--purple-pale);
+    border-left: 4px solid var(--purple);
+    border-radius: 0 6px 6px 0;
+    padding: 9px 13px;
+    margin-bottom: 14px;
+    font-size: 11.5px;
+  }
+  .info-box strong { color: var(--purple); }
+  .info-box ul { padding-left: 16px; margin-top: 4px; }
+  .info-box li { margin-bottom: 2px; }
+
+  /* ── OBJECTIVES ── */
+  .objectives { display: flex; gap: 10px; margin-bottom: 14px; }
+  .obj-card {
+    flex: 1;
+    border: 1.5px solid var(--line);
+    border-radius: 6px;
+    padding: 8px 10px;
+  }
+  .obj-card h3 {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--purple);
+    margin-bottom: 4px;
+  }
+  .obj-card p { font-size: 11px; color: var(--gray-dark); }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0 6px;
+  }
+  .section-label .badge {
+    background: var(--purple);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .section-label h2 { font-size: 13px; font-weight: 700; }
+  .section-label .file-tag {
+    background: var(--gray-dark);
+    color: var(--white);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+
+  /* ── CODE BLOCK ── */
+  .code-wrapper {
+    border: 1.5px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    page-break-inside: avoid;
+  }
+  .code-header {
+    background: var(--gray-dark);
+    color: var(--white);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 4px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot-r { background: #e05c5c; }
+  .dot-y { background: var(--accent); }
+  .dot-g { background: #5cb85c; }
+  .code-header span { margin-left: 4px; }
+
+  /* Code area — lines rendered as a table for alignment */
+  .code-body {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    background: #f9f8f6;
+    padding: 10px 0;
+    line-height: 1.65;
+    color: #1a1a2e;
+  }
+  .code-line {
+    display: flex;
+    align-items: baseline;
+    padding: 0 14px;
+    min-height: 1.65em;
+  }
+  .code-line:hover { background: rgba(92,45,142,0.04); }
+  .line-num {
+    color: #aaa;
+    font-size: 9px;
+    width: 22px;
+    min-width: 22px;
+    text-align: right;
+    margin-right: 14px;
+    user-select: none;
+  }
+  .line-content { flex: 1; white-space: pre; }
+
+  /* Comment input line */
+  .comment-line {
+    display: flex;
+    align-items: center;
+    padding: 1px 14px;
+    background: #f0edf8;
+    border-top: 1px dashed #d0c8e8;
+    border-bottom: 1px dashed #d0c8e8;
+    gap: 4px;
+  }
+  .comment-line .line-num { color: #bbb; }
+  .comment-prefix {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: #267a3e;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .comment-input {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: #267a3e;
+    border: none;
+    background: transparent;
+    outline: none;
+    flex: 1;
+    min-width: 0;
+    padding: 1px 4px;
+    border-bottom: 1px solid #b0a8d0;
+    line-height: 1.65;
+  }
+  .comment-input:focus {
+    border-bottom-color: var(--purple);
+    background: rgba(92,45,142,0.06);
+    border-radius: 2px;
+  }
+  .comment-input::placeholder { color: #bbaedd; font-style: italic; }
+
+  /* Syntax colors */
+  .kw  { color: #5c2d8e; font-weight: 700; }
+  .tp  { color: #0e6e9e; }
+  .fn  { color: #b05c00; }
+  .st  { color: #267a3e; }
+  .nu  { color: #a05c00; }
+
+  /* ── REFLECTION ── */
+  .answer-area {
+    border: 1.5px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 13px;
+    margin-bottom: 14px;
+  }
+  .answer-area h3 {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 8px;
+  }
+  .q-item { margin-bottom: 10px; }
+  .q-item p { font-size: 11px; margin-bottom: 4px; }
+  .q-item textarea {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 5px 7px;
+    resize: vertical;
+    min-height: 38px;
+    background: #faf9f7;
+    color: var(--black);
+    outline: none;
+    line-height: 1.5;
+  }
+  .q-item textarea:focus {
+    border-color: var(--purple);
+    background: var(--purple-pale);
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    margin-top: 14px;
+    border-top: 2px solid var(--purple);
+    padding-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--gray-dark);
+  }
+  .score-box {
+    border: 2px solid var(--purple);
+    border-radius: 6px;
+    padding: 4px 18px;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--purple);
+  }
+
+  /* ── PRINT STYLES ── */
+  @media print {
+    body { background: white; padding: 0; }
+    .toolbar { display: none !important; }
+    .page { margin: 0; box-shadow: none; padding: 0.45in 0.5in; }
+    .comment-line { background: #f0edf8 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .comment-input {
+      border-bottom: 1px solid #b0a8d0 !important;
+      background: transparent !important;
+    }
+    .comment-input:focus { background: transparent !important; }
+    .q-item textarea {
+      border: 1px solid var(--line) !important;
+      background: #faf9f7 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .code-line:hover { background: transparent !important; }
+    .page-break { page-break-before: always; }
+  }
+
+  .page-break { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div>
+    <div class="toolbar-title">Unity C# Code Commenting Worksheet</div>
+    <div class="toolbar-subtitle">Fill in all comment fields, then save as PDF when complete.</div>
+  </div>
+  <div class="toolbar-actions">
+    <button class="btn btn-clear" onclick="clearAll()">Clear All</button>
+    <button class="btn btn-save" onclick="savePDF()">⬇ Save as PDF</button>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <h1>Unity C# Code Documentation<br>Commenting Worksheet</h1>
+      <p>Computer Programming &nbsp;|&nbsp; Blackstone Valley Regional Vocational Technical High School</p>
+    </div>
+    <div class="header-right">
+      <div class="header-field"><label>Name:</label><input type="text" id="f-name" placeholder="Your name"></div>
+      <div class="header-field"><label>Date:</label><input type="text" id="f-date" placeholder="mm/dd/yyyy"></div>
+      <div class="header-field"><label>Period:</label><input type="text" id="f-period" placeholder="Period #"></div>
+    </div>
+  </div>
+
+  <!-- INFO BOX -->
+  <div class="info-box">
+    <strong>📋 Directions:</strong> Each code block below is missing its comments. Read the code carefully and type a meaningful comment on every highlighted line. Comments should explain <em>what</em> the code does and <em>why</em> — not just restate the code in English.
+    <ul>
+      <li>Use <strong>single-line comments</strong> (<code>//</code>) for line-level explanations — the prefix is already there.</li>
+      <li>Be specific — <em>"Stores the player's Rigidbody for physics control"</em> beats <em>"gets component."</em></li>
+      <li>When finished, click <strong>Save as PDF</strong> in the toolbar.</li>
+    </ul>
+  </div>
+
+  <!-- OBJECTIVES -->
+  <div class="objectives">
+    <div class="obj-card">
+      <h3>🎯 Know</h3>
+      <p>The purpose of code comments and how <code>//</code> and <code>/* */</code> syntax works in C#.</p>
+    </div>
+    <div class="obj-card">
+      <h3>🎯 Do</h3>
+      <p>Write clear, accurate comments that describe variables, methods, and logic in a Unity project.</p>
+    </div>
+    <div class="obj-card">
+      <h3>🎯 Understand</h3>
+      <p>Well-commented code helps teammates (and your future self) maintain and debug a project.</p>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       SCRIPT 1 — Rotate.cs
+  ════════════════════════════════ -->
+  <div class="section-label">
+    <div class="badge">Script 1</div>
+    <h2>Rotator Script</h2>
+    <div class="file-tag">Rotate.cs</div>
+  </div>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+      <span>Rotate.cs</span>
+    </div>
+    <div class="code-body">
+      <div class="comment-line"><span class="line-num">1</span><span class="comment-prefix">// </span><input class="comment-input" type="text" placeholder="Describe what this class does…" data-id="r1"></div>
+      <div class="code-line"><span class="line-num">2</span><span class="line-content"><span class="kw">using</span> UnityEngine;</span></div>
+      <div class="code-line"><span class="line-num">3</span><span class="line-content"></span></div>
+      <div class="code-line"><span class="line-num">4</span><span class="line-content"><span class="kw">public class</span> <span class="tp">Rotator</span> : MonoBehaviour</span></div>
+      <div class="code-line"><span class="line-num">5</span><span class="line-content">{</span></div>
+      <div class="comment-line"><span class="line-num">6</span><span class="comment-prefix">// </span><input class="comment-input" type="text" placeholder="What does Update() do in Unity?" data-id="r2"></div>
+      <div class="code-line"><span class="line-num">7</span><span class="line-content">    <span class="kw">void</span> <span class="fn">Update</span>()</span></div>
+      <div class="code-line"><span class="line-num">8</span><span class="line-content">    {</span></div>
+      <div class="comment-line"><span class="line-num">9</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What does this line do? Why multiply by Time.deltaTime?" data-id="r3"></div>
+      <div class="code-line"><span class="line-num">10</span><span class="line-content">        transform.<span class="fn">Rotate</span>(<span class="kw">new</span> <span class="tp">Vector3</span>(<span class="nu">15</span>, <span class="nu">30</span>, <span class="nu">45</span>) * Time.deltaTime);</span></div>
+      <div class="code-line"><span class="line-num">11</span><span class="line-content">    }</span></div>
+      <div class="code-line"><span class="line-num">12</span><span class="line-content">}</span></div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       SCRIPT 2 — CameraController.cs
+  ════════════════════════════════ -->
+  <div class="section-label">
+    <div class="badge">Script 2</div>
+    <h2>Camera Controller Script</h2>
+    <div class="file-tag">CameraController.cs</div>
+  </div>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+      <span>CameraController.cs</span>
+    </div>
+    <div class="code-body">
+      <div class="code-line"><span class="line-num">1</span><span class="line-content"><span class="kw">using</span> System.Collections;</span></div>
+      <div class="code-line"><span class="line-num">2</span><span class="line-content"><span class="kw">using</span> System.Collections.Generic;</span></div>
+      <div class="code-line"><span class="line-num">3</span><span class="line-content"><span class="kw">using</span> UnityEngine;</span></div>
+      <div class="code-line"><span class="line-num">4</span><span class="line-content"></span></div>
+      <div class="comment-line"><span class="line-num">5</span><span class="comment-prefix">// </span><input class="comment-input" type="text" placeholder="Describe what this class does…" data-id="c1"></div>
+      <div class="code-line"><span class="line-num">6</span><span class="line-content"><span class="kw">public class</span> <span class="tp">CameraController</span> : MonoBehaviour</span></div>
+      <div class="code-line"><span class="line-num">7</span><span class="line-content">{</span></div>
+      <div class="comment-line"><span class="line-num">8</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What is this variable for?" data-id="c2"></div>
+      <div class="code-line"><span class="line-num">9</span><span class="line-content">    <span class="kw">public</span> <span class="tp">GameObject</span> player;</span></div>
+      <div class="code-line"><span class="line-num">10</span><span class="line-content"></span></div>
+      <div class="comment-line"><span class="line-num">11</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What does offset represent?" data-id="c3"></div>
+      <div class="code-line"><span class="line-num">12</span><span class="line-content">    <span class="kw">private</span> <span class="tp">Vector3</span> offset;</span></div>
+      <div class="code-line"><span class="line-num">13</span><span class="line-content"></span></div>
+      <div class="comment-line"><span class="line-num">14</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What does Start() do in Unity?" data-id="c4"></div>
+      <div class="code-line"><span class="line-num">15</span><span class="line-content">    <span class="kw">void</span> <span class="fn">Start</span>()</span></div>
+      <div class="code-line"><span class="line-num">16</span><span class="line-content">    {</span></div>
+      <div class="comment-line"><span class="line-num">17</span><span class="comment-prefix">        // </span><input class="comment-input" type="text" placeholder="What is being calculated here and why?" data-id="c5"></div>
+      <div class="code-line"><span class="line-num">18</span><span class="line-content">        offset = transform.position - player.transform.position;</span></div>
+      <div class="code-line"><span class="line-num">19</span><span class="line-content">    }</span></div>
+      <div class="code-line"><span class="line-num">20</span><span class="line-content"></span></div>
+      <div class="comment-line"><span class="line-num">21</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What is LateUpdate() and why use it here instead of Update()?" data-id="c6"></div>
+      <div class="code-line"><span class="line-num">22</span><span class="line-content">    <span class="kw">void</span> <span class="fn">LateUpdate</span>()</span></div>
+      <div class="code-line"><span class="line-num">23</span><span class="line-content">    {</span></div>
+      <div class="comment-line"><span class="line-num">24</span><span class="comment-prefix">        // </span><input class="comment-input" type="text" placeholder="What does this line achieve every frame?" data-id="c7"></div>
+      <div class="code-line"><span class="line-num">25</span><span class="line-content">        transform.position = player.transform.position + offset;</span></div>
+      <div class="code-line"><span class="line-num">26</span><span class="line-content">    }</span></div>
+      <div class="code-line"><span class="line-num">27</span><span class="line-content">}</span></div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       SCRIPT 3 — EnemyMovement.cs
+  ════════════════════════════════ -->
+  <div class="section-label">
+    <div class="badge">Script 3</div>
+    <h2>Enemy Movement Script</h2>
+    <div class="file-tag">EnemyMovement.cs</div>
+  </div>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+      <span>EnemyMovement.cs</span>
+    </div>
+    <div class="code-body">
+      <div class="code-line"><span class="line-num">1</span><span class="line-content"><span class="kw">using</span> UnityEngine;</span></div>
+      <div class="code-line"><span class="line-num">2</span><span class="line-content"><span class="kw">using</span> UnityEngine.AI;</span></div>
+      <div class="code-line"><span class="line-num">3</span><span class="line-content"></span></div>
+      <div class="comment-line"><span class="line-num">4</span><span class="comment-prefix">// </span><input class="comment-input" type="text" placeholder="Describe what this class does…" data-id="e1"></div>
+      <div class="code-line"><span class="line-num">5</span><span class="line-content"><span class="kw">public class</span> <span class="tp">EnemyMovement</span> : MonoBehaviour</span></div>
+      <div class="code-line"><span class="line-num">6</span><span class="line-content">{</span></div>
+      <div class="comment-line"><span class="line-num">7</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What is this variable tracking?" data-id="e2"></div>
+      <div class="code-line"><span class="line-num">8</span><span class="line-content">    <span class="kw">public</span> <span class="tp">Transform</span> player;</span></div>
+      <div class="code-line"><span class="line-num">9</span><span class="line-content"></span></div>
+      <div class="comment-line"><span class="line-num">10</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What does NavMeshAgent do?" data-id="e3"></div>
+      <div class="code-line"><span class="line-num">11</span><span class="line-content">    <span class="kw">private</span> <span class="tp">NavMeshAgent</span> navMeshAgent;</span></div>
+      <div class="code-line"><span class="line-num">12</span><span class="line-content"></span></div>
+      <div class="comment-line"><span class="line-num">13</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What does Start() do in Unity?" data-id="e4"></div>
+      <div class="code-line"><span class="line-num">14</span><span class="line-content">    <span class="kw">void</span> <span class="fn">Start</span>()</span></div>
+      <div class="code-line"><span class="line-num">15</span><span class="line-content">    {</span></div>
+      <div class="comment-line"><span class="line-num">16</span><span class="comment-prefix">        // </span><input class="comment-input" type="text" placeholder="What is GetComponent doing here?" data-id="e5"></div>
+      <div class="code-line"><span class="line-num">17</span><span class="line-content">        navMeshAgent = <span class="fn">GetComponent</span>&lt;<span class="tp">NavMeshAgent</span>&gt;();</span></div>
+      <div class="code-line"><span class="line-num">18</span><span class="line-content">    }</span></div>
+      <div class="code-line"><span class="line-num">19</span><span class="line-content"></span></div>
+      <div class="comment-line"><span class="line-num">20</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What does Update() do in Unity?" data-id="e6"></div>
+      <div class="code-line"><span class="line-num">21</span><span class="line-content">    <span class="kw">void</span> <span class="fn">Update</span>()</span></div>
+      <div class="code-line"><span class="line-num">22</span><span class="line-content">    {</span></div>
+      <div class="comment-line"><span class="line-num">23</span><span class="comment-prefix">        // </span><input class="comment-input" type="text" placeholder="Why do we check if player != null before continuing?" data-id="e7"></div>
+      <div class="code-line"><span class="line-num">24</span><span class="line-content">        <span class="kw">if</span> (player != <span class="kw">null</span>)</span></div>
+      <div class="code-line"><span class="line-num">25</span><span class="line-content">        {</span></div>
+      <div class="comment-line"><span class="line-num">26</span><span class="comment-prefix">            // </span><input class="comment-input" type="text" placeholder="What does SetDestination do?" data-id="e8"></div>
+      <div class="code-line"><span class="line-num">27</span><span class="line-content">            navMeshAgent.<span class="fn">SetDestination</span>(player.position);</span></div>
+      <div class="code-line"><span class="line-num">28</span><span class="line-content">        }</span></div>
+      <div class="code-line"><span class="line-num">29</span><span class="line-content">    }</span></div>
+      <div class="code-line"><span class="line-num">30</span><span class="line-content">}</span></div>
+    </div>
+  </div>
+
+  <!-- PAGE BREAK -->
+  <div class="page-break"></div>
+
+  <!-- ════════════════════════════════
+       SCRIPT 4 — PlayerController.cs
+  ════════════════════════════════ -->
+  <div class="section-label">
+    <div class="badge">Script 4</div>
+    <h2>Player Controller Script</h2>
+    <div class="file-tag">PlayerController.cs</div>
+  </div>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+      <span>PlayerController.cs</span>
+    </div>
+    <div class="code-body">
+      <div class="code-line"><span class="line-num">1</span><span class="line-content"><span class="kw">using</span> UnityEngine;</span></div>
+      <div class="code-line"><span class="line-num">2</span><span class="line-content"><span class="kw">using</span> UnityEngine.InputSystem;</span></div>
+      <div class="code-line"><span class="line-num">3</span><span class="line-content"><span class="kw">using</span> TMPro;</span></div>
+      <div class="code-line"><span class="line-num">4</span><span class="line-content"></span></div>
+      <div class="comment-line"><span class="line-num">5</span><span class="comment-prefix">// </span><input class="comment-input" type="text" placeholder="Describe what this class does overall…" data-id="p1"></div>
+      <div class="code-line"><span class="line-num">6</span><span class="line-content"><span class="kw">public class</span> <span class="tp">PlayerController</span> : MonoBehaviour</span></div>
+      <div class="code-line"><span class="line-num">7</span><span class="line-content">{</span></div>
+      <div class="comment-line"><span class="line-num">8</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What is rb and why do we need it?" data-id="p2"></div>
+      <div class="code-line"><span class="line-num">9</span><span class="line-content">    <span class="kw">private</span> <span class="tp">Rigidbody</span> rb;</span></div>
+      <div class="comment-line"><span class="line-num">10</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What does the count variable track?" data-id="p3"></div>
+      <div class="code-line"><span class="line-num">11</span><span class="line-content">    <span class="kw">private</span> <span class="kw">int</span> count;</span></div>
+      <div class="comment-line"><span class="line-num">12</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What do movementX and movementY store?" data-id="p4"></div>
+      <div class="code-line"><span class="line-num">13</span><span class="line-content">    <span class="kw">private</span> <span class="kw">float</span> movementX;</span></div>
+      <div class="code-line"><span class="line-num">14</span><span class="line-content">    <span class="kw">private</span> <span class="kw">float</span> movementY;</span></div>
+      <div class="comment-line"><span class="line-num">15</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What does speed control?" data-id="p5"></div>
+      <div class="code-line"><span class="line-num">16</span><span class="line-content">    <span class="kw">public</span> <span class="kw">float</span> speed = <span class="nu">0</span>;</span></div>
+      <div class="comment-line"><span class="line-num">17</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What UI element does countText control?" data-id="p6"></div>
+      <div class="code-line"><span class="line-num">18</span><span class="line-content">    <span class="kw">public</span> <span class="tp">TextMeshProUGUI</span> countText;</span></div>
+      <div class="comment-line"><span class="line-num">19</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What is winTextObject used for?" data-id="p7"></div>
+      <div class="code-line"><span class="line-num">20</span><span class="line-content">    <span class="kw">public</span> <span class="tp">GameObject</span> winTextObject;</span></div>
+      <div class="code-line"><span class="line-num">21</span><span class="line-content"></span></div>
+      <div class="comment-line"><span class="line-num">22</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What does Start() do in Unity? What is initialized here?" data-id="p8"></div>
+      <div class="code-line"><span class="line-num">23</span><span class="line-content">    <span class="kw">void</span> <span class="fn">Start</span>()</span></div>
+      <div class="code-line"><span class="line-num">24</span><span class="line-content">    {</span></div>
+      <div class="comment-line"><span class="line-num">25</span><span class="comment-prefix">        // </span><input class="comment-input" type="text" placeholder="What is GetComponent getting here and why store it?" data-id="p9"></div>
+      <div class="code-line"><span class="line-num">26</span><span class="line-content">        rb = <span class="fn">GetComponent</span>&lt;<span class="tp">Rigidbody</span>&gt;();</span></div>
+      <div class="comment-line"><span class="line-num">27</span><span class="comment-prefix">        // </span><input class="comment-input" type="text" placeholder="Why initialize count to zero?" data-id="p10"></div>
+      <div class="code-line"><span class="line-num">28</span><span class="line-content">        count = <span class="nu">0</span>;</span></div>
+      <div class="code-line"><span class="line-num">29</span><span class="line-content">        <span class="fn">SetCountText</span>();</span></div>
+      <div class="comment-line"><span class="line-num">30</span><span class="comment-prefix">        // </span><input class="comment-input" type="text" placeholder="Why is winTextObject hidden at the start?" data-id="p11"></div>
+      <div class="code-line"><span class="line-num">31</span><span class="line-content">        winTextObject.<span class="fn">SetActive</span>(<span class="kw">false</span>);</span></div>
+      <div class="code-line"><span class="line-num">32</span><span class="line-content">    }</span></div>
+      <div class="code-line"><span class="line-num">33</span><span class="line-content"></span></div>
+      <div class="comment-line"><span class="line-num">34</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What triggers OnMove()? What does InputValue represent?" data-id="p12"></div>
+      <div class="code-line"><span class="line-num">35</span><span class="line-content">    <span class="kw">void</span> <span class="fn">OnMove</span>(<span class="tp">InputValue</span> movementValue)</span></div>
+      <div class="code-line"><span class="line-num">36</span><span class="line-content">    {</span></div>
+      <div class="comment-line"><span class="line-num">37</span><span class="comment-prefix">        // </span><input class="comment-input" type="text" placeholder="What does .Get&lt;Vector2&gt;() do?" data-id="p13"></div>
+      <div class="code-line"><span class="line-num">38</span><span class="line-content">        <span class="tp">Vector2</span> movementVector = movementValue.<span class="fn">Get</span>&lt;<span class="tp">Vector2</span>&gt;();</span></div>
+      <div class="comment-line"><span class="line-num">39</span><span class="comment-prefix">        // </span><input class="comment-input" type="text" placeholder="Why split the vector into separate X and Y floats?" data-id="p14"></div>
+      <div class="code-line"><span class="line-num">40</span><span class="line-content">        movementX = movementVector.x;</span></div>
+      <div class="code-line"><span class="line-num">41</span><span class="line-content">        movementY = movementVector.y;</span></div>
+      <div class="code-line"><span class="line-num">42</span><span class="line-content">    }</span></div>
+      <div class="code-line"><span class="line-num">43</span><span class="line-content"></span></div>
+      <div class="comment-line"><span class="line-num">44</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What is FixedUpdate()? Why is physics code placed here?" data-id="p15"></div>
+      <div class="code-line"><span class="line-num">45</span><span class="line-content">    <span class="kw">void</span> <span class="fn">FixedUpdate</span>()</span></div>
+      <div class="code-line"><span class="line-num">46</span><span class="line-content">    {</span></div>
+      <div class="comment-line"><span class="line-num">47</span><span class="comment-prefix">        // </span><input class="comment-input" type="text" placeholder="Why is Y set to 0.0f in the movement vector?" data-id="p16"></div>
+      <div class="code-line"><span class="line-num">48</span><span class="line-content">        <span class="tp">Vector3</span> movement = <span class="kw">new</span> <span class="tp">Vector3</span>(movementX, <span class="nu">0.0f</span>, movementY);</span></div>
+      <div class="comment-line"><span class="line-num">49</span><span class="comment-prefix">        // </span><input class="comment-input" type="text" placeholder="What does AddForce do and what role does speed play?" data-id="p17"></div>
+      <div class="code-line"><span class="line-num">50</span><span class="line-content">        rb.<span class="fn">AddForce</span>(movement * speed);</span></div>
+      <div class="code-line"><span class="line-num">51</span><span class="line-content">    }</span></div>
+      <div class="code-line"><span class="line-num">52</span><span class="line-content"></span></div>
+      <div class="code-line"><span class="line-num">53</span><span class="line-content">    <span class="kw">void</span> <span class="fn">OnTriggerEnter</span>(<span class="tp">Collider</span> other)</span></div>
+      <div class="code-line"><span class="line-num">54</span><span class="line-content">    {</span></div>
+      <div class="comment-line"><span class="line-num">55</span><span class="comment-prefix">        // </span><input class="comment-input" type="text" placeholder="What does CompareTag(&quot;PickUp&quot;) check for?" data-id="p18"></div>
+      <div class="code-line"><span class="line-num">56</span><span class="line-content">        <span class="kw">if</span> (other.gameObject.<span class="fn">CompareTag</span>(<span class="st">"PickUp"</span>))</span></div>
+      <div class="code-line"><span class="line-num">57</span><span class="line-content">        {</span></div>
+      <div class="comment-line"><span class="line-num">58</span><span class="comment-prefix">            // </span><input class="comment-input" type="text" placeholder="Why SetActive(false) instead of Destroy()?" data-id="p19"></div>
+      <div class="code-line"><span class="line-num">59</span><span class="line-content">            other.gameObject.<span class="fn">SetActive</span>(<span class="kw">false</span>);</span></div>
+      <div class="comment-line"><span class="line-num">60</span><span class="comment-prefix">            // </span><input class="comment-input" type="text" placeholder="What does incrementing count track?" data-id="p20"></div>
+      <div class="code-line"><span class="line-num">61</span><span class="line-content">            count = count + <span class="nu">1</span>;</span></div>
+      <div class="code-line"><span class="line-num">62</span><span class="line-content">            <span class="fn">SetCountText</span>();</span></div>
+      <div class="code-line"><span class="line-num">63</span><span class="line-content">        }</span></div>
+      <div class="code-line"><span class="line-num">64</span><span class="line-content">    }</span></div>
+      <div class="code-line"><span class="line-num">65</span><span class="line-content"></span></div>
+      <div class="comment-line"><span class="line-num">66</span><span class="comment-prefix">    // </span><input class="comment-input" type="text" placeholder="What is the purpose of SetCountText()?" data-id="p21"></div>
+      <div class="code-line"><span class="line-num">67</span><span class="line-content">    <span class="kw">void</span> <span class="fn">SetCountText</span>()</span></div>
+      <div class="code-line"><span class="line-num">68</span><span class="line-content">    {</span></div>
+      <div class="comment-line"><span class="line-num">69</span><span class="comment-prefix">        // </span><input class="comment-input" type="text" placeholder="What does .text = … do to the UI?" data-id="p22"></div>
+      <div class="code-line"><span class="line-num">70</span><span class="line-content">        countText.text = <span class="st">"Count: "</span> + count.<span class="fn">ToString</span>();</span></div>
+      <div class="comment-line"><span class="line-num">71</span><span class="comment-prefix">        // </span><input class="comment-input" type="text" placeholder="What condition triggers the win state? Why 12?" data-id="p23"></div>
+      <div class="code-line"><span class="line-num">72</span><span class="line-content">        <span class="kw">if</span> (count >= <span class="nu">12</span>)</span></div>
+      <div class="code-line"><span class="line-num">73</span><span class="line-content">        {</span></div>
+      <div class="comment-line"><span class="line-num">74</span><span class="comment-prefix">            // </span><input class="comment-input" type="text" placeholder="What does showing winTextObject communicate to the player?" data-id="p24"></div>
+      <div class="code-line"><span class="line-num">75</span><span class="line-content">            winTextObject.<span class="fn">SetActive</span>(<span class="kw">true</span>);</span></div>
+      <div class="comment-line"><span class="line-num">76</span><span class="comment-prefix">            // </span><input class="comment-input" type="text" placeholder="Why destroy the enemy when the player wins?" data-id="p25"></div>
+      <div class="code-line"><span class="line-num">77</span><span class="line-content">            <span class="tp">Destroy</span>(<span class="tp">GameObject</span>.<span class="fn">FindGameObjectWithTag</span>(<span class="st">"Enemy"</span>));</span></div>
+      <div class="code-line"><span class="line-num">78</span><span class="line-content">        }</span></div>
+      <div class="code-line"><span class="line-num">79</span><span class="line-content">    }</span></div>
+      <div class="code-line"><span class="line-num">80</span><span class="line-content"></span></div>
+      <div class="code-line"><span class="line-num">81</span><span class="line-content">    <span class="kw">private void</span> <span class="fn">OnCollisionEnter</span>(<span class="tp">Collision</span> collision)</span></div>
+      <div class="code-line"><span class="line-num">82</span><span class="line-content">    {</span></div>
+      <div class="comment-line"><span class="line-num">83</span><span class="comment-prefix">        // </span><input class="comment-input" type="text" placeholder="What collision triggers the lose condition?" data-id="p26"></div>
+      <div class="code-line"><span class="line-num">84</span><span class="line-content">        <span class="kw">if</span> (collision.gameObject.<span class="fn">CompareTag</span>(<span class="st">"Enemy"</span>))</span></div>
+      <div class="code-line"><span class="line-num">85</span><span class="line-content">        {</span></div>
+      <div class="comment-line"><span class="line-num">86</span><span class="comment-prefix">            // </span><input class="comment-input" type="text" placeholder="What does Destroy(gameObject) do here?" data-id="p27"></div>
+      <div class="code-line"><span class="line-num">87</span><span class="line-content">            <span class="tp">Destroy</span>(gameObject);</span></div>
+      <div class="comment-line"><span class="line-num">88</span><span class="comment-prefix">            // </span><input class="comment-input" type="text" placeholder="How does the UI change to show the lose state?" data-id="p28"></div>
+      <div class="code-line"><span class="line-num">89</span><span class="line-content">            winTextObject.gameObject.<span class="fn">SetActive</span>(<span class="kw">true</span>);</span></div>
+      <div class="code-line"><span class="line-num">90</span><span class="line-content">            winTextObject.<span class="fn">GetComponent</span>&lt;<span class="tp">TextMeshProUGUI</span>&gt;().text = <span class="st">"You Lose!"</span>;</span></div>
+      <div class="code-line"><span class="line-num">91</span><span class="line-content">        }</span></div>
+      <div class="code-line"><span class="line-num">92</span><span class="line-content">    }</span></div>
+      <div class="code-line"><span class="line-num">93</span><span class="line-content">}</span></div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       REFLECTION
+  ════════════════════════════════ -->
+  <div class="section-label">
+    <div class="badge">Reflect</div>
+    <h2>Short Answer</h2>
+  </div>
+
+  <div class="answer-area">
+    <h3>Answer the following in complete sentences.</h3>
+
+    <div class="q-item">
+      <p><strong>1.</strong> Why does <code>CameraController.cs</code> use <code>LateUpdate()</code> instead of <code>Update()</code>? What problem would occur if it used <code>Update()</code>?</p>
+      <textarea id="q1" placeholder="Type your answer here…" rows="2" oninput="autoResize(this)"></textarea>
+    </div>
+    <div class="q-item">
+      <p><strong>2.</strong> In <code>PlayerController.cs</code>, why is <code>AddForce()</code> called inside <code>FixedUpdate()</code> rather than <code>Update()</code>?</p>
+      <textarea id="q2" placeholder="Type your answer here…" rows="2" oninput="autoResize(this)"></textarea>
+    </div>
+    <div class="q-item">
+      <p><strong>3.</strong> The <code>EnemyMovement.cs</code> script checks <code>if (player != null)</code> before calling <code>SetDestination()</code>. Why is this check important? What would happen without it?</p>
+      <textarea id="q3" placeholder="Type your answer here…" rows="2" oninput="autoResize(this)"></textarea>
+    </div>
+    <div class="q-item">
+      <p><strong>4.</strong> Describe the difference between <code>OnTriggerEnter</code> and <code>OnCollisionEnter</code>. How are both used differently in <code>PlayerController.cs</code>?</p>
+      <textarea id="q4" placeholder="Type your answer here…" rows="2" oninput="autoResize(this)"></textarea>
+    </div>
+    <div class="q-item">
+      <p><strong>5.</strong> Why is writing comments good practice, even when your code "works fine"? Give one real-world reason.</p>
+      <textarea id="q5" placeholder="Type your answer here…" rows="2" oninput="autoResize(this)"></textarea>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div>BVT Computer Programming &nbsp;|&nbsp; Unity C# Commenting Activity</div>
+    <div class="score-box">Score: _______ / 100</div>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = (el.scrollHeight) + 'px';
+  }
+
+  function savePDF() {
+    // Brief instruction before triggering print dialog
+    const orig = document.title;
+    document.title = 'Unity_Commenting_Worksheet_' + (document.getElementById('f-name').value.replace(/\s+/g,'_') || 'Student');
+    window.print();
+    document.title = orig;
+  }
+
+  function clearAll() {
+    if (!confirm('Clear all answers? This cannot be undone.')) return;
+    document.querySelectorAll('.comment-input, textarea, .header-field input').forEach(el => el.value = '');
+    document.querySelectorAll('textarea').forEach(el => { el.style.height = 'auto'; });
+  }
+
+  // Auto-fill today's date
+  const dateField = document.getElementById('f-date');
+  if (!dateField.value) {
+    const d = new Date();
+    dateField.placeholder = (d.getMonth()+1).toString().padStart(2,'0') + '/' + d.getDate().toString().padStart(2,'0') + '/' + d.getFullYear();
+  }
+</script>
+</body>
+</html>
