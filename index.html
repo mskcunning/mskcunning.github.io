@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sturbridge Machining Services LLC</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --steel: #1a1d21;
+    --iron: #2c2f35;
+    --chrome: #b8bfc9;
+    --rust: #c0392b;
+    --rust-dim: #7d1f15;
+    --spark: #e8a020;
+    --spark-dim: #a06010;
+    --white: #f0f2f5;
+    --muted: #6b717d;
+    --border: rgba(184,191,201,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--steel);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    background: rgba(26,29,33,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 64px;
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem; letter-spacing: 0.08em;
+    color: var(--white);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .nav-logo span { color: var(--rust); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--chrome);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--spark); }
+
+  /* ─── HERO ─────────────────────────────────── */
+  #hero {
+    min-height: 100vh;
+    display: grid; place-items: center;
+    position: relative; overflow: hidden;
+    background: var(--steel);
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(184,191,201,0.04) 80px),
+      repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(184,191,201,0.04) 80px);
+    background-size: 80px 80px;
+  }
+  .hero-glow {
+    position: absolute; top: -120px; right: -80px;
+    width: 700px; height: 700px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(192,57,43,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-glow-2 {
+    position: absolute; bottom: -180px; left: -100px;
+    width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,160,32,0.10) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative; z-index: 1;
+    max-width: 900px; padding: 0 32px;
+    text-align: left;
+  }
+  .hero-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--rust);
+    margin-bottom: 18px; display: flex; align-items: center; gap: 12px;
+  }
+  .hero-eyebrow::before {
+    content: ''; display: block; width: 32px; height: 2px;
+    background: var(--rust);
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 9vw, 9rem);
+    line-height: 0.92; letter-spacing: 0.02em;
+    color: var(--white);
+  }
+  .hero-title em { color: var(--rust); font-style: normal; }
+  .hero-subtitle {
+    margin-top: 28px; font-size: 1.15rem;
+    color: var(--chrome); max-width: 520px; line-height: 1.65;
+    font-weight: 300;
+  }
+  .hero-ctas {
+    margin-top: 44px; display: flex; gap: 16px; flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--rust); color: var(--white);
+    padding: 14px 36px; font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; border: none; cursor: pointer;
+    text-decoration: none; transition: background 0.2s, transform 0.15s;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .btn-primary:hover { background: #a93226; transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent; color: var(--chrome);
+    padding: 13px 36px; font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; border: 1px solid var(--border);
+    cursor: pointer; text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .btn-outline:hover { border-color: var(--spark); color: var(--spark); transform: translateY(-2px); }
+
+  .hero-stats {
+    margin-top: 72px; display: flex; gap: 48px;
+    border-top: 1px solid var(--border); padding-top: 40px;
+  }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.6rem; color: var(--spark); letter-spacing: 0.04em;
+  }
+  .stat-label {
+    font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); margin-top: 2px;
+  }
+
+  /* ─── SECTION SHARED ─────────────────────── */
+  section { padding: 110px 0; }
+  .container { max-width: 1160px; margin: 0 auto; padding: 0 48px; }
+
+  .section-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--rust);
+    display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+  }
+  .section-tag::after { content: ''; flex: 1; max-width: 40px; height: 1px; background: var(--rust); }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.8rem, 5vw, 4.5rem); line-height: 1;
+    color: var(--white); margin-bottom: 20px;
+  }
+  .section-lead {
+    font-size: 1.05rem; color: var(--chrome);
+    line-height: 1.7; max-width: 560px; font-weight: 300;
+  }
+
+  /* ─── ABOUT ─────────────────────────────── */
+  #about { background: var(--iron); }
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: start; margin-top: 64px;
+  }
+  .about-text p {
+    color: var(--chrome); line-height: 1.75;
+    font-size: 1rem; margin-bottom: 20px; font-weight: 300;
+  }
+  .about-capabilities {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+    margin-top: 36px;
+  }
+  .cap-item {
+    background: var(--steel);
+    padding: 20px 24px; font-size: 0.88rem;
+    color: var(--chrome); font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    border-left: 3px solid var(--rust);
+    transition: background 0.2s, color 0.2s;
+  }
+  .cap-item:hover { background: #222529; color: var(--white); }
+
+  .about-values { display: flex; flex-direction: column; gap: 24px; }
+  .value-card {
+    background: var(--steel); padding: 32px;
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--spark);
+  }
+  .value-card h3 {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem;
+    letter-spacing: 0.06em; color: var(--white); margin-bottom: 10px;
+  }
+  .value-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; font-weight: 300; }
+
+  /* ─── EQUIPMENT ──────────────────────────── */
+  #equipment { background: var(--steel); }
+  .equip-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+    margin-top: 64px;
+  }
+  .equip-card {
+    background: var(--iron);
+    padding: 40px 32px; position: relative;
+    overflow: hidden; transition: background 0.25s;
+    cursor: default;
+  }
+  .equip-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: linear-gradient(90deg, var(--rust), var(--spark));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.35s ease;
+  }
+  .equip-card:hover::before { transform: scaleX(1); }
+  .equip-card:hover { background: #2e3238; }
+
+  .equip-icon {
+    font-size: 2.2rem; margin-bottom: 20px;
+    filter: grayscale(0.4);
+  }
+  .equip-card h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.2rem; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--white); margin-bottom: 10px;
+  }
+  .equip-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; font-weight: 300; }
+  .equip-spec {
+    margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .spec-row {
+    display: flex; justify-content: space-between;
+    font-size: 0.78rem; font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.06em;
+  }
+  .spec-key { color: var(--muted); text-transform: uppercase; }
+  .spec-val { color: var(--chrome); font-weight: 600; }
+
+  /* ─── WORK / JOBS ────────────────────────── */
+  #work { background: var(--iron); }
+  .work-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: end; margin-bottom: 64px; }
+  .work-filters {
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;
+    align-items: center;
+  }
+  .filter-btn {
+    padding: 7px 18px; font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; background: transparent;
+    border: 1px solid var(--border); color: var(--muted);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover { border-color: var(--rust); color: var(--rust); }
+
+  .work-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px;
+  }
+  .job-card {
+    background: var(--steel); padding: 36px;
+    display: flex; flex-direction: column; gap: 16px;
+    position: relative; overflow: hidden;
+    transition: background 0.2s;
+  }
+  .job-card:hover { background: #222529; }
+  .job-num {
+    position: absolute; top: 20px; right: 28px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 4rem;
+    color: rgba(184,191,201,0.05); line-height: 1; pointer-events: none;
+  }
+  .job-tag {
+    display: inline-flex; align-items: center;
+    padding: 4px 12px; font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; width: fit-content;
+  }
+  .job-tag.defense { background: rgba(192,57,43,0.15); color: var(--rust); }
+  .job-tag.aero { background: rgba(232,160,32,0.12); color: var(--spark); }
+  .job-tag.industrial { background: rgba(184,191,201,0.08); color: var(--chrome); }
+  .job-tag.medical { background: rgba(46,204,113,0.1); color: #2ecc71; }
+
+  .job-card h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.25rem; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--white);
+  }
+  .job-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; font-weight: 300; }
+  .job-meta {
+    display: flex; gap: 24px; margin-top: 8px;
+    border-top: 1px solid var(--border); padding-top: 18px;
+  }
+  .job-meta-item { font-size: 0.78rem; }
+  .job-meta-item .label { color: var(--muted); font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 3px; }
+  .job-meta-item .val { color: var(--chrome); font-weight: 500; }
+
+  /* ─── CONTACT ────────────────────────────── */
+  #contact { background: var(--steel); }
+  .contact-wrapper {
+    display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px;
+    margin-top: 64px; align-items: start;
+  }
+  .contact-info { display: flex; flex-direction: column; gap: 0; }
+  .contact-block {
+    padding: 32px 0; border-bottom: 1px solid var(--border);
+  }
+  .contact-block:first-child { padding-top: 0; }
+  .contact-block .label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--rust); margin-bottom: 10px;
+  }
+  .contact-block .val {
+    font-size: 1.05rem; color: var(--white); font-weight: 400; line-height: 1.6;
+  }
+  .contact-block a { color: inherit; text-decoration: none; transition: color 0.2s; }
+  .contact-block a:hover { color: var(--spark); }
+
+  .hours-row {
+    display: flex; justify-content: space-between;
+    font-size: 0.9rem; color: var(--chrome);
+    padding: 6px 0; border-bottom: 1px solid rgba(184,191,201,0.06);
+  }
+  .hours-row:last-child { border-bottom: none; }
+  .hours-row .day { color: var(--muted); font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.06em; text-transform: uppercase; }
+
+  .contact-form { display: flex; flex-direction: column; gap: 16px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-group label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .form-group input, .form-group textarea, .form-group select {
+    background: var(--iron); border: 1px solid var(--border);
+    color: var(--white); font-family: 'Barlow', sans-serif;
+    font-size: 0.95rem; padding: 14px 18px; outline: none;
+    transition: border-color 0.2s; resize: none;
+    -webkit-appearance: none;
+  }
+  .form-group select { cursor: pointer; }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    border-color: var(--rust);
+  }
+  .form-group textarea { min-height: 130px; }
+  .form-submit {
+    margin-top: 8px;
+    background: var(--rust); color: var(--white);
+    padding: 16px 40px; font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; border: none; cursor: pointer;
+    transition: background 0.2s, transform 0.15s; align-self: flex-start;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .form-submit:hover { background: #a93226; transform: translateY(-2px); }
+
+  /* ─── FOOTER ─────────────────────────────── */
+  footer {
+    background: #111315;
+    border-top: 1px solid var(--border);
+    padding: 40px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 20px;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem; letter-spacing: 0.08em; color: var(--chrome);
+  }
+  .footer-logo span { color: var(--rust); }
+  .footer-copy { font-size: 0.8rem; color: var(--muted); }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a {
+    font-size: 0.78rem; font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none; transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--chrome); }
+
+  /* ─── ANIMATIONS ─────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-content > * {
+    opacity: 0; animation: fadeUp 0.7s ease forwards;
+  }
+  .hero-content > *:nth-child(1) { animation-delay: 0.1s; }
+  .hero-content > *:nth-child(2) { animation-delay: 0.25s; }
+  .hero-content > *:nth-child(3) { animation-delay: 0.4s; }
+  .hero-content > *:nth-child(4) { animation-delay: 0.55s; }
+  .hero-content > *:nth-child(5) { animation-delay: 0.7s; }
+
+  /* ─── RESPONSIVE ─────────────────────────── */
+  @media (max-width: 900px) {
+    nav { padding: 0 24px; }
+    .nav-links { gap: 20px; }
+    .container { padding: 0 24px; }
+    .about-grid, .work-intro, .contact-wrapper { grid-template-columns: 1fr; gap: 48px; }
+    .equip-grid { grid-template-columns: 1fr 1fr; }
+    .work-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .work-filters { justify-content: flex-start; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .equip-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 28px; flex-wrap: wrap; }
+    .about-capabilities { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ──────────────────────────────────── -->
+<nav>
+  <div class="nav-logo">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+      <circle cx="11" cy="11" r="5" stroke="#c0392b" stroke-width="2"/>
+      <circle cx="11" cy="11" r="10" stroke="rgba(192,57,43,0.4)" stroke-width="1"/>
+      <line x1="11" y1="0" x2="11" y2="4" stroke="#c0392b" stroke-width="2"/>
+      <line x1="11" y1="18" x2="11" y2="22" stroke="#c0392b" stroke-width="2"/>
+      <line x1="0" y1="11" x2="4" y2="11" stroke="#c0392b" stroke-width="2"/>
+      <line x1="18" y1="11" x2="22" y2="11" stroke="#c0392b" stroke-width="2"/>
+    </svg>
+    Sturbridge<span>&nbsp;Machining</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#equipment">Equipment</a></li>
+    <li><a href="#work">Our Work</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Sturbridge, Massachusetts · Est. 2008</p>
+    <h1 class="hero-title">Precision<br><em>Machined</em><br>To Spec.</h1>
+    <p class="hero-subtitle">CNC machining, milling, turning, and fabrication services for defense, aerospace, medical, and industrial clients. Tight tolerances. On-time delivery. No exceptions.</p>
+    <div class="hero-ctas">
+      <a href="#contact" class="btn-primary">Request a Quote</a>
+      <a href="#work" class="btn-outline">View Our Work</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">±0.001"</div>
+        <div class="stat-label">Standard Tolerance</div>
+      </div>
+      <div>
+        <div class="stat-num">15+</div>
+        <div class="stat-label">Years in Business</div>
+      </div>
+      <div>
+        <div class="stat-num">500+</div>
+        <div class="stat-label">Jobs Completed</div>
+      </div>
+      <div>
+        <div class="stat-num">AS9100</div>
+        <div class="stat-label">Quality Certified</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ─────────────────────────────────── -->
+<section id="about">
+  <div class="container">
+    <div class="section-tag">About the Company</div>
+    <h2 class="section-title">Built on Steel.<br>Driven by Precision.</h2>
+    <div class="about-grid">
+      <div>
+        <div class="about-text">
+          <p>Sturbridge Machining Services LLC is a full-service precision machine shop based in Sturbridge, Massachusetts. Founded on the belief that craftsmanship and advanced manufacturing aren't mutually exclusive, we've spent over 15 years delivering exceptional results to customers who demand the best.</p>
+          <p>From prototype to production run, we work closely with engineers, procurement teams, and project managers to ensure every part meets exact specifications — on time and within budget. We specialize in complex, tight-tolerance components where failure is not an option.</p>
+          <p>Our facility operates around the clock with a team of seasoned machinists and quality control specialists dedicated to first-article inspection, in-process checks, and final certification on every job we ship.</p>
+        </div>
+        <div class="about-capabilities">
+          <div class="cap-item">CNC Milling</div>
+          <div class="cap-item">CNC Turning</div>
+          <div class="cap-item">Multi-Axis Machining</div>
+          <div class="cap-item">EDM / Wire EDM</div>
+          <div class="cap-item">Grinding & Honing</div>
+          <div class="cap-item">Custom Fabrication</div>
+          <div class="cap-item">Thread Milling</div>
+          <div class="cap-item">Tapping & Boring</div>
+        </div>
+      </div>
+      <div class="about-values">
+        <div class="value-card">
+          <h3>Materials We Machine</h3>
+          <p>Aluminum alloys, stainless steel, titanium, Inconel, brass, copper, hardened tool steels, engineering plastics, and exotic alloys — we have the tooling and experience to cut it all cleanly and precisely.</p>
+        </div>
+        <div class="value-card">
+          <h3>Industries Served</h3>
+          <p>Defense & government contractors, aerospace & aviation, medical device manufacturing, automotive motorsport, heavy industrial, hydraulics & fluid power, and custom OEM components.</p>
+        </div>
+        <div class="value-card">
+          <h3>Quality Assurance</h3>
+          <p>AS9100 quality management system, CMM inspection capability, first-article inspection, material traceability, full FAIR documentation, and PPAP packages available upon request.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EQUIPMENT ─────────────────────────────── -->
+<section id="equipment">
+  <div class="container">
+    <div class="section-tag">Our Equipment</div>
+    <h2 class="section-title">Industrial-Grade<br>Machinery.</h2>
+    <p class="section-lead">Our shop floor is equipped with modern, well-maintained CNC and manual equipment capable of handling everything from small precision components to large structural parts.</p>
+    <div class="equip-grid">
+
+      <div class="equip-card">
+        <div class="equip-icon">⚙️</div>
+        <h3>Haas VF-4 CNC Vertical Mill</h3>
+        <p>High-performance 3-axis vertical machining center for complex milling, drilling, and contouring operations on medium to large workpieces.</p>
+        <div class="equip-spec">
+          <div class="spec-row"><span class="spec-key">X/Y/Z Travel</span><span class="spec-val">50" × 20" × 25"</span></div>
+          <div class="spec-row"><span class="spec-key">Spindle Speed</span><span class="spec-val">8,100 RPM</span></div>
+          <div class="spec-row"><span class="spec-key">Tool Capacity</span><span class="spec-val">24-Station ATC</span></div>
+        </div>
+      </div>
+
+      <div class="equip-card">
+        <div class="equip-icon">🔩</div>
+        <h3>Haas ST-30 CNC Turning Center</h3>
+        <p>Robust CNC lathe for turning, boring, grooving, and threading operations. Capable of live tooling for off-center features without secondary ops.</p>
+        <div class="equip-spec">
+          <div class="spec-row"><span class="spec-key">Max Diameter</span><span class="spec-val">15.5"</span></div>
+          <div class="spec-row"><span class="spec-key">Max Length</span><span class="spec-val">30" Between Centers</span></div>
+          <div class="spec-row"><span class="spec-key">Live Tooling</span><span class="spec-val">Yes (C-Axis)</span></div>
+        </div>
+      </div>
+
+      <div class="equip-card">
+        <div class="equip-icon">🛠️</div>
+        <h3>Mazak Integrex 5-Axis</h3>
+        <p>Multi-tasking 5-axis machining center combining turning and milling in a single setup — reducing setup time and achieving superior part accuracy for complex geometry.</p>
+        <div class="equip-spec">
+          <div class="spec-row"><span class="spec-key">Axes</span><span class="spec-val">5 (X,Y,Z,B,C)</span></div>
+          <div class="spec-row"><span class="spec-key">Milling Spindle</span><span class="spec-val">12,000 RPM</span></div>
+          <div class="spec-row"><span class="spec-key">Turning Diameter</span><span class="spec-val">Up to 25"</span></div>
+        </div>
+      </div>
+
+      <div class="equip-card">
+        <div class="equip-icon">📐</div>
+        <h3>Zeiss CMM Inspection</h3>
+        <p>Coordinate Measuring Machine for precise dimensional verification. Produces detailed inspection reports and First Article Inspection (FAI) documentation to any required standard.</p>
+        <div class="equip-spec">
+          <div class="spec-row"><span class="spec-key">Measuring Volume</span><span class="spec-val">24" × 36" × 22"</span></div>
+          <div class="spec-row"><span class="spec-key">Accuracy</span><span class="spec-val">±0.0001"</span></div>
+          <div class="spec-row"><span class="spec-key">Software</span><span class="spec-val">Calypso / GD&T</span></div>
+        </div>
+      </div>
+
+      <div class="equip-card">
+        <div class="equip-icon">⚡</div>
+        <h3>Wire EDM (Electrical Discharge)</h3>
+        <p>Precision wire EDM for intricate cutouts, extrusion dies, and hardened steel components where conventional cutting tools cannot reach the required accuracy.</p>
+        <div class="equip-spec">
+          <div class="spec-row"><span class="spec-key">Work Area</span><span class="spec-val">21.6" × 15.7"</span></div>
+          <div class="spec-row"><span class="spec-key">Surface Finish</span><span class="spec-val">Ra 0.4 µm</span></div>
+          <div class="spec-row"><span class="spec-key">Max Hardness</span><span class="spec-val">70 HRC</span></div>
+        </div>
+      </div>
+
+      <div class="equip-card">
+        <div class="equip-icon">🔄</div>
+        <h3>Cylindrical & Surface Grinders</h3>
+        <p>Precision grinding equipment for achieving ultra-fine surface finishes and exact dimensional tolerances on hardened or unhardened components requiring sub-thousandth accuracy.</p>
+        <div class="equip-spec">
+          <div class="spec-row"><span class="spec-key">Surface Finish</span><span class="spec-val">Ra 8–16 µin</span></div>
+          <div class="spec-row"><span class="spec-key">Flatness</span><span class="spec-val">±0.0002"</span></div>
+          <div class="spec-row"><span class="spec-key">Parallelism</span><span class="spec-val">0.0001" / 6"</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── WORK ───────────────────────────────────── -->
+<section id="work">
+  <div class="container">
+    <div class="work-intro">
+      <div>
+        <div class="section-tag">Jobs & Contracts</div>
+        <h2 class="section-title">Work That<br>Speaks for Itself.</h2>
+        <p class="section-lead">A selection of completed jobs and contracts across the industries we serve. From one-off prototypes to multi-year production agreements.</p>
+      </div>
+      <div class="work-filters">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">Defense</button>
+        <button class="filter-btn">Aerospace</button>
+        <button class="filter-btn">Industrial</button>
+        <button class="filter-btn">Medical</button>
+      </div>
+    </div>
+    <div class="work-grid">
+
+      <div class="job-card">
+        <div class="job-num">01</div>
+        <span class="job-tag defense">Defense</span>
+        <h3>Titanium Breech Block Components</h3>
+        <p>Precision-machined titanium components for a defense contractor's small-arms program. Required 5-axis milling, thread milling, and full FAIR documentation to MIL-SPEC tolerances. 200-piece production run with 100% inspection.</p>
+        <div class="job-meta">
+          <div class="job-meta-item"><span class="label">Material</span><span class="val">Ti-6Al-4V</span></div>
+          <div class="job-meta-item"><span class="label">Tolerance</span><span class="val">±0.0005"</span></div>
+          <div class="job-meta-item"><span class="label">Qty</span><span class="val">200 pcs</span></div>
+        </div>
+      </div>
+
+      <div class="job-card">
+        <div class="job-num">02</div>
+        <span class="job-tag aero">Aerospace</span>
+        <h3>Aluminum Avionics Housings</h3>
+        <p>Machined 6061-T6 aluminum enclosures for avionics mounting in a regional aircraft OEM program. Thin-wall pocket milling, precision bore features, and anodize-ready surface finish. Delivered on a 6-week turnaround.</p>
+        <div class="job-meta">
+          <div class="job-meta-item"><span class="label">Material</span><span class="val">6061-T6 Aluminum</span></div>
+          <div class="job-meta-item"><span class="label">Tolerance</span><span class="val">±0.001"</span></div>
+          <div class="job-meta-item"><span class="label">Qty</span><span class="val">50 pcs</span></div>
+        </div>
+      </div>
+
+      <div class="job-card">
+        <div class="job-num">03</div>
+        <span class="job-tag medical">Medical</span>
+        <h3>Stainless Surgical Instrument Handles</h3>
+        <p>Complex turned and milled 316L stainless steel handles for a Class II surgical device. Ra 16 µin finish, passivated per ASTM A967, with batch traceability and full material certifications for FDA audit compliance.</p>
+        <div class="job-meta">
+          <div class="job-meta-item"><span class="label">Material</span><span class="val">316L SS</span></div>
+          <div class="job-meta-item"><span class="label">Finish</span><span class="val">Ra 16 µin + Passivate</span></div>
+          <div class="job-meta-item"><span class="label">Qty</span><span class="val">500 pcs</span></div>
+        </div>
+      </div>
+
+      <div class="job-card">
+        <div class="job-num">04</div>
+        <span class="job-tag industrial">Industrial</span>
+        <h3>Hydraulic Manifold Blocks</h3>
+        <p>Custom ductile iron hydraulic manifolds with intersecting cross-drilled passages, ported threads, and precision-ground mating faces for a heavy equipment OEM. Pressure tested to 5,000 PSI before shipment.</p>
+        <div class="job-meta">
+          <div class="job-meta-item"><span class="label">Material</span><span class="val">Ductile Iron</span></div>
+          <div class="job-meta-item"><span class="label">Pressure</span><span class="val">5,000 PSI Tested</span></div>
+          <div class="job-meta-item"><span class="label">Qty</span><span class="val">30 pcs</span></div>
+        </div>
+      </div>
+
+      <div class="job-card">
+        <div class="job-num">05</div>
+        <span class="job-tag defense">Defense</span>
+        <h3>Inconel Turbine Exhaust Components</h3>
+        <p>High-temperature Inconel 718 exhaust nozzle components for a ground vehicle turbo system. Demanding 5-axis contouring, tight profile tolerances, and nickel-alloy-rated tooling strategy. 2-year recurring contract.</p>
+        <div class="job-meta">
+          <div class="job-meta-item"><span class="label">Material</span><span class="val">Inconel 718</span></div>
+          <div class="job-meta-item"><span class="label">Tolerance</span><span class="val">±0.002" Profile</span></div>
+          <div class="job-meta-item"><span class="label">Contract</span><span class="val">2-Year Recurring</span></div>
+        </div>
+      </div>
+
+      <div class="job-card">
+        <div class="job-num">06</div>
+        <span class="job-tag aero">Aerospace</span>
+        <h3>Prototype Drone Frame Brackets</h3>
+        <p>Rapid prototype of lightweight 7075-T6 aluminum structural brackets for an autonomous drone startup. Delivered first article in 72 hours from receipt of CAD data. Production toolpath optimized for low-volume repeat orders.</p>
+        <div class="job-meta">
+          <div class="job-meta-item"><span class="label">Material</span><span class="val">7075-T6 Aluminum</span></div>
+          <div class="job-meta-item"><span class="label">Lead Time</span><span class="val">72 Hours FAI</span></div>
+          <div class="job-meta-item"><span class="label">Qty</span><span class="val">Proto → Production</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ────────────────────────────────── -->
+<section id="contact">
+  <div class="container">
+    <div class="section-tag">Get in Touch</div>
+    <h2 class="section-title">Request a Quote<br>or Consultation.</h2>
+    <div class="contact-wrapper">
+      <div class="contact-info">
+        <div class="contact-block">
+          <div class="label">Address</div>
+          <div class="val">123 Industrial Drive<br>Sturbridge, MA 01566</div>
+        </div>
+        <div class="contact-block">
+          <div class="label">Phone</div>
+          <div class="val"><a href="tel:+15085550192">(508) 555-0192</a></div>
+        </div>
+        <div class="contact-block">
+          <div class="label">Email</div>
+          <div class="val"><a href="mailto:quotes@sturbridgemachining.com">quotes@sturbridgemachining.com</a></div>
+        </div>
+        <div class="contact-block">
+          <div class="label">Shop Hours</div>
+          <div class="val" style="margin-top:4px">
+            <div class="hours-row"><span class="day">Monday – Thursday</span><span>6:00 AM – 6:00 PM</span></div>
+            <div class="hours-row"><span class="day">Friday</span><span>6:00 AM – 4:00 PM</span></div>
+            <div class="hours-row"><span class="day">Saturday</span><span>By Appointment</span></div>
+            <div class="hours-row"><span class="day">Sunday</span><span>Closed</span></div>
+          </div>
+        </div>
+        <div class="contact-block" style="border-bottom:none; padding-bottom:0">
+          <div class="label">Certifications</div>
+          <div class="val" style="font-size:0.9rem; color:var(--chrome); line-height:1.8">
+            AS9100D · ISO 9001:2015<br>
+            ITAR Registered · CAGE Code Holder<br>
+            Massachusetts SBE Certified
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" placeholder="John">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" placeholder="Smith">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Company</label>
+            <input type="text" placeholder="Acme Defense LLC">
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" placeholder="(508) 000-0000">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="j.smith@company.com">
+        </div>
+        <div class="form-group">
+          <label>Project Type</label>
+          <select>
+            <option value="" disabled selected>Select a service...</option>
+            <option>CNC Milling</option>
+            <option>CNC Turning</option>
+            <option>5-Axis Machining</option>
+            <option>EDM / Wire EDM</option>
+            <option>Grinding / Finishing</option>
+            <option>Prototype / First Article</option>
+            <option>Production Run</option>
+            <option>Other / Multiple Services</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Project Details</label>
+          <textarea placeholder="Describe your project — material, tolerances, quantity, delivery requirements, and any relevant specs or standards..."></textarea>
+        </div>
+        <button class="form-submit" onclick="alert('Thank you! We will be in touch within one business day.')">Send Request →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────── -->
+<footer>
+  <div class="footer-logo">Sturbridge<span> Machining</span> Services LLC</div>
+  <div class="footer-copy">© 2025 Sturbridge Machining Services LLC · Sturbridge, MA</div>
+  <div class="footer-links">
+    <a href="#about">About</a>
+    <a href="#equipment">Equipment</a>
+    <a href="#work">Work</a>
+    <a href="#contact">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // Filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // Scroll-triggered fade-in for cards
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.equip-card, .job-card, .value-card, .cap-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
