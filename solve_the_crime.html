@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CASE #431 — The Diamond Heist</title>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Share+Tech+Mono&family=Oswald:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1008;
+    --paper: #f5efe0;
+    --aged: #e8dcc8;
+    --stamp-red: #8b1a1a;
+    --stamp-blue: #1a3a6b;
+    --evidence: #2a4a2a;
+    --gold: #c8a84b;
+    --tape: rgba(255,220,100,0.35);
+    --shadow: rgba(0,0,0,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: #2c2420;
+    background-image:
+      repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px),
+      radial-gradient(ellipse at 20% 50%, #3a2e28 0%, #1e1814 100%);
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    padding: 20px;
+    overflow-x: hidden;
+  }
+
+  /* Scanlines overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 4px);
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  .case-board {
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* === HEADER === */
+  .case-header {
+    text-align: center;
+    padding: 30px 20px 10px;
+    position: relative;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  @keyframes fadeDown {
+    from { opacity:0; transform:translateY(-30px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .classified-banner {
+    display: inline-block;
+    background: var(--stamp-red);
+    color: #fff;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 6px;
+    padding: 5px 24px;
+    border: 2px solid #6b1010;
+    transform: rotate(-1deg);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  .case-title {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    color: var(--paper);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    line-height: 1;
+    text-shadow: 3px 3px 0 #000, 0 0 40px rgba(200,168,75,0.3);
+  }
+
+  .case-subtitle {
+    font-family: 'Special Elite', cursive;
+    color: var(--gold);
+    font-size: 1.1rem;
+    margin-top: 6px;
+    letter-spacing: 2px;
+  }
+
+  .case-number {
+    font-family: 'Share Tech Mono', monospace;
+    color: #888;
+    font-size: 0.75rem;
+    margin-top: 10px;
+    letter-spacing: 3px;
+  }
+
+  .divider {
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    margin: 20px 0;
+    opacity: 0.6;
+  }
+
+  /* === SCENARIO CARD === */
+  .scenario-card {
+    background: var(--paper);
+    background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    border: 1px solid #c8b89a;
+    border-radius: 2px;
+    padding: 30px 36px;
+    margin: 20px 0;
+    position: relative;
+    box-shadow: 4px 4px 20px rgba(0,0,0,0.5), inset 0 0 60px rgba(0,0,0,0.05);
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(20px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* Tape effect */
+  .scenario-card::before {
+    content: '';
+    position: absolute;
+    top: -14px; left: 50%; transform: translateX(-50%);
+    width: 80px; height: 28px;
+    background: var(--tape);
+    border: 1px solid rgba(200,170,80,0.3);
+    backdrop-filter: blur(2px);
+  }
+
+  /* Red stamp */
+  .stamp {
+    position: absolute;
+    top: 20px; right: 20px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--stamp-red);
+    border: 3px solid var(--stamp-red);
+    padding: 6px 12px;
+    letter-spacing: 3px;
+    transform: rotate(12deg);
+    opacity: 0.75;
+    text-transform: uppercase;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .scenario-label {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    color: var(--stamp-blue);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .scenario-text {
+    font-family: 'Special Elite', cursive;
+    font-size: 1rem;
+    color: var(--ink);
+    line-height: 1.85;
+  }
+
+  /* === MISSION OBJECTIVES === */
+  .objectives-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0;
+    animation: fadeUp 0.8s 0.35s ease both;
+  }
+
+  @media(max-width: 650px) {
+    .objectives-section { grid-template-columns: 1fr; }
+  }
+
+  .obj-card {
+    background: #111009;
+    border: 1px solid #3a3020;
+    border-left: 4px solid var(--gold);
+    padding: 18px 20px;
+    position: relative;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+
+  .obj-card:hover {
+    border-left-color: var(--stamp-red);
+    transform: translateX(4px);
+  }
+
+  .obj-number {
+    font-family: 'Oswald', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: rgba(200,168,75,0.15);
+    position: absolute;
+    top: 8px; right: 14px;
+    line-height: 1;
+  }
+
+  .obj-title {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .obj-text {
+    color: #b8a88a;
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+
+  /* === EVIDENCE SECTION === */
+  .section-title {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 0.65rem;
+    letter-spacing: 5px;
+    color: var(--gold);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 0 14px;
+  }
+
+  .section-title::before, .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #5a4a30);
+  }
+  .section-title::after {
+    background: linear-gradient(to left, transparent, #5a4a30);
+  }
+
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+    margin: 14px 0;
+    animation: fadeUp 0.8s 0.45s ease both;
+  }
+
+  .evidence-item {
+    background: var(--aged);
+    background-image: linear-gradient(135deg, var(--aged) 0%, #ddd0b8 100%);
+    border: 1px solid #c0aa88;
+    padding: 14px;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+  }
+
+  .evidence-item:hover {
+    transform: translateY(-4px) rotate(1deg);
+    box-shadow: 4px 8px 20px rgba(0,0,0,0.5);
+    z-index: 10;
+  }
+
+  .evidence-item.found { border-color: var(--evidence); }
+  .evidence-item.nothing { opacity: 0.6; }
+
+  .evidence-tag {
+    position: absolute;
+    top: -10px; left: 50%; transform: translateX(-50%);
+    background: var(--stamp-blue);
+    color: #fff;
+    font-size: 0.6rem;
+    padding: 2px 8px;
+    letter-spacing: 2px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+  }
+
+  .evidence-tag.key { background: var(--evidence); }
+  .evidence-tag.clear { background: #555; }
+
+  .evidence-icon { font-size: 2rem; margin: 8px 0 6px; display: block; }
+  .evidence-name {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    color: var(--ink);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .evidence-note {
+    font-size: 0.65rem;
+    color: #666;
+    line-height: 1.4;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  /* === SKILLS CHART TABLE === */
+  .skills-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--paper);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    box-shadow: 4px 4px 20px rgba(0,0,0,0.5);
+    animation: fadeUp 0.8s 0.5s ease both;
+    margin: 14px 0 24px;
+  }
+
+  .skills-table th {
+    background: var(--stamp-blue);
+    color: #fff;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    letter-spacing: 2px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+    border: 1px solid #122050;
+  }
+
+  .skills-table td {
+    padding: 11px 16px;
+    border: 1px solid #c0aa88;
+    vertical-align: top;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  .skills-table tr:nth-child(even) td { background: #ede5d2; }
+  .skills-table tr:hover td { background: #d8ccb8; }
+
+  .skill-name {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--stamp-blue);
+    letter-spacing: 1px;
+  }
+
+  /* === QUESTIONS === */
+  .questions-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    animation: fadeUp 0.8s 0.55s ease both;
+    margin: 14px 0;
+  }
+
+  .question-card {
+    background: #0d0c09;
+    border: 1px solid #3a3020;
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .question-card::before {
+    content: '?';
+    position: absolute;
+    right: 20px; top: 10px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 5rem;
+    color: rgba(200,168,75,0.07);
+    line-height: 1;
+  }
+
+  .q-number {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 0.6rem;
+    letter-spacing: 4px;
+    color: var(--stamp-red);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .q-text {
+    color: #c8b890;
+    font-family: 'Special Elite', cursive;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* === ACCESS BUTTON === */
+  .lab-access {
+    text-align: center;
+    margin: 28px 0;
+    animation: fadeUp 0.8s 0.6s ease both;
+  }
+
+  .lab-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #8b1a1a 0%, #5a0d0d 100%);
+    color: #fff;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 18px 40px;
+    border: 2px solid #c03030;
+    position: relative;
+    transition: all 0.25s;
+    box-shadow: 0 0 30px rgba(139,26,26,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+    cursor: pointer;
+  }
+
+  .lab-btn::before {
+    content: '▶  ';
+    font-size: 0.7rem;
+    opacity: 0.8;
+  }
+
+  .lab-btn:hover {
+    background: linear-gradient(135deg, #a82020 0%, #6e1010 100%);
+    box-shadow: 0 0 50px rgba(200,30,30,0.6), inset 0 1px 0 rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+    letter-spacing: 6px;
+  }
+
+  .lab-btn:active { transform: translateY(0); }
+
+  .lab-note {
+    color: #666;
+    font-size: 0.7rem;
+    margin-top: 10px;
+    letter-spacing: 2px;
+  }
+
+  /* === STEPS TIMELINE === */
+  .timeline {
+    position: relative;
+    padding-left: 30px;
+    margin: 14px 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+
+  .timeline-step {
+    position: relative;
+    margin-bottom: 18px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .timeline-step::before {
+    content: attr(data-num);
+    position: absolute;
+    left: -30px; top: 2px;
+    width: 20px; height: 20px;
+    background: var(--stamp-blue);
+    color: #fff;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 0.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  .step-label {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .step-text {
+    color: #a09070;
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+
+  /* === FOOTER === */
+  .case-footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    border-top: 1px solid #2a2018;
+    color: #444;
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  /* pulse animation on key evidence */
+  @keyframes pulse-border {
+    0%,100% { box-shadow: 0 0 0 0 rgba(139,26,26,0.4), 2px 2px 8px rgba(0,0,0,0.3); }
+    50%      { box-shadow: 0 0 0 6px rgba(139,26,26,0), 2px 2px 8px rgba(0,0,0,0.3); }
+  }
+  .evidence-item.found { animation: pulse-border 2.5s infinite; }
+</style>
+</head>
+<body>
+
+<div class="case-board">
+
+  <!-- HEADER -->
+  <div class="case-header">
+    <div class="classified-banner">⚠ Classified — Authorized Personnel Only</div>
+    <div class="case-title">The Diamond Heist</div>
+    <div class="case-subtitle">Digital Forensics Investigation</div>
+    <div class="case-number">CASE FILE #4.3.1 &nbsp;|&nbsp; PLTW CYBERSECURITY UNIT 4 &nbsp;|&nbsp; ACTIVE</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SCENARIO -->
+  <div class="scenario-card">
+    <div class="stamp">TOP<br>SECRET</div>
+    <div class="scenario-label">📋 Incident Report — Case Summary</div>
+    <p class="scenario-text">
+      A high-profile diamond heist has rocked the city. A suspect has been apprehended and is currently in custody — but the stolen diamond is still missing, and we don't know if they acted alone.<br><br>
+      A backpack was recovered at the scene. After a physical search, investigators discovered a <strong>USB flash drive disguised as a pen</strong>. This device may hold the key to the entire operation.<br><br>
+      Your digital forensics team has been called in. You have the skills. You have the tools. It's time to find the truth.
+    </p>
+  </div>
+
+  <!-- OBJECTIVES -->
+  <div class="section-title">Mission Objectives</div>
+  <div class="objectives-section">
+    <div class="obj-card">
+      <div class="obj-number">01</div>
+      <div class="obj-title">🔍 Did They Do It?</div>
+      <div class="obj-text">Determine whether the suspect committed the crime. Find digital evidence that places them at the scene or links them to the heist.</div>
+    </div>
+    <div class="obj-card">
+      <div class="obj-number">02</div>
+      <div class="obj-title">🧩 How Was It Done?</div>
+      <div class="obj-text">Reconstruct how the heist was engineered. Trace the digital trail — encrypted files, emails, ciphers, and hidden data.</div>
+    </div>
+    <div class="obj-card">
+      <div class="obj-number">03</div>
+      <div class="obj-title">👥 Accomplices?</div>
+      <div class="obj-text">Determine if the suspect worked alone or had help. Look for communications, IP traces, and patterns that reveal a network of co-conspirators.</div>
+    </div>
+    <div class="obj-card">
+      <div class="obj-number">04</div>
+      <div class="obj-title">💎 Where Is the Diamond?</div>
+      <div class="obj-text">The stolen diamond is still missing. Use your forensic findings to uncover its location before it disappears for good.</div>
+    </div>
+  </div>
+
+  <!-- EVIDENCE FROM BACKPACK -->
+  <div class="section-title">Physical Evidence — Suspect's Backpack</div>
+  <div class="evidence-grid">
+    <div class="evidence-item found">
+      <div class="evidence-tag key">KEY EVIDENCE</div>
+      <span class="evidence-icon">🖊️</span>
+      <div class="evidence-name">USB Flash Drive</div>
+      <div class="evidence-note">Disguised as a pen. PRIMARY DEVICE — begin forensic imaging immediately.</div>
+    </div>
+    <div class="evidence-item">
+      <div class="evidence-tag">EXAMINE</div>
+      <span class="evidence-icon">📓</span>
+      <div class="evidence-name">Notebook #1</div>
+      <div class="evidence-note">Check for hidden items taped inside covers.</div>
+    </div>
+    <div class="evidence-item">
+      <div class="evidence-tag">EXAMINE</div>
+      <span class="evidence-icon">📔</span>
+      <div class="evidence-name">Notebook #2</div>
+      <div class="evidence-note">May contain passwords, identifying info, or coded messages.</div>
+    </div>
+    <div class="evidence-item nothing">
+      <div class="evidence-tag clear">CLEAR</div>
+      <span class="evidence-icon">✂️</span>
+      <div class="evidence-name">Scissors</div>
+      <div class="evidence-note">Nothing unusual. Log and set aside.</div>
+    </div>
+    <div class="evidence-item nothing">
+      <div class="evidence-tag clear">CLEAR</div>
+      <span class="evidence-icon">🖍️</span>
+      <div class="evidence-name">Colored Pencils</div>
+      <div class="evidence-note">Regular pencils. Nothing special.</div>
+    </div>
+    <div class="evidence-item nothing">
+      <div class="evidence-tag clear">CLEAR</div>
+      <span class="evidence-icon">🖌️</span>
+      <div class="evidence-name">Markers</div>
+      <div class="evidence-note">No hidden compartments. Keep searching.</div>
+    </div>
+    <div class="evidence-item nothing">
+      <div class="evidence-tag clear">CLEAR</div>
+      <span class="evidence-icon">🎒</span>
+      <div class="evidence-name">Front Pocket</div>
+      <div class="evidence-note">Empty. Nothing unusual in the front pouch.</div>
+    </div>
+  </div>
+
+  <!-- FORENSIC SKILLS -->
+  <div class="section-title">Team Skills Inventory</div>
+  <p style="color:#666; font-size:0.75rem; margin-bottom:10px; letter-spacing:1px;">Each team member should own one of the following skill areas. Document your process in your CS Notebook.</p>
+  <table class="skills-table">
+    <thead>
+      <tr>
+        <th>Skill / Technology</th>
+        <th>Brief Description</th>
+        <th>Process Overview</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div class="skill-name">Cipher Cracking</div></td>
+        <td>Decoding encrypted messages using substitution, transposition, or other cipher methods.</td>
+        <td>Identify cipher type → Apply decryption method → Verify readable output</td>
+      </tr>
+      <tr>
+        <td><div class="skill-name">Encrypting Containers</div></td>
+        <td>Securing files and drives using encryption tools; also decrypting evidence containers.</td>
+        <td>Identify encrypted container → Obtain/crack key → Mount & extract contents</td>
+      </tr>
+      <tr>
+        <td><div class="skill-name">Pattern & Keyword Search</div></td>
+        <td>Scanning files and drives for specific terms, metadata, or suspicious patterns.</td>
+        <td>Define keywords → Run search tool → Catalog & analyze results</td>
+      </tr>
+      <tr>
+        <td><div class="skill-name">Chain of Custody</div></td>
+        <td>Completing legal documentation tracking every item of evidence from discovery to court.</td>
+        <td>Tag evidence → Fill custody form → Log every transfer with signature & time</td>
+      </tr>
+      <tr>
+        <td><div class="skill-name">Drive Imaging</div></td>
+        <td>Creating a bit-for-bit copy of a drive or folder to preserve original evidence.</td>
+        <td>Write-block original → Use imaging tool → Hash-verify the copy</td>
+      </tr>
+      <tr>
+        <td><div class="skill-name">Email Tracing</div></td>
+        <td>Analyzing email headers to trace origin, route, and authenticity of messages.</td>
+        <td>Extract full headers → Identify originating IP → Geolocate & verify</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- INVESTIGATION STEPS -->
+  <div class="section-title">Investigation Protocol</div>
+  <div class="timeline">
+    <div class="timeline-step" data-num="1" style="animation-delay:0.1s">
+      <div class="step-label">Review & Prepare</div>
+      <div class="step-text">Read all steps and review the Problem 4.3.1 Rubric before beginning. Establish team norms — agree on at least 3 collaboration practices.</div>
+    </div>
+    <div class="timeline-step" data-num="2" style="animation-delay:0.2s">
+      <div class="step-label">Divide the Skills</div>
+      <div class="step-text">Each team member takes ownership of one skill/technology from the inventory above. Prepare a brief overview to share with your team.</div>
+    </div>
+    <div class="timeline-step" data-num="3" style="animation-delay:0.3s">
+      <div class="step-label">Brief the Team</div>
+      <div class="step-text">Share your skill with teammates. Complete the Skill/Technology chart in your CS Notebook as each person presents.</div>
+    </div>
+    <div class="timeline-step" data-num="4" style="animation-delay:0.4s">
+      <div class="step-label">Create a Plan of Action</div>
+      <div class="step-text">How will you investigate the USB drive? Decide your approach as a team. Document everything — screenshots, reports, and careful notes.</div>
+    </div>
+    <div class="timeline-step" data-num="5" style="animation-delay:0.5s">
+      <div class="step-label">Launch the Lab</div>
+      <div class="step-text">Access the PLTW Security Lab 4.3.1 using the button below. Conduct a thorough investigation of the USB flash drive following your plan.</div>
+    </div>
+    <div class="timeline-step" data-num="6" style="animation-delay:0.6s">
+      <div class="step-label">Document & Analyze</div>
+      <div class="step-text">Answer the four key questions: Did they do it? How? Alone? Where is the diamond? Record all findings in your CS Notebook.</div>
+    </div>
+    <div class="timeline-step" data-num="7" style="animation-delay:0.7s">
+      <div class="step-label">Present & Reflect</div>
+      <div class="step-text">Create a computational artifact showing your team's approach and results. Reflect on your collaboration — what worked, what to improve.</div>
+    </div>
+  </div>
+
+  <!-- LAB ACCESS BUTTON -->
+  <div class="lab-access">
+    <a href="https://my.pltw.org/cyber/lab/431" target="_blank" class="lab-btn">Launch PLTW Lab 4.3.1</a>
+    <div class="lab-note">Opens PLTW Security Lab — Sign in with your PLTW credentials</div>
+  </div>
+
+  <!-- REFLECTION QUESTIONS -->
+  <div class="section-title">Reflection Debrief</div>
+  <div class="questions-grid">
+    <div class="question-card">
+      <div class="q-number">Debrief Question 01</div>
+      <div class="q-text">What were the most useful functions or tools that you used to perform this investigation? Why were they effective?</div>
+    </div>
+    <div class="question-card">
+      <div class="q-number">Debrief Question 02</div>
+      <div class="q-text">Thinking like the attacker — what could the diamond thieves have done differently to prevent you from discovering their plan?</div>
+    </div>
+    <div class="question-card">
+      <div class="q-number">Debrief Question 03</div>
+      <div class="q-text">In what ways can forensic investigations benefit from diverse teams? How did your team's different skills contribute to solving the case?</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="case-footer">
+    PLTW Cybersecurity &nbsp;|&nbsp; Problem 4.3.1 — Solve the Crime &nbsp;|&nbsp; Case #431 &nbsp;|&nbsp; Digital Forensics Division
+  </div>
+
+</div>
+
+</body>
+</html>
