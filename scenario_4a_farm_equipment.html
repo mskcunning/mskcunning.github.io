@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scenario 4A — Designing Secure Connected Farm Equipment</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0f14;
+  --surface: #13161e;
+  --surface2: #1a1e28;
+  --surface3: #222736;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --accent: #ff8c42;
+  --accent2: #ffd166;
+  --blue: #4d9fff;
+  --green: #3ddc84;
+  --red: #ff4d4d;
+  --yellow: #ffd166;
+  --text: #e8eaf0;
+  --text2: #9099b0;
+  --text3: #5a6378;
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+  --display: 'Syne', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 15px; line-height: 1.7; min-height: 100vh; }
+
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.4;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+/* HERO */
+.hero { position: relative; padding: 4rem 2rem 3rem; max-width: 860px; margin: 0 auto; text-align: center; }
+.hero-tag { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); padding: 4px 12px; border-radius: 2px; margin-bottom: 1.5rem; }
+.hero h1 { font-family: var(--display); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1rem; background: linear-gradient(135deg, #fff 40%, #ff8c42); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero p { color: var(--text2); font-size: 16px; max-width: 520px; margin: 0 auto 2rem; }
+
+/* TAB NAV */
+.tab-nav { display: flex; flex-wrap: wrap; gap: 4px; max-width: 860px; margin: 0 auto 2rem; padding: 0 1.5rem; }
+.tab-nav::-webkit-scrollbar { display: none; }
+.tab-btn { flex-shrink: 0; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 16px; border: 1px solid var(--border2); background: var(--surface); color: var(--text2); cursor: pointer; border-radius: 4px; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+.tab-btn .num { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; background: var(--surface3); font-size: 10px; color: var(--text3); }
+.tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.tab-btn.active .num { background: rgba(0,0,0,0.25); color: #fff; }
+.tab-btn:hover:not(.active) { border-color: var(--border2); color: var(--text); background: var(--surface2); }
+.export-btn { background: #1a3d2b !important; border-color: var(--green) !important; color: var(--green) !important; font-weight: 500; }
+.export-btn:hover { background: var(--green) !important; color: #000 !important; }
+
+/* MAIN */
+main { max-width: 860px; margin: 0 auto; padding: 0 1.5rem 4rem; position: relative; z-index: 1; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: fadeUp 0.3s ease; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+.card-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); margin-bottom: 0.75rem; }
+
+/* ALERTS */
+.alert { border-radius: 8px; padding: 14px 16px; font-size: 14px; line-height: 1.6; margin-bottom: 1rem; display: flex; gap: 10px; align-items: start; }
+.alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.alert-warn { background: rgba(255,209,102,0.1); border: 1px solid rgba(255,209,102,0.2); color: var(--yellow); }
+.alert-info { background: rgba(77,159,255,0.1); border: 1px solid rgba(77,159,255,0.2); color: var(--blue); }
+.alert-danger { background: rgba(255,77,77,0.1); border: 1px solid rgba(255,77,77,0.2); color: #ff8a8a; }
+.alert-green { background: rgba(61,220,132,0.1); border: 1px solid rgba(61,220,132,0.2); color: var(--green); }
+
+/* SECTION HEADERS */
+.section-title { font-family: var(--display); font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 0.375rem; }
+.section-sub { font-size: 14px; color: var(--text2); margin-bottom: 1.5rem; }
+
+/* NAME GATE */
+.name-gate-wrap { display: flex; justify-content: center; align-items: center; padding: 3rem 1rem; }
+.name-gate-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 12px; padding: 2rem; max-width: 460px; width: 100%; text-align: center; }
+.name-gate-title { font-family: var(--display); font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 0.5rem; }
+.name-gate-sub { font-size: 14px; color: var(--text2); line-height: 1.6; }
+
+/* BRIEFING */
+.brief-role { background: var(--surface2); border: 1px solid var(--border2); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+.brief-role-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+.brief-role-text { font-size: 14px; color: var(--text); line-height: 1.65; }
+.task-list { display: flex; flex-direction: column; gap: 8px; margin-top: 0.75rem; }
+.task-item { display: flex; align-items: start; gap: 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 14px; color: var(--text2); }
+.task-num { font-family: var(--mono); font-size: 11px; color: var(--accent); font-weight: 500; flex-shrink: 0; margin-top: 1px; }
+.equipment-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 0.75rem; }
+.equip-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; }
+.equip-icon { font-size: 24px; margin-bottom: 6px; }
+.equip-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+.equip-detail { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+
+/* VULNERABILITY EXPLORER */
+.vuln-grid { display: flex; flex-direction: column; gap: 0.75rem; }
+.vuln-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; }
+.vuln-header { display: flex; align-items: center; gap: 12px; padding: 1rem 1.25rem; }
+.vuln-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.vuln-title-wrap { flex: 1; }
+.vuln-title { font-family: var(--display); font-size: 15px; font-weight: 700; color: var(--text); }
+.vuln-subtitle { font-size: 12px; color: var(--text3); font-family: var(--mono); }
+.vuln-toggle { font-size: 18px; color: var(--text3); transition: transform 0.2s; }
+.vuln-card.open .vuln-toggle { transform: rotate(90deg); }
+.vuln-body { display: none; padding: 0 1.25rem 1.25rem; border-top: 1px solid var(--border); }
+.vuln-card.open .vuln-body { display: block; animation: fadeUp 0.2s ease; }
+.vuln-body p { font-size: 14px; color: var(--text2); line-height: 1.65; margin: 0.75rem 0 0.5rem; }
+.severity-bar { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+.severity-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); width: 60px; flex-shrink: 0; }
+.severity-track { flex: 1; height: 6px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
+.severity-fill { height: 100%; border-radius: 3px; }
+.sev-high { background: var(--red); }
+.sev-med { background: var(--yellow); }
+.sev-low { background: var(--green); }
+.vuln-note-area { margin-top: 0.875rem; }
+.vuln-note-area label { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+.vuln-note-area textarea { width: 100%; background: var(--surface3); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-family: var(--sans); font-size: 13px; padding: 10px 12px; resize: vertical; min-height: 70px; outline: none; transition: border-color 0.2s; }
+.vuln-note-area textarea:focus { border-color: var(--accent); }
+
+/* RISK ASSESSMENT */
+.risk-intro { font-size: 14px; color: var(--text2); margin-bottom: 1.25rem; line-height: 1.65; }
+.risk-table { width: 100%; border-collapse: collapse; }
+.risk-table th { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); padding: 8px 12px; text-align: left; background: var(--surface2); border-bottom: 1px solid var(--border2); }
+.risk-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text2); vertical-align: top; }
+.risk-table tr:last-child td { border-bottom: none; }
+.risk-table td:first-child { color: var(--text); font-weight: 500; font-size: 13px; }
+.risk-table textarea { width: 100%; background: var(--surface3); border: 1px solid var(--border2); border-radius: 5px; color: var(--text); font-family: var(--sans); font-size: 12px; padding: 8px 10px; resize: vertical; min-height: 55px; outline: none; transition: border-color 0.2s; }
+.risk-table textarea:focus { border-color: var(--accent); }
+.risk-select { background: var(--surface3); border: 1px solid var(--border2); border-radius: 5px; color: var(--text); font-family: var(--mono); font-size: 11px; padding: 6px 10px; outline: none; cursor: pointer; width: 100%; }
+.risk-select:focus { border-color: var(--accent); }
+.badge-risk { font-family: var(--mono); font-size: 10px; padding: 3px 8px; border-radius: 3px; }
+.badge-high { background: rgba(255,77,77,0.15); color: #ff8a8a; }
+.badge-med { background: rgba(255,209,102,0.15); color: var(--yellow); }
+.badge-low { background: rgba(61,220,132,0.15); color: var(--green); }
+
+/* MITIGATIONS */
+.mit-grid { display: flex; flex-direction: column; gap: 0.75rem; }
+.mit-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
+.mit-header { display: flex; align-items: center; gap: 12px; margin-bottom: 0.75rem; }
+.mit-icon { width: 34px; height: 34px; border-radius: 8px; background: rgba(61,220,132,0.1); display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+.mit-title { font-family: var(--display); font-size: 15px; font-weight: 700; color: var(--text); }
+.mit-desc { font-size: 13px; color: var(--text2); line-height: 1.65; margin-bottom: 0.75rem; }
+.mit-check { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--surface2); border-radius: 6px; margin-bottom: 6px; cursor: pointer; }
+.mit-check input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--green); cursor: pointer; flex-shrink: 0; }
+.mit-check-label { font-size: 13px; color: var(--text2); line-height: 1.4; }
+.mit-check.checked .mit-check-label { color: var(--green); text-decoration: line-through; opacity: 0.7; }
+
+/* REPORT BUILDER */
+.report-section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; margin-bottom: 0.875rem; }
+.report-section-title { font-family: var(--display); font-size: 16px; font-weight: 700; color: var(--accent); margin-bottom: 0.375rem; }
+.report-section-hint { font-size: 13px; color: var(--text3); margin-bottom: 0.875rem; line-height: 1.5; }
+.report-section textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-family: var(--sans); font-size: 14px; padding: 12px 14px; resize: vertical; outline: none; transition: border-color 0.2s; }
+.report-section textarea:focus { border-color: var(--accent); }
+.report-section textarea.short { min-height: 80px; }
+.report-section textarea.medium { min-height: 120px; }
+.report-section textarea.tall { min-height: 160px; }
+.word-count { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 4px; text-align: right; }
+
+/* DISCUSSION */
+.disc-prompt { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; }
+.disc-prompt-q { font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--accent); margin-bottom: 0.5rem; }
+.disc-prompt-sub { font-size: 13px; color: var(--text2); }
+.comment-form-section { background: var(--surface); border: 1px solid var(--border2); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+.comment-form-section h3 { font-family: var(--display); font-size: 16px; font-weight: 700; margin-bottom: 1rem; color: var(--text); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+@media(max-width: 540px) { .form-row { grid-template-columns: 1fr; } }
+.form-field { display: flex; flex-direction: column; gap: 5px; }
+.form-field label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); }
+.form-field input, .form-field select, .form-field textarea { background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-family: var(--sans); font-size: 14px; padding: 10px 12px; outline: none; transition: border-color 0.2s; }
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--accent); }
+.form-field textarea { resize: vertical; min-height: 100px; }
+.submit-btn { margin-top: 10px; width: 100%; font-family: var(--display); font-size: 14px; font-weight: 700; padding: 12px; background: linear-gradient(90deg, var(--accent), var(--accent2)); border: none; border-radius: 6px; color: #000; cursor: pointer; letter-spacing: 0.03em; transition: opacity 0.2s; }
+.submit-btn:hover { opacity: 0.88; }
+.comments-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.comment-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.comment-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.comment-name { font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--text); }
+.comment-prompt-tag { font-family: var(--mono); font-size: 10px; padding: 2px 8px; border-radius: 3px; background: var(--surface3); color: var(--text3); }
+.comment-body { font-size: 14px; color: var(--text2); line-height: 1.6; }
+.comment-time { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 6px; }
+.like-btn { background: none; border: 1px solid var(--border); border-radius: 20px; color: var(--text3); font-size: 12px; padding: 3px 10px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 5px; font-family: var(--mono); }
+.like-btn:hover { border-color: var(--accent); color: var(--accent); }
+.like-btn.liked { border-color: var(--accent); color: var(--accent); background: rgba(255,140,66,0.1); }
+.no-comments { text-align: center; padding: 3rem 1rem; color: var(--text3); font-size: 14px; }
+.no-comments .nc-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+
+/* SAVE BUTTONS */
+.save-note-btn { margin-top: 6px; font-family: var(--mono); font-size: 11px; padding: 6px 14px; background: transparent; border: 1px solid var(--accent); color: var(--accent); border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+.save-note-btn:hover { background: var(--accent); color: #000; }
+.saved-notes { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+.saved-note { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-size: 13px; color: var(--text2); display: flex; justify-content: space-between; align-items: start; gap: 8px; }
+.delete-note { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 16px; line-height: 1; flex-shrink: 0; transition: color 0.15s; }
+.delete-note:hover { color: var(--red); }
+.reveal-all-btn { font-family: var(--mono); font-size: 11px; padding: 7px 16px; background: transparent; border: 1px solid var(--accent); color: var(--accent); border-radius: 4px; cursor: pointer; margin-bottom: 1.25rem; transition: all 0.2s; }
+.reveal-all-btn:hover { background: var(--accent); color: #000; }
+
+/* QUIZ */
+.quiz-progress { display: flex; gap: 6px; margin-bottom: 1.5rem; }
+.qp-dot { flex: 1; height: 3px; background: var(--surface3); border-radius: 2px; transition: background 0.3s; }
+.qp-dot.done { background: var(--green); }
+.qp-dot.active { background: var(--accent); }
+.quiz-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+.quiz-qnum { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); margin-bottom: 0.5rem; }
+.quiz-question { font-family: var(--display); font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 1.25rem; line-height: 1.4; }
+.choices { display: flex; flex-direction: column; gap: 8px; }
+.choice-btn { text-align: left; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-family: var(--sans); font-size: 14px; color: var(--text); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
+.choice-letter { width: 22px; height: 22px; border-radius: 50%; background: var(--surface3); border: 1px solid var(--border2); font-family: var(--mono); font-size: 10px; display: flex; align-items: center; justify-content: center; color: var(--text3); flex-shrink: 0; transition: all 0.2s; }
+.choice-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--surface3); }
+.choice-btn:hover:not(:disabled) .choice-letter { border-color: var(--accent); color: var(--accent); }
+.choice-btn.correct { border-color: var(--green); background: rgba(61,220,132,0.07); }
+.choice-btn.correct .choice-letter { background: var(--green); border-color: var(--green); color: #000; }
+.choice-btn.wrong { border-color: var(--red); background: rgba(255,77,77,0.07); }
+.choice-btn.wrong .choice-letter { background: var(--red); border-color: var(--red); color: #fff; }
+.quiz-feedback { margin-top: 0.875rem; padding: 12px 14px; border-radius: 8px; font-size: 13px; line-height: 1.6; display: none; }
+.quiz-feedback.show { display: block; animation: fadeUp 0.2s ease; }
+.quiz-feedback.good { background: rgba(61,220,132,0.1); color: var(--green); border: 1px solid rgba(61,220,132,0.2); }
+.quiz-feedback.bad { background: rgba(255,77,77,0.1); color: #ff8a8a; border: 1px solid rgba(255,77,77,0.2); }
+.next-q-btn { margin-top: 1rem; font-family: var(--mono); font-size: 11px; padding: 8px 18px; background: transparent; border: 1px solid var(--blue); color: var(--blue); border-radius: 4px; cursor: pointer; display: none; transition: all 0.2s; }
+.next-q-btn:hover { background: var(--blue); color: #000; }
+.next-q-btn.show { display: inline-block; }
+.score-display { background: var(--surface2); border: 1px solid var(--border2); border-radius: 12px; padding: 2rem; text-align: center; display: none; }
+.score-display.show { display: block; animation: fadeUp 0.3s ease; }
+.score-big { font-family: var(--display); font-size: 4rem; font-weight: 800; background: linear-gradient(135deg, var(--green), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; margin-bottom: 0.5rem; }
+.retry-btn { font-family: var(--mono); font-size: 11px; padding: 8px 20px; border: 1px solid var(--text3); background: transparent; color: var(--text2); border-radius: 4px; cursor: pointer; margin-right: 8px; transition: all 0.2s; }
+.retry-btn:hover { border-color: var(--text); color: var(--text); }
+
+/* TIPS GRID */
+.tips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.tip-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; transition: border-color 0.2s; }
+.tip-card:hover { border-color: var(--border2); }
+.tip-icon-wrap { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 0.75rem; }
+.tip-card h4 { font-family: var(--display); font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.tip-card p { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+/* NMAP LAB */
+.nmap-part { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 0.75rem; overflow: hidden; }
+.nmap-part-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; cursor: pointer; transition: background 0.15s; }
+.nmap-part-header:hover { background: var(--surface2); }
+.nmap-part-left { display: flex; align-items: center; gap: 12px; }
+.nmap-part-num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); background: var(--surface3); padding: 3px 9px; border-radius: 3px; flex-shrink: 0; }
+.nmap-part-title { font-family: var(--display); font-size: 15px; font-weight: 700; color: var(--text); }
+.nmap-chevron { font-size: 20px; color: var(--text3); transition: transform 0.2s; }
+.nmap-part.open .nmap-chevron { transform: rotate(90deg); }
+.nmap-part-body { padding: 0 1.25rem 1.25rem; border-top: 1px solid var(--border); }
+.nmap-explain { margin: 0.875rem 0; }
+.nmap-explain p { font-size: 14px; color: var(--text2); line-height: 1.65; margin-bottom: 0.75rem; }
+.nmap-explain p strong { color: var(--text); }
+.nmap-explain code { font-family: var(--mono); font-size: 12px; background: var(--surface3); padding: 2px 6px; border-radius: 3px; color: var(--accent); }
+.nmap-cmd-block { background: #0a0c10; border: 1px solid var(--border2); border-radius: 8px; padding: 1rem 1.25rem; margin: 0.875rem 0; }
+.nmap-cmd-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+.nmap-cmd { font-family: var(--mono); font-size: 15px; margin-bottom: 6px; }
+.cmd-prog { color: var(--green); }
+.cmd-flag { color: var(--accent); }
+.cmd-arg { color: var(--blue); }
+.nmap-cmd-note { font-size: 12px; color: var(--text3); line-height: 1.5; }
+.nmap-fields { display: flex; flex-direction: column; gap: 0; margin-top: 0.875rem; }
+.nmap-input { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-family: var(--sans); font-size: 13px; padding: 10px 12px; outline: none; transition: border-color 0.2s; }
+.nmap-input:focus { border-color: var(--accent); }
+textarea.nmap-input { resize: vertical; }
+.tag-open { font-family: var(--mono); font-size: 11px; background: rgba(61,220,132,0.15); color: var(--green); padding: 1px 6px; border-radius: 3px; }
+.tag-closed { font-family: var(--mono); font-size: 11px; background: rgba(255,77,77,0.15); color: #ff8a8a; padding: 1px 6px; border-radius: 3px; }
+.tag-filtered { font-family: var(--mono); font-size: 11px; background: rgba(255,209,102,0.15); color: var(--yellow); padding: 1px 6px; border-radius: 3px; }
+.nmap-resource-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 0.875rem; }
+.resource-link { font-family: var(--mono); font-size: 11px; padding: 6px 12px; border: 1px solid var(--border2); border-radius: 4px; color: var(--blue); text-decoration: none; background: var(--surface2); transition: all 0.2s; }
+.resource-link:hover { border-color: var(--blue); background: var(--surface3); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
+
+footer { text-align: center; padding: 2rem; font-family: var(--mono); font-size: 11px; color: var(--text3); letter-spacing: 0.05em; border-top: 1px solid var(--border); max-width: 860px; margin: 0 auto; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-tag">Scenario 4A — Unit 4: Securing Devices</div>
+  <h1>Designing Secure<br>Connected Farm<br>Equipment</h1>
+  <p>You're a security engineer. Farm machinery is under attack. Your boss needs a report — now.</p>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('briefing')"><span class="num">1</span> Briefing</button>
+  <button class="tab-btn" onclick="switchTab('vulns')"><span class="num">2</span> Vulnerabilities</button>
+  <button class="tab-btn" onclick="switchTab('risk')"><span class="num">3</span> Risk Assessment</button>
+  <button class="tab-btn" onclick="switchTab('mitigations')"><span class="num">4</span> Mitigations</button>
+  <button class="tab-btn" onclick="switchTab('nmap')"><span class="num">5</span> Nmap Lab</button>
+  <button class="tab-btn" onclick="switchTab('quiz')"><span class="num">6</span> Quiz</button>
+  <button class="tab-btn" onclick="switchTab('discuss')"><span class="num">7</span> Discussion</button>
+  <button class="tab-btn export-btn" onclick="exportDoc()">⬇ Export PDF</button>
+</div>
+
+<main>
+
+<!-- ===================== BRIEFING ===================== -->
+<div id="tab-briefing" class="tab-panel active">
+
+  <div id="name-gate" class="name-gate-wrap">
+    <div class="name-gate-card">
+      <div class="name-gate-title">Security Engineer Briefing</div>
+      <div class="name-gate-sub">Enter your name to begin. You'll be playing the role of a security engineer. Your findings will export as a professional PDF report.</div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:1rem;">
+        <input type="text" id="student-name-input" placeholder="Your name" style="flex:1;min-width:180px;" onkeydown="if(event.key==='Enter')startLesson()">
+        <button class="submit-btn" style="width:auto;padding:10px 24px;margin-top:0;" onclick="startLesson()">Begin Mission →</button>
+      </div>
+      <div id="name-gate-error" style="color:var(--red);font-size:13px;margin-top:8px;display:none;">Please enter your name to continue.</div>
+    </div>
+  </div>
+
+  <div id="lesson-content" style="display:none;">
+    <div class="section-title">Your Briefing</div>
+    <div class="section-sub">Read carefully. You have a job to do.</div>
+
+    <div class="alert alert-warn">
+      <span class="alert-icon">⚠</span>
+      <span>There have been confirmed cyberattacks against agricultural machinery in the field. Your company's equipment may be vulnerable. Your boss needs a report — today.</span>
+    </div>
+
+    <div class="brief-role">
+      <div class="brief-role-label">Your Role</div>
+      <div class="brief-role-text">You work as a <strong>security engineer</strong> for a company that manufactures internet-connected machinery for agricultural purposes. These machines have onboard computers, remote control capability, and some use GPS for autonomous navigation. The computers are updated on an as-needed basis only.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:1rem;">
+      <div class="card-label">Equipment in the field</div>
+      <div class="equipment-grid">
+        <div class="equip-card">
+          <div class="equip-icon">🚜</div>
+          <div class="equip-name">Tractors</div>
+          <div class="equip-detail">GPS + remote control</div>
+        </div>
+        <div class="equip-card">
+          <div class="equip-icon">💧</div>
+          <div class="equip-name">Irrigation Tools</div>
+          <div class="equip-detail">Internet-connected sensors</div>
+        </div>
+        <div class="equip-card">
+          <div class="equip-icon">🐄</div>
+          <div class="equip-name">Milking Machines</div>
+          <div class="equip-detail">Automated dairy systems</div>
+        </div>
+        <div class="equip-card">
+          <div class="equip-icon">📡</div>
+          <div class="equip-name">Onboard Computers</div>
+          <div class="equip-detail">Remote-updatable firmware</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:1.5rem;">
+      <div class="card-label">Your mission — you will:</div>
+      <div class="task-list">
+        <div class="task-item"><span class="task-num">01</span>Research how an adversary might exploit internet-connected farm equipment and assess the risk from possible vulnerabilities</div>
+        <div class="task-item"><span class="task-num">02</span>Determine possible mitigation strategies to help secure the equipment</div>
+        <div class="task-item"><span class="task-num">03</span>Produce a report for your manager summarizing your findings and making recommendations</div>
+      </div>
+    </div>
+
+    <div class="alert alert-info">
+      <span class="alert-icon">💡</span>
+      <span>Work through each tab in order. Your observations, risk ratings, and mitigation selections will all appear in your final exported PDF report.</span>
+    </div>
+
+    <div style="margin-top:1.5rem;">
+      <div class="card-label" style="margin-bottom:0.5rem;">Initial observations</div>
+      <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:1rem;">
+        <label style="display:block;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">What concerns you most about this scenario before you begin?</label>
+        <textarea id="briefing-note-input" style="width:100%;background:var(--surface3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--sans);font-size:13px;padding:10px 12px;resize:vertical;min-height:70px;outline:none;" placeholder="Note your initial thoughts..."></textarea>
+        <button class="save-note-btn" onclick="saveNote('briefing')">Save note</button>
+        <div class="saved-notes" id="briefing-saved-notes"></div>
+      </div>
+    </div>
+
+    <button class="reveal-all-btn" style="margin-top:1.25rem;" onclick="switchTab('vulns')">Investigate vulnerabilities →</button>
+  </div>
+</div>
+
+<!-- ===================== VULNERABILITIES ===================== -->
+<div id="tab-vulns" class="tab-panel">
+  <div class="section-title">Vulnerability Investigation</div>
+  <div class="section-sub">Click each vulnerability to reveal how an adversary could exploit it. Annotate your findings as you go.</div>
+
+  <button class="reveal-all-btn" onclick="revealAllVulns()">Reveal all vulnerabilities</button>
+
+  <div class="vuln-grid">
+
+    <div class="vuln-card" id="vuln-0" onclick="toggleVuln(0)">
+      <div class="vuln-header">
+        <div class="vuln-icon" style="background:rgba(255,77,77,0.12);">🌐</div>
+        <div class="vuln-title-wrap">
+          <div class="vuln-title">Unencrypted Remote Communications</div>
+          <div class="vuln-subtitle">Network layer · High severity</div>
+        </div>
+        <div class="vuln-toggle">›</div>
+      </div>
+      <div class="vuln-body">
+        <p>Farm equipment communicates with remote control applications over the internet. If these communications are not encrypted, an adversary can intercept commands and data using a man-in-the-middle (MitM) attack. They could observe what the farmer is doing, inject false commands, or steal operational data.</p>
+        <div class="severity-bar"><div class="severity-label">Likelihood</div><div class="severity-track"><div class="severity-fill sev-high" style="width:80%"></div></div></div>
+        <div class="severity-bar"><div class="severity-label">Impact</div><div class="severity-track"><div class="severity-fill sev-high" style="width:90%"></div></div></div>
+        <div class="vuln-note-area">
+          <label>Your annotation — what could an adversary do with this access?</label>
+          <textarea id="vnote-0" placeholder="e.g. Send false GPS coordinates to redirect an autonomous tractor..."></textarea>
+          <button class="save-note-btn" onclick="saveVulnNote(0)">Save</button>
+          <div class="saved-notes" id="vsaved-0"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vuln-card" id="vuln-1" onclick="toggleVuln(1)">
+      <div class="vuln-header">
+        <div class="vuln-icon" style="background:rgba(255,209,102,0.12);">🔓</div>
+        <div class="vuln-title-wrap">
+          <div class="vuln-title">Weak or Default Authentication</div>
+          <div class="vuln-subtitle">Access control · High severity</div>
+        </div>
+        <div class="vuln-toggle">›</div>
+      </div>
+      <div class="vuln-body">
+        <p>Many embedded IoT devices — including farm equipment — ship with default usernames and passwords (e.g., "admin/admin"). Farmers may never change these. An adversary who finds the device on the internet can attempt default credentials or run a password-spraying attack and gain full control of the machine.</p>
+        <div class="severity-bar"><div class="severity-label">Likelihood</div><div class="severity-track"><div class="severity-fill sev-high" style="width:85%"></div></div></div>
+        <div class="severity-bar"><div class="severity-label">Impact</div><div class="severity-track"><div class="severity-fill sev-high" style="width:95%"></div></div></div>
+        <div class="vuln-note-area">
+          <label>Your annotation — how would you find and exploit this vulnerability?</label>
+          <textarea id="vnote-1" placeholder="e.g. Use Shodan to find internet-exposed devices, then try default credentials..."></textarea>
+          <button class="save-note-btn" onclick="saveVulnNote(1)">Save</button>
+          <div class="saved-notes" id="vsaved-1"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vuln-card" id="vuln-2" onclick="toggleVuln(2)">
+      <div class="vuln-header">
+        <div class="vuln-icon" style="background:rgba(255,77,77,0.12);">📦</div>
+        <div class="vuln-title-wrap">
+          <div class="vuln-title">Unpatched Firmware &amp; Software</div>
+          <div class="vuln-subtitle">Patch management · High severity</div>
+        </div>
+        <div class="vuln-toggle">›</div>
+      </div>
+      <div class="vuln-body">
+        <p>The scenario states machines are updated "on an as-needed basis only." This means the embedded computers may be running outdated software with known, publicly documented vulnerabilities (CVEs). Adversaries actively scan for unpatched devices and exploit these weaknesses. A ransomware actor could lock a tractor's controls during harvest season — the worst possible time.</p>
+        <div class="severity-bar"><div class="severity-label">Likelihood</div><div class="severity-track"><div class="severity-fill sev-high" style="width:75%"></div></div></div>
+        <div class="severity-bar"><div class="severity-label">Impact</div><div class="severity-track"><div class="severity-fill sev-high" style="width:90%"></div></div></div>
+        <div class="vuln-note-area">
+          <label>Your annotation — why is "update when needed" a dangerous policy for IoT?</label>
+          <textarea id="vnote-2" placeholder="e.g. IoT devices in the field are hard to update manually, so patches get skipped..."></textarea>
+          <button class="save-note-btn" onclick="saveVulnNote(2)">Save</button>
+          <div class="saved-notes" id="vsaved-2"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vuln-card" id="vuln-3" onclick="toggleVuln(3)">
+      <div class="vuln-header">
+        <div class="vuln-icon" style="background:rgba(255,209,102,0.12);">📍</div>
+        <div class="vuln-title-wrap">
+          <div class="vuln-title">GPS Spoofing &amp; Signal Manipulation</div>
+          <div class="vuln-subtitle">Positioning system · Medium severity</div>
+        </div>
+        <div class="vuln-toggle">›</div>
+      </div>
+      <div class="vuln-body">
+        <p>Autonomous tractors and equipment that navigate using GPS are vulnerable to GPS spoofing — where an adversary broadcasts a fake GPS signal stronger than the real satellite signal. The machine then "believes" it is in a different location and can be steered off course, potentially causing physical damage to crops, property, or people. GPS signals are unencrypted and unauthenticated by default.</p>
+        <div class="severity-bar"><div class="severity-label">Likelihood</div><div class="severity-track"><div class="severity-fill sev-med" style="width:50%"></div></div></div>
+        <div class="severity-bar"><div class="severity-label">Impact</div><div class="severity-track"><div class="severity-fill sev-high" style="width:80%"></div></div></div>
+        <div class="vuln-note-area">
+          <label>Your annotation — what physical harm could GPS spoofing cause on a farm?</label>
+          <textarea id="vnote-3" placeholder="e.g. A tractor could be redirected into a ditch or toward workers in the field..."></textarea>
+          <button class="save-note-btn" onclick="saveVulnNote(3)">Save</button>
+          <div class="saved-notes" id="vsaved-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vuln-card" id="vuln-4" onclick="toggleVuln(4)">
+      <div class="vuln-header">
+        <div class="vuln-icon" style="background:rgba(77,159,255,0.12);">☁️</div>
+        <div class="vuln-title-wrap">
+          <div class="vuln-title">Insecure Remote Update Mechanism</div>
+          <div class="vuln-subtitle">Supply chain · High severity</div>
+        </div>
+        <div class="vuln-toggle">›</div>
+      </div>
+      <div class="vuln-body">
+        <p>If firmware updates are delivered over an unencrypted or unauthenticated channel, an adversary can perform a supply-chain attack — substituting a malicious firmware version for the legitimate one. The device would install malware as part of what looks like a routine update. This is especially dangerous because the attack happens at the infrastructure level, not the device level, potentially affecting every machine in the field simultaneously.</p>
+        <div class="severity-bar"><div class="severity-label">Likelihood</div><div class="severity-track"><div class="severity-fill sev-med" style="width:55%"></div></div></div>
+        <div class="severity-bar"><div class="severity-label">Impact</div><div class="severity-track"><div class="severity-fill sev-high" style="width:95%"></div></div></div>
+        <div class="vuln-note-area">
+          <label>Your annotation — how does this differ from a direct device attack?</label>
+          <textarea id="vnote-4" placeholder="e.g. A supply chain attack could affect thousands of devices at once..."></textarea>
+          <button class="save-note-btn" onclick="saveVulnNote(4)">Save</button>
+          <div class="saved-notes" id="vsaved-4"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vuln-card" id="vuln-5" onclick="toggleVuln(5)">
+      <div class="vuln-header">
+        <div class="vuln-icon" style="background:rgba(61,220,132,0.12);">🔌</div>
+        <div class="vuln-title-wrap">
+          <div class="vuln-title">Physical Port Access on Embedded Devices</div>
+          <div class="vuln-subtitle">Physical security · Medium severity</div>
+        </div>
+        <div class="vuln-toggle">›</div>
+      </div>
+      <div class="vuln-body">
+        <p>Farm equipment left in fields overnight or in unsecured areas may have exposed USB, serial, or debug ports on the onboard computer. An adversary with brief physical access can use these ports to extract data, install malware, or dump firmware — even without network access. Embedded devices often have debug interfaces left enabled from the manufacturing process.</p>
+        <div class="severity-bar"><div class="severity-label">Likelihood</div><div class="severity-track"><div class="severity-fill sev-med" style="width:45%"></div></div></div>
+        <div class="severity-bar"><div class="severity-label">Impact</div><div class="severity-track"><div class="severity-fill sev-med" style="width:65%"></div></div></div>
+        <div class="vuln-note-area">
+          <label>Your annotation — how is physical security different for farm equipment vs. an office server?</label>
+          <textarea id="vnote-5" placeholder="e.g. Servers are locked in data centers; tractors sit in open fields overnight..."></textarea>
+          <button class="save-note-btn" onclick="saveVulnNote(5)">Save</button>
+          <div class="saved-notes" id="vsaved-5"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== RISK ASSESSMENT ===================== -->
+<div id="tab-risk" class="tab-panel">
+  <div class="section-title">Risk Assessment</div>
+  <div class="section-sub">Rate each vulnerability by likelihood and impact. This becomes your risk register — a core part of your report.</div>
+
+  <p class="risk-intro">Security engineers use a risk register to prioritize which vulnerabilities need to be addressed first. Rate each vulnerability below, then write a brief justification explaining your rating.</p>
+
+  <div class="card">
+    <table class="risk-table">
+      <thead>
+        <tr>
+          <th>Vulnerability</th>
+          <th>Likelihood</th>
+          <th>Impact</th>
+          <th>Your Justification</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Unencrypted Remote Communications</td>
+          <td><select class="risk-select" id="risk-0-l" onchange="saveRisk()"><option value="">— Rate —</option><option>High</option><option>Medium</option><option>Low</option></select></td>
+          <td><select class="risk-select" id="risk-0-i" onchange="saveRisk()"><option value="">— Rate —</option><option>High</option><option>Medium</option><option>Low</option></select></td>
+          <td><textarea placeholder="Why did you rate it this way?" id="risk-0-j" oninput="saveRisk()"></textarea></td>
+        </tr>
+        <tr>
+          <td>Weak or Default Authentication</td>
+          <td><select class="risk-select" id="risk-1-l" onchange="saveRisk()"><option value="">— Rate —</option><option>High</option><option>Medium</option><option>Low</option></select></td>
+          <td><select class="risk-select" id="risk-1-i" onchange="saveRisk()"><option value="">— Rate —</option><option>High</option><option>Medium</option><option>Low</option></select></td>
+          <td><textarea placeholder="Why did you rate it this way?" id="risk-1-j" oninput="saveRisk()"></textarea></td>
+        </tr>
+        <tr>
+          <td>Unpatched Firmware &amp; Software</td>
+          <td><select class="risk-select" id="risk-2-l" onchange="saveRisk()"><option value="">— Rate —</option><option>High</option><option>Medium</option><option>Low</option></select></td>
+          <td><select class="risk-select" id="risk-2-i" onchange="saveRisk()"><option value="">— Rate —</option><option>High</option><option>Medium</option><option>Low</option></select></td>
+          <td><textarea placeholder="Why did you rate it this way?" id="risk-2-j" oninput="saveRisk()"></textarea></td>
+        </tr>
+        <tr>
+          <td>GPS Spoofing &amp; Signal Manipulation</td>
+          <td><select class="risk-select" id="risk-3-l" onchange="saveRisk()"><option value="">— Rate —</option><option>High</option><option>Medium</option><option>Low</option></select></td>
+          <td><select class="risk-select" id="risk-3-i" onchange="saveRisk()"><option value="">— Rate —</option><option>High</option><option>Medium</option><option>Low</option></select></td>
+          <td><textarea placeholder="Why did you rate it this way?" id="risk-3-j" oninput="saveRisk()"></textarea></td>
+        </tr>
+        <tr>
+          <td>Insecure Remote Update Mechanism</td>
+          <td><select class="risk-select" id="risk-4-l" onchange="saveRisk()"><option value="">— Rate —</option><option>High</option><option>Medium</option><option>Low</option></select></td>
+          <td><select class="risk-select" id="risk-4-i" onchange="saveRisk()"><option value="">— Rate —</option><option>High</option><option>Medium</option><option>Low</option></select></td>
+          <td><textarea placeholder="Why did you rate it this way?" id="risk-4-j" oninput="saveRisk()"></textarea></td>
+        </tr>
+        <tr>
+          <td>Physical Port Access</td>
+          <td><select class="risk-select" id="risk-5-l" onchange="saveRisk()"><option value="">— Rate —</option><option>High</option><option>Medium</option><option>Low</option></select></td>
+          <td><select class="risk-select" id="risk-5-i" onchange="saveRisk()"><option value="">— Rate —</option><option>High</option><option>Medium</option><option>Low</option></select></td>
+          <td><textarea placeholder="Why did you rate it this way?" id="risk-5-j" oninput="saveRisk()"></textarea></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top:1rem;">
+    <div class="card-label" style="margin-bottom:0.5rem;">Which vulnerability would you fix first, and why?</div>
+    <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:1rem;">
+      <textarea id="risk-priority-input" style="width:100%;background:var(--surface3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--sans);font-size:13px;padding:10px 12px;resize:vertical;min-height:80px;outline:none;" placeholder="Explain your prioritization reasoning..." oninput="saveNote('risk-priority')"></textarea>
+      <button class="save-note-btn" onclick="saveNote('risk-priority')">Save</button>
+      <div class="saved-notes" id="risk-priority-saved-notes"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MITIGATIONS ===================== -->
+<div id="tab-mitigations" class="tab-panel">
+  <div class="section-title">Mitigation Strategies</div>
+  <div class="section-sub">Check off the controls you recommend. These will appear in your report as your security recommendations.</div>
+
+  <div class="mit-grid">
+
+    <div class="mit-card">
+      <div class="mit-header">
+        <div class="mit-icon">🔒</div>
+        <div class="mit-title">Encrypt All Communications</div>
+      </div>
+      <div class="mit-desc">All data transmitted between equipment and remote control systems should be encrypted using TLS/HTTPS. This prevents eavesdropping and man-in-the-middle attacks on command channels.</div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-0-0"><input type="checkbox"><span class="mit-check-label">Require TLS 1.2 or higher for all remote control communications</span></div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-0-1"><input type="checkbox"><span class="mit-check-label">Encrypt stored data on onboard computers</span></div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-0-2"><input type="checkbox"><span class="mit-check-label">Use VPN tunnels for machine-to-server communications</span></div>
+    </div>
+
+    <div class="mit-card">
+      <div class="mit-header">
+        <div class="mit-icon">🔑</div>
+        <div class="mit-title">Strengthen Authentication</div>
+      </div>
+      <div class="mit-desc">Eliminate default credentials and enforce strong authentication policies across all equipment and management interfaces.</div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-1-0"><input type="checkbox"><span class="mit-check-label">Force password change on first login — disable default credentials</span></div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-1-1"><input type="checkbox"><span class="mit-check-label">Implement account lockout after repeated failed login attempts</span></div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-1-2"><input type="checkbox"><span class="mit-check-label">Require multi-factor authentication (MFA) for remote access</span></div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-1-3"><input type="checkbox"><span class="mit-check-label">Use certificate-based authentication for machine-to-server connections</span></div>
+    </div>
+
+    <div class="mit-card">
+      <div class="mit-header">
+        <div class="mit-icon">🔄</div>
+        <div class="mit-title">Implement Automated Patch Management</div>
+      </div>
+      <div class="mit-desc">Replace the "update when needed" policy with a proactive, automated patching system that keeps all devices current without requiring manual intervention from farmers.</div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-2-0"><input type="checkbox"><span class="mit-check-label">Deploy OTA (over-the-air) automatic firmware updates with cryptographic signing</span></div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-2-1"><input type="checkbox"><span class="mit-check-label">Verify firmware signatures before installing any update</span></div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-2-2"><input type="checkbox"><span class="mit-check-label">Establish a patch testing and rollout policy (test → staged → full deployment)</span></div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-2-3"><input type="checkbox"><span class="mit-check-label">Alert operators when a device misses a critical update</span></div>
+    </div>
+
+    <div class="mit-card">
+      <div class="mit-header">
+        <div class="mit-icon">📍</div>
+        <div class="mit-title">Harden GPS Systems</div>
+      </div>
+      <div class="mit-desc">Protect autonomous navigation from GPS spoofing through signal validation and redundant positioning methods.</div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-3-0"><input type="checkbox"><span class="mit-check-label">Implement GPS signal authentication (GNSS authentication where available)</span></div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-3-1"><input type="checkbox"><span class="mit-check-label">Cross-validate GPS with inertial navigation systems (INS) to detect sudden jumps</span></div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-3-2"><input type="checkbox"><span class="mit-check-label">Alert and halt autonomous operation if GPS signal anomaly is detected</span></div>
+    </div>
+
+    <div class="mit-card">
+      <div class="mit-header">
+        <div class="mit-icon">🛡️</div>
+        <div class="mit-title">Secure Physical Hardware</div>
+      </div>
+      <div class="mit-desc">Physically harden the onboard computers to prevent port-based attacks on equipment left in unsecured environments.</div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-4-0"><input type="checkbox"><span class="mit-check-label">Disable unused USB, serial, and debug ports in firmware</span></div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-4-1"><input type="checkbox"><span class="mit-check-label">Use tamper-evident seals on hardware enclosures</span></div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-4-2"><input type="checkbox"><span class="mit-check-label">Enable secure boot to prevent unauthorized firmware from running</span></div>
+    </div>
+
+    <div class="mit-card">
+      <div class="mit-header">
+        <div class="mit-icon">📋</div>
+        <div class="mit-title">Managerial &amp; Policy Controls</div>
+      </div>
+      <div class="mit-desc">Technical controls alone are not enough. Policy and training ensure that farmers and staff maintain security in everyday operations.</div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-5-0"><input type="checkbox"><span class="mit-check-label">Provide security awareness training for farm equipment operators</span></div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-5-1"><input type="checkbox"><span class="mit-check-label">Develop an incident response plan specific to agricultural IoT</span></div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-5-2"><input type="checkbox"><span class="mit-check-label">Conduct regular vulnerability assessments and penetration testing on equipment</span></div>
+      <div class="mit-check" onclick="toggleMit(this)" id="mit-5-3"><input type="checkbox"><span class="mit-check-label">Establish a bug bounty or coordinated vulnerability disclosure program</span></div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:1.5rem;">
+    <div class="card-label" style="margin-bottom:0.5rem;">Any additional mitigations you'd recommend?</div>
+    <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:1rem;">
+      <textarea id="extra-mit-input" style="width:100%;background:var(--surface3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--sans);font-size:13px;padding:10px 12px;resize:vertical;min-height:80px;outline:none;" placeholder="Add any mitigations not covered above..."></textarea>
+      <button class="save-note-btn" onclick="saveNote('extra-mit')">Save</button>
+      <div class="saved-notes" id="extra-mit-saved-notes"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== NMAP LAB ===================== -->
+<div id="tab-nmap" class="tab-panel">
+  <div class="section-title">Nmap Vulnerability Lab</div>
+  <div class="section-sub">Run each scan, record your findings, and research a real CVE. This is the hands-on part of your security engineer role.</div>
+
+  <div class="alert alert-warn">
+    <span class="alert-icon">⚠</span>
+    <span><strong>Only scan systems you have permission to scan.</strong> Running Nmap against systems without authorization is illegal. Use a lab environment, your own machine, or a target your teacher has set up.</span>
+  </div>
+
+  <div class="alert alert-info">
+    <span class="alert-icon">💡</span>
+    <span>Nmap (Network Mapper) is a free, open-source tool used by security professionals to discover hosts and services on a network. Each command below reveals more detail about a target system — and its potential vulnerabilities.</span>
+  </div>
+
+  <!-- TARGET IP -->
+  <div class="card" style="margin-bottom:1.25rem;">
+    <div class="card-label">Lab Setup</div>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:0.25rem;">
+      <div class="form-field" style="flex:1;min-width:200px;">
+        <label>Target IP Address</label>
+        <input type="text" id="nmap-target-ip" placeholder="e.g. 192.168.1.105" oninput="saveNmapField('target-ip',this.value)" style="font-family:var(--mono);">
+      </div>
+      <div class="form-field" style="flex:1;min-width:200px;">
+        <label>Class Period</label>
+        <input type="text" id="nmap-period" placeholder="e.g. 3rd Period" oninput="saveNmapField('period',this.value)">
+      </div>
+    </div>
+  </div>
+
+  <!-- PART 1 -->
+  <div class="nmap-part" id="npart-0">
+    <div class="nmap-part-header" onclick="toggleNmapPart(0)">
+      <div class="nmap-part-left">
+        <div class="nmap-part-num">Part 1</div>
+        <div class="nmap-part-title">Reconnaissance — Basic Scan</div>
+      </div>
+      <div class="nmap-chevron" id="nchev-0">›</div>
+    </div>
+    <div class="nmap-part-body" id="nbody-0">
+      <div class="nmap-explain">
+        <p>The most basic Nmap scan sends TCP SYN packets to the most common 1,000 ports on the target. It tells you which ports are <span class="tag-open">open</span>, <span class="tag-closed">closed</span>, or <span class="tag-filtered">filtered</span> (blocked by a firewall). Open ports are potential entry points for an adversary.</p>
+        <p><strong>Why this matters for farm equipment:</strong> An internet-connected tractor might have ports open for remote control, GPS updates, or diagnostics — any of which an adversary could target.</p>
+      </div>
+      <div class="nmap-cmd-block">
+        <div class="nmap-cmd-label">Command</div>
+        <div class="nmap-cmd"><span class="cmd-prog">nmap</span> <span class="cmd-arg">&lt;Target_IP&gt;</span></div>
+        <div class="nmap-cmd-note">Replace &lt;Target_IP&gt; with the IP address above. Run in your terminal as a normal user.</div>
+      </div>
+      <div class="nmap-fields">
+        <div class="form-field">
+          <label>Your exact command (with real IP)</label>
+          <input type="text" class="nmap-input" id="n0-cmd" placeholder="nmap 192.168.1.105" oninput="saveNmapField('p1-cmd',this.value)" style="font-family:var(--mono);">
+        </div>
+        <div class="form-field" style="margin-top:0.75rem;">
+          <label>Open ports found</label>
+          <textarea class="nmap-input" id="n0-ports" placeholder="e.g. 22/tcp open ssh, 80/tcp open http, 443/tcp open https..." oninput="saveNmapField('p1-ports',this.value)" style="min-height:70px;"></textarea>
+        </div>
+        <div class="form-field" style="margin-top:0.75rem;">
+          <label>Screenshot description or observations</label>
+          <textarea class="nmap-input" id="n0-obs" placeholder="Describe what you see in your terminal output — how many ports, any surprises?" oninput="saveNmapField('p1-obs',this.value)" style="min-height:70px;"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PART 2 -->
+  <div class="nmap-part" id="npart-1">
+    <div class="nmap-part-header" onclick="toggleNmapPart(1)">
+      <div class="nmap-part-left">
+        <div class="nmap-part-num">Part 2</div>
+        <div class="nmap-part-title">Service &amp; Version Detection</div>
+      </div>
+      <div class="nmap-chevron" id="nchev-1">›</div>
+    </div>
+    <div class="nmap-part-body" id="nbody-1" style="display:none;">
+      <div class="nmap-explain">
+        <p>The <code>-sV</code> flag tells Nmap to probe each open port and identify <strong>what service is running</strong> and <strong>which version</strong>. This is critical for vulnerability research — knowing a target runs Apache 2.4.49 (for example) lets an adversary search for known exploits for that exact version.</p>
+        <p><strong>Why this matters for farm equipment:</strong> Outdated software versions on onboard computers are one of the most exploited attack surfaces in IoT. If the equipment is running an old version of a web server or control daemon, it may have published CVEs that are trivial to exploit.</p>
+      </div>
+      <div class="nmap-cmd-block">
+        <div class="nmap-cmd-label">Command</div>
+        <div class="nmap-cmd"><span class="cmd-prog">nmap</span> <span class="cmd-flag">-sV</span> <span class="cmd-arg">&lt;Target_IP&gt;</span></div>
+        <div class="nmap-cmd-note"><code>-sV</code> = service/version detection. This scan takes longer than the basic scan.</div>
+      </div>
+      <div class="nmap-fields">
+        <div class="form-field">
+          <label>Your exact command</label>
+          <input type="text" class="nmap-input" id="n1-cmd" placeholder="nmap -sV 192.168.1.105" oninput="saveNmapField('p2-cmd',this.value)" style="font-family:var(--mono);">
+        </div>
+        <div class="form-field" style="margin-top:0.75rem;">
+          <label>Services and versions detected</label>
+          <textarea class="nmap-input" id="n1-svcs" placeholder="e.g. 22/tcp open ssh OpenSSH 7.4, 80/tcp open http Apache httpd 2.4.38..." oninput="saveNmapField('p2-svcs',this.value)" style="min-height:70px;"></textarea>
+        </div>
+        <div class="form-field" style="margin-top:0.75rem;">
+          <label>Observations — anything outdated or unexpected?</label>
+          <textarea class="nmap-input" id="n1-obs" placeholder="Note any services or versions that concern you as a security engineer..." oninput="saveNmapField('p2-obs',this.value)" style="min-height:70px;"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PART 3 -->
+  <div class="nmap-part" id="npart-2">
+    <div class="nmap-part-header" onclick="toggleNmapPart(2)">
+      <div class="nmap-part-left">
+        <div class="nmap-part-num">Part 3</div>
+        <div class="nmap-part-title">OS Detection</div>
+      </div>
+      <div class="nmap-chevron" id="nchev-2">›</div>
+    </div>
+    <div class="nmap-part-body" id="nbody-2" style="display:none;">
+      <div class="nmap-explain">
+        <p>The <code>-O</code> flag uses TCP/IP fingerprinting to guess the target's operating system and kernel version. Knowing the OS helps narrow which exploits and vulnerabilities apply — a device running a stripped-down Linux kernel may have very different vulnerabilities than one running Windows IoT.</p>
+        <p><strong>Why this matters for farm equipment:</strong> Embedded computers in tractors often run older, minimal Linux distributions that may not receive regular security updates, making them attractive targets once an adversary identifies the OS.</p>
+      </div>
+      <div class="nmap-cmd-block">
+        <div class="nmap-cmd-label">Command</div>
+        <div class="nmap-cmd"><span class="cmd-prog">sudo nmap</span> <span class="cmd-flag">-O</span> <span class="cmd-arg">&lt;Target_IP&gt;</span></div>
+        <div class="nmap-cmd-note"><code>-O</code> = OS detection. Requires <code>sudo</code> (root/admin) because it needs raw packet access.</div>
+      </div>
+      <div class="nmap-fields">
+        <div class="form-field">
+          <label>Detected operating system</label>
+          <input type="text" class="nmap-input" id="n2-os" placeholder="e.g. Linux 3.x, Windows 10, Embedded Linux..." oninput="saveNmapField('p3-os',this.value)">
+        </div>
+        <div class="form-field" style="margin-top:0.75rem;">
+          <label>Observations — what does this OS tell you about the device's risk profile?</label>
+          <textarea class="nmap-input" id="n2-obs" placeholder="Is this OS still supported? Does it receive security updates? What vulnerabilities might apply?" oninput="saveNmapField('p3-obs',this.value)" style="min-height:80px;"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PART 4 -->
+  <div class="nmap-part" id="npart-3">
+    <div class="nmap-part-header" onclick="toggleNmapPart(3)">
+      <div class="nmap-part-left">
+        <div class="nmap-part-num">Part 4</div>
+        <div class="nmap-part-title">Vulnerability Scan</div>
+      </div>
+      <div class="nmap-chevron" id="nchev-3">›</div>
+    </div>
+    <div class="nmap-part-body" id="nbody-3" style="display:none;">
+      <div class="nmap-explain">
+        <p>The <code>--script vuln</code> flag runs Nmap's built-in vulnerability detection scripts (NSE — Nmap Scripting Engine). These scripts test for known vulnerabilities including unpatched services, misconfigurations, and exposure to published CVEs. This is what a real penetration tester would run in the reconnaissance phase.</p>
+        <p><strong>Why this matters for farm equipment:</strong> This single command can reveal whether a device is exposed to CVEs like EternalBlue (MS17-010), Heartbleed, or Shellshock — all of which have been found on IoT devices running old software. The results from this command directly feed into your vulnerability report.</p>
+      </div>
+      <div class="nmap-cmd-block">
+        <div class="nmap-cmd-label">Command</div>
+        <div class="nmap-cmd"><span class="cmd-prog">nmap</span> <span class="cmd-flag">--script vuln</span> <span class="cmd-arg">&lt;Target_IP&gt;</span></div>
+        <div class="nmap-cmd-note">This scan can take several minutes. It actively probes the target with vulnerability-testing scripts.</div>
+      </div>
+      <div class="nmap-fields">
+        <div class="form-field">
+          <label>Your exact command</label>
+          <input type="text" class="nmap-input" id="n3-cmd" placeholder="nmap --script vuln 192.168.1.105" oninput="saveNmapField('p4-cmd',this.value)" style="font-family:var(--mono);">
+        </div>
+        <div class="form-field" style="margin-top:0.75rem;">
+          <label>Vulnerabilities found</label>
+          <textarea class="nmap-input" id="n3-vulns" placeholder="List any CVEs or vulnerability names reported. e.g. CVE-2017-0144 (EternalBlue), http-vuln-cve2014-3704..." oninput="saveNmapField('p4-vulns',this.value)" style="min-height:90px;"></textarea>
+        </div>
+        <div class="form-field" style="margin-top:0.75rem;">
+          <label>Observations — how severe do these findings appear?</label>
+          <textarea class="nmap-input" id="n3-obs" placeholder="Which findings are most critical? Are any of these the vulnerabilities you identified in the Vulnerabilities tab?" oninput="saveNmapField('p4-obs',this.value)" style="min-height:70px;"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PART 5 -->
+  <div class="nmap-part" id="npart-4">
+    <div class="nmap-part-header" onclick="toggleNmapPart(4)">
+      <div class="nmap-part-left">
+        <div class="nmap-part-num">Part 5</div>
+        <div class="nmap-part-title">CVE Research</div>
+      </div>
+      <div class="nmap-chevron" id="nchev-4">›</div>
+    </div>
+    <div class="nmap-part-body" id="nbody-4" style="display:none;">
+      <div class="nmap-explain">
+        <p>A <strong>CVE (Common Vulnerabilities and Exposures)</strong> is a publicly disclosed security vulnerability with a unique ID (e.g., CVE-2021-44228). The National Vulnerability Database (NVD) at <a href="https://nvd.nist.gov" target="_blank" style="color:var(--blue);">nvd.nist.gov</a> documents every CVE with a severity score, description, and mitigation advice.</p>
+        <p>Choose one CVE from your vulnerability scan — or one relevant to farm equipment/IoT — and research it thoroughly below.</p>
+        <div class="nmap-resource-links">
+          <a href="https://nvd.nist.gov/vuln/search" target="_blank" class="resource-link">🔍 NVD Vulnerability Search</a>
+          <a href="https://cve.mitre.org" target="_blank" class="resource-link">📋 CVE MITRE Database</a>
+          <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" class="resource-link">🚨 CISA Known Exploited CVEs</a>
+        </div>
+      </div>
+      <div class="nmap-fields">
+        <div class="form-row">
+          <div class="form-field">
+            <label>CVE ID</label>
+            <input type="text" class="nmap-input" id="cve-id" placeholder="CVE-YYYY-NNNNN" oninput="saveNmapField('cve-id',this.value)" style="font-family:var(--mono);">
+          </div>
+          <div class="form-field">
+            <label>Affected System / Software</label>
+            <input type="text" class="nmap-input" id="cve-system" placeholder="e.g. Apache Log4j 2.x, OpenSSH &lt; 8.9..." oninput="saveNmapField('cve-system',this.value)">
+          </div>
+        </div>
+        <div class="form-field" style="margin-top:0.75rem;">
+          <label>Description — what is this vulnerability?</label>
+          <textarea class="nmap-input" id="cve-desc" placeholder="Summarize what makes this vulnerability dangerous in your own words..." oninput="saveNmapField('cve-desc',this.value)" style="min-height:80px;"></textarea>
+        </div>
+        <div class="form-field" style="margin-top:0.75rem;">
+          <label>How could an adversary exploit this?</label>
+          <textarea class="nmap-input" id="cve-exploit" placeholder="Describe the attack method — what does the adversary need? What can they do?" oninput="saveNmapField('cve-exploit',this.value)" style="min-height:80px;"></textarea>
+        </div>
+        <div class="form-field" style="margin-top:0.75rem;">
+          <label>Impact — what damage could this cause to farm equipment?</label>
+          <textarea class="nmap-input" id="cve-impact" placeholder="Think about physical consequences: could this crash a tractor's GPS? Lock out a farmer? Corrupt irrigation schedules?" oninput="saveNmapField('cve-impact',this.value)" style="min-height:80px;"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFLECTION -->
+  <div class="nmap-part" id="npart-5">
+    <div class="nmap-part-header" onclick="toggleNmapPart(5)">
+      <div class="nmap-part-left">
+        <div class="nmap-part-num">Reflection</div>
+        <div class="nmap-part-title">What Did You Learn?</div>
+      </div>
+      <div class="nmap-chevron" id="nchev-5">›</div>
+    </div>
+    <div class="nmap-part-body" id="nbody-5" style="display:none;">
+      <div class="nmap-fields">
+        <div class="form-field">
+          <label>Most concerning vulnerability you found, and why</label>
+          <textarea class="nmap-input" id="ref-concern" placeholder="Which finding worried you most? Would it have a real-world impact on farm operations?" oninput="saveNmapField('ref-concern',this.value)" style="min-height:80px;"></textarea>
+        </div>
+        <div class="form-field" style="margin-top:0.75rem;">
+          <label>One mitigation strategy you would recommend</label>
+          <textarea class="nmap-input" id="ref-mitigation" placeholder="Be specific — not just 'patch it,' but how, when, and who is responsible?" oninput="saveNmapField('ref-mitigation',this.value)" style="min-height:80px;"></textarea>
+        </div>
+        <div class="form-field" style="margin-top:0.75rem;">
+          <label>Why is vulnerability scanning important for security engineers?</label>
+          <textarea class="nmap-input" id="ref-why" placeholder="Think about what you would NOT have known without running these scans..." oninput="saveNmapField('ref-why',this.value)" style="min-height:80px;"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== QUIZ ===================== -->
+<div id="tab-quiz" class="tab-panel">
+  <div class="section-title">Knowledge Check</div>
+  <div class="section-sub">Answer all 5 questions. Feedback is instant.</div>
+
+  <div class="quiz-progress">
+    <div class="qp-dot active" id="dot-0"></div>
+    <div class="qp-dot" id="dot-1"></div>
+    <div class="qp-dot" id="dot-2"></div>
+    <div class="qp-dot" id="dot-3"></div>
+    <div class="qp-dot" id="dot-4"></div>
+  </div>
+
+  <div id="quiz-questions">
+
+    <div class="quiz-card" id="qcard-0">
+      <div class="quiz-qnum">Question 1 of 5</div>
+      <div class="quiz-question">A tractor uses GPS to navigate autonomously. An adversary broadcasts a stronger fake GPS signal nearby. What type of attack is this?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="checkAnswer(0,0,false)"><span class="choice-letter">A</span>Denial of Service (DoS)</button>
+        <button class="choice-btn" onclick="checkAnswer(0,1,false)"><span class="choice-letter">B</span>Man-in-the-Middle (MitM)</button>
+        <button class="choice-btn" onclick="checkAnswer(0,2,true)"><span class="choice-letter">C</span>GPS Spoofing</button>
+        <button class="choice-btn" onclick="checkAnswer(0,3,false)"><span class="choice-letter">D</span>Phishing</button>
+      </div>
+      <div class="quiz-feedback" id="qfb-0"></div>
+      <button class="next-q-btn" id="qnext-0" onclick="nextQ(1)">Next question →</button>
+    </div>
+
+    <div class="quiz-card" id="qcard-1" style="display:none;">
+      <div class="quiz-qnum">Question 2 of 5</div>
+      <div class="quiz-question">The farm equipment ships with the username "admin" and password "admin." Why is this a critical vulnerability?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="checkAnswer(1,0,false)"><span class="choice-letter">A</span>Default credentials are required by government regulation</button>
+        <button class="choice-btn" onclick="checkAnswer(1,1,true)"><span class="choice-letter">B</span>Adversaries know default credentials and can use them to gain unauthorized access</button>
+        <button class="choice-btn" onclick="checkAnswer(1,2,false)"><span class="choice-letter">C</span>The username is too short to be secure</button>
+        <button class="choice-btn" onclick="checkAnswer(1,3,false)"><span class="choice-letter">D</span>Default credentials expire after 30 days automatically</button>
+      </div>
+      <div class="quiz-feedback" id="qfb-1"></div>
+      <button class="next-q-btn" id="qnext-1" onclick="nextQ(2)">Next question →</button>
+    </div>
+
+    <div class="quiz-card" id="qcard-2" style="display:none;">
+      <div class="quiz-qnum">Question 3 of 5</div>
+      <div class="quiz-question">An adversary intercepts a firmware update being sent to farm equipment and replaces it with malicious code. What type of attack is this?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="checkAnswer(2,0,false)"><span class="choice-letter">A</span>Ransomware attack</button>
+        <button class="choice-btn" onclick="checkAnswer(2,1,false)"><span class="choice-letter">B</span>Brute force attack</button>
+        <button class="choice-btn" onclick="checkAnswer(2,2,true)"><span class="choice-letter">C</span>Supply chain attack</button>
+        <button class="choice-btn" onclick="checkAnswer(2,3,false)"><span class="choice-letter">D</span>Social engineering attack</button>
+      </div>
+      <div class="quiz-feedback" id="qfb-2"></div>
+      <button class="next-q-btn" id="qnext-2" onclick="nextQ(3)">Next question →</button>
+    </div>
+
+    <div class="quiz-card" id="qcard-3" style="display:none;">
+      <div class="quiz-qnum">Question 4 of 5</div>
+      <div class="quiz-question">Which of these is the BEST reason to implement automatic firmware updates on farm equipment?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="checkAnswer(3,0,false)"><span class="choice-letter">A</span>It allows the manufacturer to collect more data from the devices</button>
+        <button class="choice-btn" onclick="checkAnswer(3,1,false)"><span class="choice-letter">B</span>Farmers prefer not to manage updates themselves</button>
+        <button class="choice-btn" onclick="checkAnswer(3,2,true)"><span class="choice-letter">C</span>It ensures known vulnerabilities are patched quickly without relying on manual action</button>
+        <button class="choice-btn" onclick="checkAnswer(3,3,false)"><span class="choice-letter">D</span>It improves GPS accuracy across all devices</button>
+      </div>
+      <div class="quiz-feedback" id="qfb-3"></div>
+      <button class="next-q-btn" id="qnext-3" onclick="nextQ(4)">Next question →</button>
+    </div>
+
+    <div class="quiz-card" id="qcard-4" style="display:none;">
+      <div class="quiz-qnum">Question 5 of 5</div>
+      <div class="quiz-question">A security engineer finds an open USB debug port on the onboard computer of a tractor left in a field overnight. What is the PRIMARY risk?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="checkAnswer(4,0,false)"><span class="choice-letter">A</span>Someone could charge their phone using the port</button>
+        <button class="choice-btn" onclick="checkAnswer(4,1,false)"><span class="choice-letter">B</span>The port slows down the machine's onboard computer</button>
+        <button class="choice-btn" onclick="checkAnswer(4,2,true)"><span class="choice-letter">C</span>An adversary with brief physical access could install malware or extract sensitive firmware</button>
+        <button class="choice-btn" onclick="checkAnswer(4,3,false)"><span class="choice-letter">D</span>Moisture could damage the port and cause the machine to fail</button>
+      </div>
+      <div class="quiz-feedback" id="qfb-4"></div>
+      <button class="next-q-btn" id="qnext-4" onclick="showScore()">See my results →</button>
+    </div>
+  </div>
+
+  <div class="score-display" id="score-display">
+    <div class="score-big" id="score-num">0/5</div>
+    <div style="color:var(--text2);font-size:14px;margin-bottom:1.5rem;" id="score-msg"></div>
+    <button class="retry-btn" onclick="resetQuiz()">Retake quiz</button>
+  </div>
+</div>
+
+<!-- ===================== DISCUSSION ===================== -->
+<div id="tab-discuss" class="tab-panel">
+  <div class="section-title">Discussion</div>
+  <div class="section-sub">Share your thinking on these broader questions. There are no single right answers.</div>
+
+  <div class="alert alert-info" style="margin-bottom:1.5rem;">
+    <span class="alert-icon">💡</span>
+    <span>These scenarios connect beyond the classroom. Agricultural cyberattacks affect food supply chains, farm livelihoods, and national security. Think broadly.</span>
+  </div>
+
+  <div class="discussion-prompts" style="margin-bottom:1.5rem;">
+    <div class="disc-prompt">
+      <div class="disc-prompt-q">Q1 — Real-World Consequences</div>
+      <div class="disc-prompt-sub">A ransomware attack locks a farmer's tractor controls during harvest season. What are the real-world consequences beyond just a financial loss? Who else is affected beyond the farmer?</div>
+    </div>
+    <div class="disc-prompt">
+      <div class="disc-prompt-q">Q2 — IoT Security Tradeoffs</div>
+      <div class="disc-prompt-sub">Strong security measures (like requiring MFA or automatic updates) can be inconvenient for farmers in remote areas with poor internet. How do you balance security with usability in IoT design?</div>
+    </div>
+    <div class="disc-prompt">
+      <div class="disc-prompt-q">Q3 — Responsibility</div>
+      <div class="disc-prompt-sub">If a piece of farm equipment is hacked and causes physical damage, who is responsible — the manufacturer, the farmer, or both? What role should government regulation play in IoT security?</div>
+    </div>
+  </div>
+
+  <div class="comment-form-section">
+    <h3>Add your response</h3>
+    <div class="form-row">
+      <div class="form-field">
+        <label>Your name</label>
+        <input type="text" id="c-name" placeholder="Auto-filled from your profile">
+      </div>
+      <div class="form-field">
+        <label>Responding to</label>
+        <select id="c-prompt">
+          <option value="Q1 — Real-World Consequences">Q1 — Real-World Consequences</option>
+          <option value="Q2 — IoT Security Tradeoffs">Q2 — IoT Security Tradeoffs</option>
+          <option value="Q3 — Responsibility">Q3 — Responsibility</option>
+          <option value="General Reflection">General Reflection</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-field" style="margin-bottom:0;">
+      <label>Your thoughts</label>
+      <textarea id="c-body" placeholder="Share your perspective, a concern, a question, or a connection to something you've seen..."></textarea>
+    </div>
+    <button class="submit-btn" onclick="submitComment()">Post to class discussion</button>
+    <div id="c-error" style="color:var(--red);font-size:13px;margin-top:8px;display:none;"></div>
+    <div id="c-success" style="color:var(--green);font-size:13px;margin-top:8px;display:none;"></div>
+  </div>
+
+  <div style="margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+    <div style="font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;">Responses <span id="comment-count" style="color:var(--accent);">0</span></div>
+    <select id="filter-prompt" onchange="renderComments()" style="background:var(--surface2);border:1px solid var(--border2);border-radius:6px;color:var(--text2);font-family:var(--mono);font-size:11px;padding:5px 10px;outline:none;cursor:pointer;">
+      <option value="all">All questions</option>
+      <option value="Q1 — Real-World Consequences">Q1 only</option>
+      <option value="Q2 — IoT Security Tradeoffs">Q2 only</option>
+      <option value="Q3 — Responsibility">Q3 only</option>
+      <option value="General Reflection">General only</option>
+    </select>
+  </div>
+
+  <div class="comments-list" id="comments-list">
+    <div class="no-comments"><div class="nc-icon">💬</div>No responses yet. Be the first!</div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  AP Cybersecurity · Scenario 4A — Designing Secure Connected Farm Equipment · Unit 4: Securing Devices
+</footer>
+
+<script>
+// =================================================================
+// DATA STORE
+// =================================================================
+const data = {
+  name: '',
+  briefingNotes: [],
+  vulnNotes: [{},{},{},{},{},{}],
+  vulnsRevealed: [],
+  riskRatings: [],
+  riskPriority: '',
+  mitigationsChecked: [],
+  extraMit: [],
+  quizAnswers: [],
+  quizScore: null,
+  discussion: []
+};
+
+function restoreData() {
+  data.name = localStorage.getItem('s4a_name') || '';
+  const bn = JSON.parse(localStorage.getItem('s4a_briefing') || '[]');
+  data.briefingNotes = bn.map(n => n.text || n);
+  for (let i = 0; i < 6; i++) {
+    const vn = JSON.parse(localStorage.getItem('s4a_vnote_' + i) || '[]');
+    data.vulnNotes[i] = { notes: vn.map(n => n.text || n) };
+  }
+  data.riskRatings = JSON.parse(localStorage.getItem('s4a_risk') || '[]');
+  data.mitigationsChecked = JSON.parse(localStorage.getItem('s4a_mits') || '[]');
+  const em = JSON.parse(localStorage.getItem('s4a_extramit') || '[]');
+  data.extraMit = em.map(n => n.text || n);
+}
+
+// =================================================================
+// NAME GATE
+// =================================================================
+function startLesson() {
+  const inp = document.getElementById('student-name-input');
+  const n = inp.value.trim();
+  if (!n) { document.getElementById('name-gate-error').style.display = 'block'; inp.focus(); return; }
+  data.name = n;
+  localStorage.setItem('s4a_name', n);
+  document.getElementById('name-gate').style.display = 'none';
+  document.getElementById('lesson-content').style.display = 'block';
+  const df = document.getElementById('c-name');
+  if (df) df.value = n;
+}
+
+// =================================================================
+// TAB NAV
+// =================================================================
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn:not(.export-btn)').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  const map = { briefing: 0, vulns: 1, risk: 2, mitigations: 3, nmap: 4, quiz: 5, discuss: 6 };
+  document.querySelectorAll('.tab-btn:not(.export-btn)')[map[id]].classList.add('active');
+  const df = document.getElementById('c-name');
+  if (df && data.name) df.value = data.name;
+  window.scrollTo(0, 0);
+}
+
+// =================================================================
+// NOTES
+// =================================================================
+function saveNote(key) {
+  const inputMap = { briefing: 'briefing-note-input', 'risk-priority': 'risk-priority-input', 'extra-mit': 'extra-mit-input' };
+  const containerMap = { briefing: 'briefing-saved-notes', 'risk-priority': 'risk-priority-saved-notes', 'extra-mit': 'extra-mit-saved-notes' };
+  const inp = document.getElementById(inputMap[key]);
+  if (!inp) return;
+  const val = inp.value.trim();
+  if (!val) return;
+  const existing = JSON.parse(localStorage.getItem('s4a_' + key) || '[]');
+  existing.push({ text: val, time: new Date().toLocaleTimeString() });
+  localStorage.setItem('s4a_' + key, JSON.stringify(existing));
+  inp.value = '';
+  renderNotes(key);
+}
+
+function renderNotes(key) {
+  const containerMap = { briefing: 'briefing-saved-notes', 'risk-priority': 'risk-priority-saved-notes', 'extra-mit': 'extra-mit-saved-notes' };
+  const c = document.getElementById(containerMap[key]);
+  if (!c) return;
+  const notes = JSON.parse(localStorage.getItem('s4a_' + key) || '[]');
+  c.innerHTML = notes.map((n, i) => `<div class="saved-note"><span>${escHtml(n.text || n)}</span><button class="delete-note" onclick="deleteNote('${key}',${i})">×</button></div>`).join('');
+}
+
+function deleteNote(key, index) {
+  const notes = JSON.parse(localStorage.getItem('s4a_' + key) || '[]');
+  notes.splice(index, 1);
+  localStorage.setItem('s4a_' + key, JSON.stringify(notes));
+  renderNotes(key);
+}
+
+// =================================================================
+// VULN ANNOTATIONS
+// =================================================================
+function saveVulnNote(i) {
+  const inp = document.getElementById('vnote-' + i);
+  const val = inp.value.trim();
+  if (!val) return;
+  const existing = JSON.parse(localStorage.getItem('s4a_vnote_' + i) || '[]');
+  existing.push({ text: val, time: new Date().toLocaleTimeString() });
+  localStorage.setItem('s4a_vnote_' + i, JSON.stringify(existing));
+  inp.value = '';
+  renderVulnNotes(i);
+}
+
+function renderVulnNotes(i) {
+  const c = document.getElementById('vsaved-' + i);
+  if (!c) return;
+  const notes = JSON.parse(localStorage.getItem('s4a_vnote_' + i) || '[]');
+  c.innerHTML = notes.map((n, j) => `<div class="saved-note"><span>${escHtml(n.text || n)}</span><button class="delete-note" onclick="deleteVulnNote(${i},${j})">×</button></div>`).join('');
+}
+
+function deleteVulnNote(i, j) {
+  const notes = JSON.parse(localStorage.getItem('s4a_vnote_' + i) || '[]');
+  notes.splice(j, 1);
+  localStorage.setItem('s4a_vnote_' + i, JSON.stringify(notes));
+  renderVulnNotes(i);
+}
+
+// =================================================================
+// VULNERABILITY CARDS
+// =================================================================
+function toggleVuln(i) {
+  const card = document.getElementById('vuln-' + i);
+  const isOpen = card.classList.contains('open');
+  // Allow multiple open at once
+  card.classList.toggle('open');
+  if (!data.vulnsRevealed.includes(i)) data.vulnsRevealed.push(i);
+}
+
+function revealAllVulns() {
+  for (let i = 0; i < 6; i++) {
+    const card = document.getElementById('vuln-' + i);
+    if (!card.classList.contains('open')) { card.classList.add('open'); }
+    if (!data.vulnsRevealed.includes(i)) data.vulnsRevealed.push(i);
+  }
+}
+
+// =================================================================
+// RISK TABLE
+// =================================================================
+function saveRisk() {
+  const ratings = [];
+  for (let i = 0; i < 6; i++) {
+    ratings.push({
+      likelihood: document.getElementById('risk-' + i + '-l').value,
+      impact: document.getElementById('risk-' + i + '-i').value,
+      justification: document.getElementById('risk-' + i + '-j').value
+    });
+  }
+  localStorage.setItem('s4a_risk', JSON.stringify(ratings));
+  data.riskRatings = ratings;
+}
+
+function restoreRisk() {
+  const ratings = JSON.parse(localStorage.getItem('s4a_risk') || '[]');
+  ratings.forEach((r, i) => {
+    const l = document.getElementById('risk-' + i + '-l');
+    const im = document.getElementById('risk-' + i + '-i');
+    const j = document.getElementById('risk-' + i + '-j');
+    if (l && r.likelihood) l.value = r.likelihood;
+    if (im && r.impact) im.value = r.impact;
+    if (j && r.justification) j.value = r.justification;
+  });
+}
+
+// =================================================================
+// MITIGATIONS
+// =================================================================
+function toggleMit(el) {
+  el.classList.toggle('checked');
+  const cb = el.querySelector('input');
+  cb.checked = !cb.checked;
+  saveMits();
+}
+
+function saveMits() {
+  const checked = [];
+  document.querySelectorAll('.mit-check').forEach(el => { if (el.classList.contains('checked')) checked.push(el.id); });
+  localStorage.setItem('s4a_mits', JSON.stringify(checked));
+  data.mitigationsChecked = checked;
+}
+
+function restoreMits() {
+  const checked = JSON.parse(localStorage.getItem('s4a_mits') || '[]');
+  checked.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.add('checked'); const cb = el.querySelector('input'); if (cb) cb.checked = true; }
+  });
+}
+
+// =================================================================
+// QUIZ
+// =================================================================
+let quizScores = [null,null,null,null,null];
+const qLabels = [
+  'Q1 — GPS Spoofing attack type',
+  'Q2 — Default credentials vulnerability',
+  'Q3 — Supply chain attack via firmware',
+  'Q4 — Best reason for automatic updates',
+  'Q5 — Physical USB port risk'
+];
+const qAnswerTexts = [
+  ['Denial of Service (DoS)','Man-in-the-Middle (MitM)','GPS Spoofing','Phishing'],
+  ['Required by regulation','Adversaries know default credentials','Username too short','Credentials expire automatically'],
+  ['Ransomware attack','Brute force attack','Supply chain attack','Social engineering attack'],
+  ['Collect more data','Farmers prefer it','Ensures known vulnerabilities are patched quickly','Improves GPS accuracy'],
+  ['Charge phones','Slows the computer','Adversary could install malware or extract firmware','Moisture damage']
+];
+const feedbacks = [
+  { good: "Correct. GPS spoofing involves broadcasting a fake signal to deceive a device about its location.", bad: "Not quite. This is GPS spoofing — the adversary is faking a signal, not blocking or intercepting data." },
+  { good: "Right. Default credentials are widely known and are one of the first things adversaries try.", bad: "The key issue is that default credentials like admin/admin are publicly known and trivial to exploit." },
+  { good: "Exactly. Intercepting and replacing a legitimate update with malicious code is a supply chain attack.", bad: "A supply chain attack targets the delivery mechanism — in this case, the firmware update pipeline itself." },
+  { good: "Correct. Automation ensures patches are applied promptly without depending on manual action in the field.", bad: "The best reason is security: automatic updates close known vulnerability windows as quickly as possible." },
+  { good: "Correct. An exposed debug port gives an adversary a direct hardware path to install malware or steal firmware.", bad: "The primary risk is physical access enabling malware installation or firmware extraction through the debug port." }
+];
+
+function checkAnswer(qIndex, choiceIndex, correct) {
+  if (quizScores[qIndex] !== null) return;
+  quizScores[qIndex] = correct ? 1 : 0;
+  const card = document.getElementById('qcard-' + qIndex);
+  card.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+  card.querySelectorAll('.choice-btn')[choiceIndex].classList.add(correct ? 'correct' : 'wrong');
+  const fb = document.getElementById('qfb-' + qIndex);
+  fb.textContent = correct ? feedbacks[qIndex].good : feedbacks[qIndex].bad;
+  fb.className = 'quiz-feedback show ' + (correct ? 'good' : 'bad');
+  document.getElementById('qnext-' + qIndex).classList.add('show');
+  document.getElementById('dot-' + qIndex).classList.remove('active');
+  document.getElementById('dot-' + qIndex).classList.add('done');
+  data.quizAnswers[qIndex] = { question: qLabels[qIndex], chosen: qAnswerTexts[qIndex][choiceIndex], correct };
+}
+
+function nextQ(next) {
+  document.getElementById('qcard-' + (next-1)).style.display = 'none';
+  document.getElementById('qcard-' + next).style.display = 'block';
+  const dot = document.getElementById('dot-' + next);
+  if (dot) dot.classList.add('active');
+}
+
+function showScore() {
+  document.getElementById('qcard-4').style.display = 'none';
+  const total = quizScores.reduce((a,b) => a+(b||0), 0);
+  document.getElementById('score-num').textContent = total + '/5';
+  const msgs = ["Keep reviewing and try again!","Good start — revisit the vulnerability section.","Getting there! Review what you missed.","Solid understanding — great work!","Almost perfect — impressive!","Full marks! You've got this down."];
+  document.getElementById('score-msg').textContent = msgs[total];
+  document.getElementById('score-display').classList.add('show');
+  data.quizScore = total;
+}
+
+function resetQuiz() {
+  quizScores = [null,null,null,null,null];
+  for (let i = 0; i < 5; i++) {
+    const card = document.getElementById('qcard-' + i);
+    card.querySelectorAll('.choice-btn').forEach(b => { b.disabled = false; b.className = 'choice-btn'; });
+    document.getElementById('qfb-' + i).className = 'quiz-feedback';
+    document.getElementById('qnext-' + i).classList.remove('show');
+    card.style.display = i === 0 ? 'block' : 'none';
+    document.getElementById('dot-' + i).className = 'qp-dot' + (i === 0 ? ' active' : '');
+  }
+  document.getElementById('score-display').classList.remove('show');
+}
+
+// =================================================================
+// DISCUSSION
+// =================================================================
+const COLORS = ['#4d9fff','#ff4d4d','#3ddc84','#ffd166','#ff8c42','#c084fc','#f472b6','#34d399'];
+function getColor(n) { let h=0; for(let c of n) h=(h*31+c.charCodeAt(0))%COLORS.length; return COLORS[h]; }
+function initials(n) { return n.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+function getComments() { return JSON.parse(localStorage.getItem('s4a_comments')||'[]'); }
+function saveComments(c) { localStorage.setItem('s4a_comments', JSON.stringify(c)); }
+
+function submitComment() {
+  const nameField = document.getElementById('c-name');
+  const name = (nameField ? nameField.value.trim() : '') || data.name;
+  const prompt = document.getElementById('c-prompt').value;
+  const body = document.getElementById('c-body').value.trim();
+  const err = document.getElementById('c-error');
+  const suc = document.getElementById('c-success');
+  err.style.display = 'none'; suc.style.display = 'none';
+  if (!name) { err.textContent = 'Please enter your name.'; err.style.display='block'; return; }
+  if (!body || body.length < 10) { err.textContent = 'Please write at least a sentence.'; err.style.display='block'; return; }
+  if (!data.name) { data.name = name; localStorage.setItem('s4a_name', name); }
+  const comments = getComments();
+  comments.unshift({ id: Date.now(), name, prompt, body, time: new Date().toLocaleString(), likes: 0 });
+  saveComments(comments);
+  document.getElementById('c-body').value = '';
+  renderComments();
+  suc.textContent = '✓ Response recorded!';
+  suc.style.display = 'block';
+}
+
+function likeComment(id) {
+  const comments = getComments();
+  const c = comments.find(x => x.id === id);
+  if (!c) return;
+  const key = 's4a_liked_' + id;
+  if (localStorage.getItem(key)) { c.likes = Math.max(0,c.likes-1); localStorage.removeItem(key); }
+  else { c.likes = (c.likes||0)+1; localStorage.setItem(key,'1'); }
+  saveComments(comments); renderComments();
+}
+
+function renderComments() {
+  const filter = document.getElementById('filter-prompt').value;
+  const all = getComments();
+  const shown = filter === 'all' ? all : all.filter(c => c.prompt === filter);
+  document.getElementById('comment-count').textContent = all.length;
+  const list = document.getElementById('comments-list');
+  if (shown.length === 0) {
+    list.innerHTML = '<div class="no-comments"><div class="nc-icon">💬</div>'+(all.length?'No responses for this question yet.':'No responses yet. Be the first!')+'</div>';
+    return;
+  }
+  list.innerHTML = shown.map(c => {
+    const color = getColor(c.name);
+    const liked = !!localStorage.getItem('s4a_liked_'+c.id);
+    return `<div class="card" style="padding:1.25rem;">
+      <div class="comment-header">
+        <div class="comment-avatar" style="background:${color}22;color:${color};">${initials(c.name)}</div>
+        <div style="flex:1;"><div class="comment-name">${escHtml(c.name)}</div></div>
+        <span class="comment-prompt-tag">${escHtml(c.prompt)}</span>
+      </div>
+      <div class="comment-body">${escHtml(c.body)}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">
+        <div class="comment-time">${c.time}</div>
+        <button class="like-btn ${liked?'liked':''}" onclick="likeComment(${c.id})">♥ ${c.likes||0}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+
+// =================================================================
+// NMAP LAB
+// =================================================================
+const NMAP_FIELDS = ['target-ip','period','p1-cmd','p1-ports','p1-obs','p2-cmd','p2-svcs','p2-obs','p3-os','p3-obs','p4-cmd','p4-vulns','p4-obs','cve-id','cve-system','cve-desc','cve-exploit','cve-impact','ref-concern','ref-mitigation','ref-why'];
+const NMAP_INPUT_IDS = { 'target-ip':'nmap-target-ip','period':'nmap-period','p1-cmd':'n0-cmd','p1-ports':'n0-ports','p1-obs':'n0-obs','p2-cmd':'n1-cmd','p2-svcs':'n1-svcs','p2-obs':'n1-obs','p3-os':'n2-os','p3-obs':'n2-obs','p4-cmd':'n3-cmd','p4-vulns':'n3-vulns','p4-obs':'n3-obs','cve-id':'cve-id','cve-system':'cve-system','cve-desc':'cve-desc','cve-exploit':'cve-exploit','cve-impact':'cve-impact','ref-concern':'ref-concern','ref-mitigation':'ref-mitigation','ref-why':'ref-why' };
+
+function saveNmapField(key, value) {
+  localStorage.setItem('s4a_nmap_' + key, value);
+}
+
+function getNmapField(key) {
+  return localStorage.getItem('s4a_nmap_' + key) || '';
+}
+
+function restoreNmapFields() {
+  NMAP_FIELDS.forEach(key => {
+    const el = document.getElementById(NMAP_INPUT_IDS[key]);
+    if (el) el.value = getNmapField(key);
+  });
+}
+
+function toggleNmapPart(i) {
+  const body = document.getElementById('nbody-' + i);
+  const chev = document.getElementById('nchev-' + i);
+  const part = document.getElementById('npart-' + i);
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  chev.style.transform = isOpen ? '' : 'rotate(90deg)';
+  if (!isOpen) part.classList.add('open'); else part.classList.remove('open');
+}
+
+// =================================================================
+// PDF EXPORT
+// =================================================================
+async function exportDoc() {
+  const btn = document.querySelector('.export-btn');
+  btn.textContent = '⏳ Building PDF...'; btn.disabled = true;
+  restoreData();
+
+  try {
+    if (!window.jspdf) {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+        s.onload = resolve; s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+  } catch(e) {
+    alert('Could not load PDF library. Check your internet connection and try again.');
+    btn.textContent = '⬇ Export PDF'; btn.disabled = false; return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  const PW=612, PH=792, ML=54, MR=54, MT=54, MB=60, CW=504, BOTTOM=PH-MB;
+
+  const ORANGE=[255,140,66], BLACK=[30,30,30], GRAY=[140,140,140], LGRAY=[210,210,210];
+  const GREEN=[34,139,34], RED=[192,0,0], BLUE=[50,120,220], BGRAY=[242,242,242];
+  const WHITE=[255,255,255], AMBER=[220,160,20];
+
+  let y = MT, pageNum = 1;
+
+  function newPage() {
+    doc.setFontSize(8); doc.setTextColor(...GRAY);
+    doc.text('Page ' + pageNum, PW/2, PH-20, { align:'center' });
+    doc.addPage(); pageNum++; y = MT; doc.setTextColor(...BLACK);
+  }
+  function checkY(n) { if (y+n > BOTTOM) newPage(); }
+
+  function hRule(color) {
+    checkY(10);
+    doc.setDrawColor(...(color||LGRAY)); doc.setLineWidth(0.5);
+    doc.line(ML, y, ML+CW, y); y += 10;
+  }
+
+  function sectionHead(text) {
+    checkY(28); y += 6;
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(...ORANGE);
+    doc.text(text.toUpperCase(), ML, y);
+    y += 3;
+    doc.setDrawColor(...ORANGE); doc.setLineWidth(0.75);
+    doc.line(ML, y, ML+CW, y); y += 10; doc.setTextColor(...BLACK);
+  }
+
+  function textLine(text, opts={}) {
+    const fs=opts.size||10, font=opts.bold?'bold':opts.italic?'italic':'normal', col=opts.color||BLACK, x=opts.x||ML, maxW=opts.maxW||(CW-(x-ML));
+    doc.setFont('helvetica',font); doc.setFontSize(fs); doc.setTextColor(...col);
+    const lines=doc.splitTextToSize(text,maxW), lineH=fs*1.35;
+    checkY(lines.length*lineH+4);
+    lines.forEach(l=>{doc.text(l,x,y);y+=lineH;});
+    y+=opts.after!==undefined?opts.after:2; doc.setTextColor(...BLACK);
+  }
+
+  function labelValue(label, value, vc) {
+    const fs=10, lineH=fs*1.35; checkY(lineH+6);
+    doc.setFont('helvetica','bold'); doc.setFontSize(fs); doc.setTextColor(...BLACK);
+    doc.text(label, ML, y);
+    const lw=doc.getTextWidth(label);
+    doc.setFont('helvetica','normal'); doc.setTextColor(...(vc||BLACK));
+    doc.text(value, ML+lw, y); y+=lineH+2; doc.setTextColor(...BLACK);
+  }
+
+  function bulletItem(text, opts={}) {
+    const fs=opts.size||10, col=opts.italic?GRAY:BLACK, indent=ML+16, maxW=CW-16;
+    doc.setFont('helvetica',opts.italic?'italic':'normal');
+    doc.setFontSize(fs); doc.setTextColor(...col);
+    const lines=doc.splitTextToSize(text,maxW), lineH=fs*1.35;
+    checkY(lines.length*lineH+4);
+    doc.text('\u2022', ML+4, y);
+    lines.forEach((l)=>{doc.text(l,indent,y);y+=lineH;});
+    y+=2; doc.setTextColor(...BLACK);
+  }
+
+  const vNames = ['Unencrypted Remote Communications','Weak or Default Authentication','Unpatched Firmware & Software','GPS Spoofing & Signal Manipulation','Insecure Remote Update Mechanism','Physical Port Access'];
+  const mitGroups = [
+    { title: 'Encrypt All Communications', ids: ['mit-0-0','mit-0-1','mit-0-2'], labels: ['Require TLS 1.2+ for all remote control comms','Encrypt stored data on onboard computers','Use VPN tunnels for machine-to-server comms'] },
+    { title: 'Strengthen Authentication', ids: ['mit-1-0','mit-1-1','mit-1-2','mit-1-3'], labels: ['Force password change on first login','Account lockout after failed attempts','Require MFA for remote access','Certificate-based machine authentication'] },
+    { title: 'Implement Automated Patch Management', ids: ['mit-2-0','mit-2-1','mit-2-2','mit-2-3'], labels: ['OTA automatic firmware updates with crypto signing','Verify firmware signatures before installing','Establish patch testing and rollout policy','Alert operators when a device misses a critical update'] },
+    { title: 'Harden GPS Systems', ids: ['mit-3-0','mit-3-1','mit-3-2'], labels: ['GNSS signal authentication','Cross-validate GPS with inertial navigation','Alert and halt if GPS anomaly detected'] },
+    { title: 'Secure Physical Hardware', ids: ['mit-4-0','mit-4-1','mit-4-2'], labels: ['Disable unused USB/serial/debug ports','Use tamper-evident seals on enclosures','Enable secure boot'] },
+    { title: 'Managerial & Policy Controls', ids: ['mit-5-0','mit-5-1','mit-5-2','mit-5-3'], labels: ['Security awareness training for operators','Incident response plan for agricultural IoT','Regular vulnerability assessments and pen testing','Bug bounty / coordinated vulnerability disclosure'] }
+  ];
+
+  const name = data.name || 'Student';
+  const date = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+  // ── TITLE BLOCK ────────────────────────────────────────────────
+  y += 10;
+  doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.setTextColor(...ORANGE);
+  doc.text('DESIGNING SECURE CONNECTED', PW/2, y, {align:'center'}); y += 22;
+  doc.text('FARM EQUIPMENT', PW/2, y, {align:'center'}); y += 16;
+  doc.setFontSize(11); doc.setTextColor(...GRAY);
+  doc.text('Security Vulnerability Report — Scenario 4A', PW/2, y, {align:'center'}); y += 14;
+  doc.setFillColor(...ORANGE); doc.rect(ML, y, CW, 3, 'F'); y += 18;
+  labelValue('Engineer:   ', name);
+  labelValue('Date:   ', date);
+  labelValue('Unit:   ', '4 — Securing Devices (Topics 4.1, 4.3)');
+  y += 6;
+
+  // ── INITIAL OBSERVATIONS ──────────────────────────────────────
+  hRule(); sectionHead('Initial Observations');
+  const bn = JSON.parse(localStorage.getItem('s4a_briefing')||'[]');
+  if (bn.length) bn.forEach(n => bulletItem(n.text||n));
+  else textLine('No initial observations recorded.', {italic:true,color:GRAY});
+
+  // ── VULNERABILITY FINDINGS ────────────────────────────────────
+  hRule(); sectionHead('Vulnerability Findings & Analysis');
+  for (let i=0; i<6; i++) {
+    const vn = JSON.parse(localStorage.getItem('s4a_vnote_'+i)||'[]');
+    const revealed = data.vulnsRevealed.includes(i);
+    checkY(20);
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...BLACK);
+    doc.text(vNames[i]+' ', ML, y);
+    const lw = doc.getTextWidth(vNames[i]+' ');
+    doc.setFont('helvetica','normal'); doc.setFontSize(8);
+    doc.setTextColor(...(revealed?GREEN:GRAY));
+    doc.text('('+(revealed?'investigated':'not opened')+')', ML+lw, y);
+    y += 14; doc.setTextColor(...BLACK);
+    if (vn.length) vn.forEach(n => bulletItem(n.text||n));
+    else bulletItem('No annotation written.', {italic:true});
+    y += 3;
+  }
+
+  // ── RISK ASSESSMENT ───────────────────────────────────────────
+  hRule(); sectionHead('Risk Assessment Register');
+  const riskRatings = JSON.parse(localStorage.getItem('s4a_risk')||'[]');
+  const border4={style:'SINGLE',size:4,color:'CCCCCC'};
+  const thStyle=`border:0.4pt solid #CCCCCC;padding:5pt 7pt;background:#F5F5F5;font-weight:bold;font-size:9pt;font-family:Arial;`;
+  const tdStyle=`border:0.4pt solid #CCCCCC;padding:5pt 7pt;font-size:9pt;font-family:Arial;`;
+
+  // Draw risk table manually
+  const colW=[180,65,65,194], rowH=20, cellPad=5, fs=8.5;
+  const bdColor=[204,204,204];
+  function rCell(text,x,y,w,h,bold,color) {
+    doc.setDrawColor(...bdColor); doc.setLineWidth(0.4); doc.rect(x,y,w,h);
+    doc.setFont('helvetica',bold?'bold':'normal'); doc.setFontSize(fs);
+    doc.setTextColor(...(color||BLACK));
+    const wrapped=doc.splitTextToSize(text,w-cellPad*2);
+    wrapped.forEach((l,li)=>doc.text(l,x+cellPad,y+cellPad+fs+li*fs*1.2));
+  }
+
+  checkY(rowH+4);
+  doc.setFillColor(...BGRAY);
+  let rx=ML;
+  ['Vulnerability','Likelihood','Impact','Justification'].forEach((h,ci)=>{ doc.setFillColor(...BGRAY); doc.rect(rx,y,colW[ci],rowH,'FD'); rCell(h,rx,y,colW[ci],rowH,true); rx+=colW[ci]; });
+  y+=rowH;
+
+  vNames.forEach((vn,i)=>{
+    const r=riskRatings[i]||{};
+    const lColor=r.likelihood==='High'?RED:r.likelihood==='Medium'?[180,120,0]:GREEN;
+    const iColor=r.impact==='High'?RED:r.impact==='Medium'?[180,120,0]:GREEN;
+    const maxLines=Math.max(1,doc.splitTextToSize(r.justification||'Not rated',colW[3]-cellPad*2).length);
+    const rH=Math.max(rowH,maxLines*fs*1.2+cellPad*2);
+    checkY(rH+2);
+    rx=ML;
+    [vn,r.likelihood||'—',r.impact||'—',r.justification||'Not completed'].forEach((txt,ci)=>{
+      const col=ci===1?lColor:ci===2?iColor:BLACK;
+      doc.setFillColor(...WHITE); doc.setDrawColor(...bdColor); doc.rect(rx,y,colW[ci],rH,'FD');
+      rCell(txt,rx,y,colW[ci],rH,ci===0,col);
+      rx+=colW[ci];
+    });
+    y+=rH;
+  });
+  y+=8;
+
+  const rp = JSON.parse(localStorage.getItem('s4a_risk-priority')||'[]');
+  if (rp.length) { textLine('Priority justification:', {bold:true,size:10}); rp.forEach(n=>bulletItem(n.text||n)); }
+
+  // ── MITIGATIONS ───────────────────────────────────────────────
+  hRule(); sectionHead('Recommended Mitigations');
+  const checkedMits = JSON.parse(localStorage.getItem('s4a_mits')||'[]');
+  mitGroups.forEach(g => {
+    const selected = g.ids.filter(id=>checkedMits.includes(id));
+    if (selected.length===0) return;
+    checkY(16);
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...ORANGE);
+    doc.text(g.title, ML, y); y+=14; doc.setTextColor(...BLACK);
+    selected.forEach(id=>{
+      const idx=g.ids.indexOf(id);
+      if (idx>=0) bulletItem('\u2713 '+g.labels[idx]);
+    });
+    y+=4;
+  });
+  const em = JSON.parse(localStorage.getItem('s4a_extramit')||'[]');
+  if (em.length) { textLine('Additional recommendations:', {bold:true,size:10}); em.forEach(n=>bulletItem(n.text||n)); }
+  if (checkedMits.length===0&&em.length===0) textLine('No mitigations selected.', {italic:true,color:GRAY});
+
+  // ── QUIZ ──────────────────────────────────────────────────────
+  hRule(); sectionHead('Knowledge Check Results');
+  const border4q={style:'SINGLE',size:4,color:'CCCCCC'};
+  const qColW=[215,175,114];
+  checkY(20);
+  rx=ML;
+  ['Question','Answer Selected','Result'].forEach((h,ci)=>{ doc.setFillColor(...BGRAY); doc.rect(rx,y,qColW[ci],rowH,'FD'); rCell(h,rx,y,qColW[ci],rowH,true); rx+=qColW[ci]; });
+  y+=rowH;
+  qLabels.forEach((q,i)=>{
+    const a=data.quizAnswers[i];
+    const tick=a?(a.correct?'\u2713 Correct':'\u2717 Incorrect'):'\u2014';
+    const tColor=a?(a.correct?GREEN:RED):GRAY;
+    const maxL=Math.max(1,doc.splitTextToSize(q,qColW[0]-cellPad*2).length,a?doc.splitTextToSize(a.chosen||'',qColW[1]-cellPad*2).length:1);
+    const rH=Math.max(rowH,maxL*fs*1.2+cellPad*2);
+    checkY(rH+2); rx=ML;
+    [[q,BLACK],[a?a.chosen:'Not answered',a?BLACK:GRAY],[tick,tColor]].forEach(([txt,col],ci)=>{
+      doc.setFillColor(...WHITE); doc.setDrawColor(...bdColor); doc.rect(rx,y,qColW[ci],rH,'FD');
+      rCell(txt,rx,y,qColW[ci],rH,false,col); rx+=qColW[ci];
+    });
+    y+=rH;
+  });
+  y+=8;
+  const scoreStr=data.quizScore!==null?data.quizScore+'/5':'Not completed';
+  labelValue('Final score:   ', scoreStr, ORANGE);
+
+  // ── NMAP LAB ──────────────────────────────────────────────────
+  hRule(); sectionHead('Nmap Vulnerability Lab');
+
+  const nf = (k) => getNmapField(k);
+
+  if (nf('target-ip')) labelValue('Target IP:   ', nf('target-ip'));
+  if (nf('period')) labelValue('Class Period:   ', nf('period'));
+  y += 4;
+
+  const nmapParts = [
+    { title: 'Part 1 — Reconnaissance (Basic Scan)', fields: [['Command used', nf('p1-cmd')],['Open ports found', nf('p1-ports')],['Observations', nf('p1-obs')]] },
+    { title: 'Part 2 — Service & Version Detection', fields: [['Command used', nf('p2-cmd')],['Services & versions', nf('p2-svcs')],['Observations', nf('p2-obs')]] },
+    { title: 'Part 3 — OS Detection', fields: [['Detected OS', nf('p3-os')],['Observations', nf('p3-obs')]] },
+    { title: 'Part 4 — Vulnerability Scan', fields: [['Command used', nf('p4-cmd')],['Vulnerabilities found', nf('p4-vulns')],['Observations', nf('p4-obs')]] },
+    { title: 'Part 5 — CVE Research', fields: [['CVE ID', nf('cve-id')],['Affected system', nf('cve-system')],['Description', nf('cve-desc')],['How adversary exploits it', nf('cve-exploit')],['Impact on farm equipment', nf('cve-impact')]] },
+    { title: 'Reflection', fields: [['Most concerning vulnerability', nf('ref-concern')],['Mitigation recommendation', nf('ref-mitigation')],['Why vulnerability scanning matters', nf('ref-why')]] }
+  ];
+
+  nmapParts.forEach(part => {
+    const hasContent = part.fields.some(([,v]) => v && v.trim());
+    checkY(18);
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...ORANGE);
+    doc.text(part.title, ML, y); y += 14; doc.setTextColor(...BLACK);
+    if (hasContent) {
+      part.fields.forEach(([label, value]) => {
+        if (!value || !value.trim()) return;
+        textLine(label + ':', {bold:true, size:9, after:1});
+        textLine(value, {size:9, after:6, x: ML+10, maxW: CW-10});
+      });
+    } else {
+      textLine('Not completed.', {italic:true, color:GRAY, size:9});
+    }
+    y += 4;
+  });
+
+  // ── DISCUSSION ────────────────────────────────────────────────
+  hRule(); sectionHead('Discussion Responses');
+  const disc = getComments().filter(c=>c.name===name);
+  if (disc.length) {
+    disc.forEach(d=>{
+      textLine(d.prompt,{bold:true,color:ORANGE,size:10,after:3});
+      textLine(d.body,{size:10,after:10});
+    });
+  } else textLine('No discussion responses submitted.',{italic:true,color:GRAY});
+
+  // final footer
+  doc.setFontSize(8); doc.setTextColor(...GRAY);
+  doc.text('Page '+pageNum, PW/2, PH-20, {align:'center'});
+
+  doc.save(name.replace(/\s+/g,'-')+'-Scenario4A-FarmEquipment.pdf');
+  btn.textContent = '⬇ Export PDF'; btn.disabled = false;
+
+  setTimeout(()=>{
+    if (confirm('PDF downloaded!\n\nClear all responses to reset for the next student?')) clearAllData();
+  }, 600);
+}
+
+// =================================================================
+// CLEAR
+// =================================================================
+function clearAllData() {
+  const keys=['s4a_name','s4a_briefing','s4a_risk','s4a_risk-priority','s4a_extramit','s4a_mits','s4a_comments'];
+  for(let i=0;i<6;i++) keys.push('s4a_vnote_'+i);
+  NMAP_FIELDS.forEach(k => keys.push('s4a_nmap_' + k));
+  keys.forEach(k=>localStorage.removeItem(k));
+  Object.keys(localStorage).filter(k=>k.startsWith('s4a_liked_')).forEach(k=>localStorage.removeItem(k));
+  data.name=''; data.vulnsRevealed=[];  data.quizAnswers=[]; data.quizScore=null;
+  attackAnswered=false;
+  resetQuiz();
+  document.querySelectorAll('.vuln-card').forEach(c=>c.classList.remove('open'));
+  document.querySelectorAll('.mit-check').forEach(el=>{ el.classList.remove('checked'); const cb=el.querySelector('input'); if(cb) cb.checked=false; });
+  document.querySelectorAll('.risk-select').forEach(s=>s.value='');
+  document.querySelectorAll('.risk-table textarea').forEach(t=>t.value='');
+  ['briefing-note-input','risk-priority-input','extra-mit-input'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['briefing-saved-notes','risk-priority-saved-notes','extra-mit-saved-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});
+  for(let i=0;i<6;i++){renderVulnNotes(i);const inp=document.getElementById('vnote-'+i);if(inp)inp.value='';}
+  document.getElementById('c-body').value='';
+  document.getElementById('comment-count').textContent='0';
+  document.getElementById('comments-list').innerHTML='<div class="no-comments"><div class="nc-icon">💬</div>No responses yet. Be the first!</div>';
+  document.getElementById('student-name-input').value='';
+  document.getElementById('name-gate').style.display='flex';
+  document.getElementById('lesson-content').style.display='none';
+  NMAP_FIELDS.forEach(k => { const el = document.getElementById(NMAP_INPUT_IDS[k]); if(el) el.value=''; });
+  for(let i=0;i<6;i++) { const b=document.getElementById('nbody-'+i); if(b) b.style.display='none'; const c=document.getElementById('nchev-'+i); if(c) c.style.transform=''; const p=document.getElementById('npart-'+i); if(p) p.classList.remove('open'); }
+  switchTab('briefing');
+}
+
+let attackAnswered = false;
+
+// =================================================================
+// INIT
+// =================================================================
+document.addEventListener('DOMContentLoaded', ()=>{
+  restoreData();
+  if (data.name) {
+    document.getElementById('student-name-input').value=data.name;
+    document.getElementById('name-gate').style.display='none';
+    document.getElementById('lesson-content').style.display='block';
+    const df=document.getElementById('c-name'); if(df) df.value=data.name;
+  }
+  renderNotes('briefing'); renderNotes('risk-priority'); renderNotes('extra-mit');
+  for(let i=0;i<6;i++) renderVulnNotes(i);
+  restoreRisk();
+  restoreMits();
+  restoreNmapFields();
+  renderComments();
+});
+</script>
+</body>
+</html>
