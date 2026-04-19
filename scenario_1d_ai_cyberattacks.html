@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Powered Cyberattacks — Cybersecurity Practice Scenario</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0f14;
+  --surface: #13161e;
+  --surface2: #1a1e28;
+  --surface3: #222736;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --accent: #ff4d4d;
+  --accent2: #ff8c42;
+  --blue: #4d9fff;
+  --green: #3ddc84;
+  --yellow: #ffd166;
+  --text: #e8eaf0;
+  --text2: #9099b0;
+  --text3: #5a6378;
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+  --display: 'Syne', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* NOISE TEXTURE OVERLAY */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* HEADER */
+.hero {
+  position: relative;
+  padding: 4rem 2rem 3rem;
+  max-width: 860px;
+  margin: 0 auto;
+  text-align: center;
+}
+.hero-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 4px 12px;
+  border-radius: 2px;
+  margin-bottom: 1.5rem;
+}
+.hero h1 {
+  font-family: var(--display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #fff 40%, #ff8c42);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero p {
+  color: var(--text2);
+  font-size: 16px;
+  max-width: 520px;
+  margin: 0 auto 2rem;
+}
+
+/* NAV TABS */
+.tab-nav {
+  display: flex;
+  gap: 4px;
+  max-width: 860px;
+  margin: 0 auto 2rem;
+  padding: 0 1.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tab-nav::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex-shrink: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--text2);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tab-btn .num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--surface3);
+  font-size: 10px;
+  color: var(--text3);
+}
+.tab-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.tab-btn.active .num { background: rgba(0,0,0,0.25); color: #fff; }
+.tab-btn:hover:not(.active) { border-color: var(--border2); color: var(--text); background: var(--surface2); }
+.export-btn {
+  background: #1a3d2b !important;
+  border-color: var(--green) !important;
+  color: var(--green) !important;
+  font-weight: 500;
+  margin-left: auto;
+}
+.export-btn:hover { background: var(--green) !important; color: #000 !important; }
+
+/* MAIN CONTENT */
+main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+  position: relative;
+  z-index: 1;
+}
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: fadeUp 0.3s ease; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* CARDS */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.card-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 0.75rem;
+}
+.card h3 {
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+/* SCENARIO SECTION */
+.scene-phone {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+.scene-phone::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+.dialogue {
+  margin-bottom: 1.25rem;
+}
+.dialogue-speaker {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.dialogue-speaker.you { color: var(--blue); }
+.dialogue-speaker.relative { color: var(--accent); }
+.dialogue-text {
+  background: var(--surface3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  border-left: 2px solid var(--border2);
+}
+.dialogue-speaker.relative + .dialogue-text { border-left-color: var(--accent); }
+.dialogue-speaker.you + .dialogue-text { border-left-color: var(--blue); }
+
+/* BREAKDOWN TIMELINE */
+.timeline { position: relative; padding-left: 2rem; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px; top: 8px; bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, var(--accent) 0%, var(--border) 100%);
+}
+.tl-step {
+  position: relative;
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+}
+.tl-step::before {
+  content: '';
+  position: absolute;
+  left: -1.75rem;
+  top: 6px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--bg);
+  transition: background 0.2s;
+}
+.tl-step.revealed::before { background: var(--accent); }
+.tl-step-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.tl-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: var(--surface3);
+  color: var(--text3);
+}
+.tl-title {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.tl-body {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.6;
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  display: none;
+}
+.tl-step.revealed .tl-body { display: block; animation: fadeUp 0.25s ease; }
+.tl-prompt {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 6px;
+}
+.tl-step.revealed .tl-prompt { display: none; }
+
+/* ANNOTATION AREA */
+.annotate-area {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 0.75rem;
+}
+.annotate-area label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 6px;
+}
+.annotate-area textarea {
+  width: 100%;
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 13px;
+  padding: 10px 12px;
+  resize: vertical;
+  min-height: 70px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.annotate-area textarea:focus { border-color: var(--accent2); }
+.save-note-btn {
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px solid var(--accent2);
+  color: var(--accent2);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.save-note-btn:hover { background: var(--accent2); color: #000; }
+.saved-notes { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+.saved-note {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text2);
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 8px;
+}
+.delete-note {
+  background: none;
+  border: none;
+  color: var(--text3);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+.delete-note:hover { color: var(--accent); }
+
+/* QUIZ */
+.quiz-progress {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 1.5rem;
+}
+.qp-dot {
+  flex: 1;
+  height: 3px;
+  background: var(--surface3);
+  border-radius: 2px;
+  transition: background 0.3s;
+}
+.qp-dot.done { background: var(--green); }
+.qp-dot.active { background: var(--accent2); }
+
+.quiz-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.quiz-qnum {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 0.5rem;
+}
+.quiz-question {
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 1.25rem;
+  line-height: 1.4;
+}
+.choices { display: flex; flex-direction: column; gap: 8px; }
+.choice-btn {
+  text-align: left;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.choice-letter {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  font-family: var(--mono);
+  font-size: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text3);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.choice-btn:hover:not(:disabled) { border-color: var(--accent2); background: var(--surface3); }
+.choice-btn:hover:not(:disabled) .choice-letter { border-color: var(--accent2); color: var(--accent2); }
+.choice-btn.correct { border-color: var(--green); background: rgba(61,220,132,0.07); }
+.choice-btn.correct .choice-letter { background: var(--green); border-color: var(--green); color: #000; }
+.choice-btn.wrong { border-color: var(--accent); background: rgba(255,77,77,0.07); }
+.choice-btn.wrong .choice-letter { background: var(--accent); border-color: var(--accent); color: #fff; }
+.quiz-feedback {
+  margin-top: 0.875rem;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  display: none;
+}
+.quiz-feedback.show { display: block; animation: fadeUp 0.2s ease; }
+.quiz-feedback.good { background: rgba(61,220,132,0.1); color: var(--green); border: 1px solid rgba(61,220,132,0.2); }
+.quiz-feedback.bad { background: rgba(255,77,77,0.1); color: #ff8a8a; border: 1px solid rgba(255,77,77,0.2); }
+.next-q-btn {
+  margin-top: 1rem;
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 8px 18px;
+  background: transparent;
+  border: 1px solid var(--blue);
+  color: var(--blue);
+  border-radius: 4px;
+  cursor: pointer;
+  display: none;
+  transition: all 0.2s;
+}
+.next-q-btn:hover { background: var(--blue); color: #000; }
+.next-q-btn.show { display: inline-block; }
+.score-display {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  display: none;
+}
+.score-display.show { display: block; animation: fadeUp 0.3s ease; }
+.score-big {
+  font-family: var(--display);
+  font-size: 4rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--green), var(--blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.score-label { color: var(--text2); font-size: 14px; margin-bottom: 1.5rem; }
+.retry-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 8px 20px;
+  border: 1px solid var(--text3);
+  background: transparent;
+  color: var(--text2);
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 8px;
+  transition: all 0.2s;
+}
+.retry-btn:hover { border-color: var(--text); color: var(--text); }
+
+/* DISCUSSION */
+.discussion-intro {
+  font-size: 14px;
+  color: var(--text2);
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-left: 3px solid var(--accent2);
+  background: var(--surface2);
+  border-radius: 0 8px 8px 0;
+}
+.discussion-prompts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+.disc-prompt {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+}
+.disc-prompt-q {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent2);
+  margin-bottom: 0.5rem;
+}
+.disc-prompt-sub { font-size: 13px; color: var(--text2); }
+
+.comment-form-section {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.comment-form-section h3 {
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+@media(max-width: 540px) { .form-row { grid-template-columns: 1fr; } }
+.form-field { display: flex; flex-direction: column; gap: 5px; }
+.form-field label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.form-field input, .form-field select, .form-field textarea {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--accent2); }
+.form-field select { cursor: pointer; appearance: none; }
+.form-field textarea { resize: vertical; min-height: 100px; }
+.submit-btn {
+  margin-top: 10px;
+  width: 100%;
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 12px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: opacity 0.2s;
+}
+.submit-btn:hover { opacity: 0.88; }
+
+.comments-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.comment-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.comment-meta { flex: 1; }
+.comment-name {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.comment-prompt-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: var(--surface3);
+  color: var(--text3);
+}
+.comment-body {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+.comment-time {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: 6px;
+}
+.like-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text3);
+  font-size: 12px;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--mono);
+}
+.like-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+.like-btn.liked { border-color: var(--accent2); color: var(--accent2); background: rgba(255,140,66,0.1); }
+.no-comments {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text3);
+  font-size: 14px;
+}
+.no-comments .nc-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+
+/* TIPS */
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.tip-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: border-color 0.2s;
+}
+.tip-card:hover { border-color: var(--border2); }
+.tip-icon-wrap {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  margin-bottom: 0.75rem;
+}
+.tip-card h4 {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.tip-card p { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+/* UTILITIES */
+.section-title {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 0.375rem;
+}
+.section-sub {
+  font-size: 14px;
+  color: var(--text2);
+  margin-bottom: 1.5rem;
+}
+.alert {
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 10px;
+  align-items: start;
+}
+.alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.alert-warn { background: rgba(255,209,102,0.1); border: 1px solid rgba(255,209,102,0.2); color: var(--yellow); }
+.alert-info { background: rgba(77,159,255,0.1); border: 1px solid rgba(77,159,255,0.2); color: var(--blue); }
+.alert-danger { background: rgba(255,77,77,0.1); border: 1px solid rgba(255,77,77,0.2); color: #ff8a8a; }
+
+.reveal-all-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 7px 16px;
+  background: transparent;
+  border: 1px solid var(--accent2);
+  color: var(--accent2);
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 1.25rem;
+  transition: all 0.2s;
+}
+.reveal-all-btn:hover { background: var(--accent2); color: #000; }
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 2rem;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 0.05em;
+  border-top: 1px solid var(--border);
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* ATTACK TYPE QUESTION */
+.attack-type-question {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.atq-label {
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--accent2); margin-bottom: 0.5rem;
+}
+.atq-q {
+  font-family: var(--display); font-size: 16px; font-weight: 600;
+  color: var(--text); margin-bottom: 1rem;
+}
+.atq-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media(max-width:500px) { .atq-choices { grid-template-columns: 1fr; } }
+.atq-btn {
+  text-align: left; background: var(--surface3);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 14px; font-family: var(--sans); font-size: 13px;
+  color: var(--text2); cursor: pointer; transition: all 0.2s;
+}
+.atq-btn:hover:not(:disabled) { border-color: var(--accent2); color: var(--text); }
+.atq-btn.correct { border-color: var(--green); background: rgba(61,220,132,0.1); color: var(--green); }
+.atq-btn.wrong { border-color: var(--accent); background: rgba(255,77,77,0.08); color: #ff8a8a; }
+.atq-feedback {
+  margin-top: 0.875rem; font-size: 13px; line-height: 1.6;
+  padding: 10px 14px; border-radius: 8px; display: none;
+}
+.atq-feedback.show { display: block; animation: fadeUp 0.2s ease; }
+.atq-feedback.good { background: rgba(61,220,132,0.1); color: var(--green); border: 1px solid rgba(61,220,132,0.2); }
+.atq-feedback.bad { background: rgba(255,77,77,0.08); color: #ff8a8a; border: 1px solid rgba(255,77,77,0.2); }
+
+/* VISHING EXPLAINER */
+.vishing-explainer {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+.vishing-tag {
+  background: var(--accent);
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em;
+  text-transform: uppercase; color: #fff; padding: 6px 16px;
+}
+.vishing-name {
+  font-family: var(--display); font-size: 22px; font-weight: 800;
+  color: var(--text); padding: 1rem 1.25rem 0.5rem;
+  background: linear-gradient(135deg, #fff 50%, var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.vishing-body {
+  padding: 0 1.25rem 1.25rem;
+}
+.vishing-body p { font-size: 14px; color: var(--text2); line-height: 1.7; margin-bottom: 0.75rem; }
+.vishing-body strong { color: var(--text); }
+.vishing-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 1rem;
+}
+@media(max-width:480px) { .vishing-stats { grid-template-columns: 1fr; } }
+.vstat {
+  background: var(--surface2); border-radius: 8px;
+  padding: 0.875rem; text-align: center;
+}
+.vstat-num {
+  font-family: var(--display); font-size: 22px; font-weight: 800;
+  color: var(--accent2); line-height: 1;
+}
+.vstat-label { font-size: 11px; color: var(--text3); margin-top: 4px; line-height: 1.4; }
+
+.name-entry-bar {
+  display: flex; align-items: start; gap: 12px;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.25rem;
+}
+.name-entry-icon { font-size: 20px; margin-top: 18px; }
+
+/* GOOGLE FORM SETUP */
+.gform-banner {
+  display: flex; align-items: start; gap: 12px;
+  background: rgba(255,209,102,0.08); border: 1px solid rgba(255,209,102,0.25);
+  border-radius: 8px; padding: 12px 16px;
+  font-size: 13px; color: var(--yellow); line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.gform-banner.connected {
+  background: rgba(61,220,132,0.08); border-color: rgba(61,220,132,0.25); color: var(--green);
+}
+.gform-banner-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.gform-config {
+  display: flex; gap: 10px; align-items: start;
+  margin-bottom: 0.5rem; flex-wrap: wrap;
+}
+.gform-config .form-field { flex: 1; min-width: 200px; }
+
+/* NAME GATE */
+.name-gate-wrap {
+  display: flex; justify-content: center; align-items: center;
+  padding: 3rem 1rem;
+}
+.name-gate-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--border-radius-lg);
+  padding: 2rem;
+  max-width: 460px; width: 100%;
+  text-align: center;
+}
+.name-gate-title {
+  font-family: var(--display); font-size: 22px; font-weight: 800;
+  color: var(--text); margin-bottom: 0.5rem;
+}
+.name-gate-sub { font-size: 14px; color: var(--text2); line-height: 1.6; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
+
+/* SCENARIO SIDE-BY-SIDE */
+.scenario-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 1.25rem;
+  align-items: start;
+  margin-bottom: 1rem;
+}
+@media (max-width: 640px) {
+  .scenario-layout { grid-template-columns: 1fr; }
+}
+
+/* iMESSAGE */
+.imessage-wrap { display: flex; justify-content: center; }
+.imessage-phone {
+  width: 320px;
+  background: #fff;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.15);
+  overflow: hidden;
+  box-shadow: 0 0 0 6px #1a1e28, 0 0 0 7px rgba(255,255,255,0.08);
+  font-family: -apple-system, 'Helvetica Neue', sans-serif;
+}
+.imessage-statusbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 14px 4px; font-size: 11px; font-weight: 600; color: #000;
+  background: #f5f5f5; border-bottom: 0.5px solid #d0d0d0;
+}
+.imessage-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px 10px; background: #f5f5f5; border-bottom: 0.5px solid #d0d0d0;
+}
+.imessage-back { color: #007aff; font-size: 15px; }
+.imessage-contact { font-size: 15px; font-weight: 700; color: #000; }
+.imessage-details { color: #007aff; font-size: 15px; }
+.imessage-body {
+  background: #fff; padding: 14px 12px;
+  display: flex; flex-direction: column; gap: 10px; min-height: 200px;
+}
+.imsg {
+  max-width: 78%; padding: 10px 14px; border-radius: 18px;
+  font-size: 14px; line-height: 1.4;
+}
+.imsg.received { background: #e5e5ea; align-self: flex-start; border-bottom-left-radius: 4px; color: #000; }
+.imsg.sent { background: #007aff; align-self: flex-end; border-bottom-right-radius: 4px; color: #fff; }
+.imessage-footer {
+  background: #f5f5f5; border-top: 0.5px solid #d0d0d0;
+  padding: 8px 14px; display: flex; align-items: center; gap: 10px;
+}
+.imessage-cam, .imessage-mic { font-size: 18px; color: #8e8e93; }
+.imessage-input {
+  flex: 1; background: #fff; border: 0.5px solid #c7c7cc;
+  border-radius: 18px; padding: 6px 14px; font-size: 13px; color: #c7c7cc;
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-tag">Cybersecurity Practice Scenario</div>
+  <h1>AI-Powered<br>Cyberattacks</h1>
+  <p>An interactive investigation into voice cloning scams — read the scenario, break it down, test your knowledge, and join the class discussion.</p>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('scenario')"><span class="num">1</span> The Scenario</button>
+  <button class="tab-btn" onclick="switchTab('breakdown')"><span class="num">2</span> Break It Down</button>
+  <button class="tab-btn" onclick="switchTab('quiz')"><span class="num">3</span> Quiz</button>
+  <button class="tab-btn" onclick="switchTab('discuss')"><span class="num">4</span> Discussion</button>
+  <button class="tab-btn" onclick="switchTab('protect')"><span class="num">5</span> Stay Safe</button>
+  <button class="tab-btn export-btn" onclick="exportDoc()">⬇ Export PDF</button>
+</div>
+
+<main>
+
+<!-- ===================== SCENARIO ===================== -->
+<div id="tab-scenario" class="tab-panel active">
+
+  <!-- NAME GATE — shown first, hidden after name saved -->
+  <div id="name-gate" class="name-gate-wrap">
+    <div class="name-gate-card">
+      <div class="name-gate-title">Welcome to Practice Scenario 1D</div>
+      <div class="name-gate-sub">Enter your name to begin. It will appear on your exported analysis.</div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:1rem;">
+        <input type="text" id="student-name-input" placeholder="Your first name or nickname" style="flex:1;min-width:180px;" onkeydown="if(event.key==='Enter')startLesson()">
+        <button class="submit-btn" style="width:auto;padding:10px 24px;margin-top:0;" onclick="startLesson()">Start Scenario →</button>
+      </div>
+      <div id="name-gate-error" style="color:var(--accent);font-size:13px;margin-top:8px;display:none;">Please enter your name to continue.</div>
+    </div>
+  </div>
+
+  <!-- LESSON CONTENT — hidden until name entered -->
+  <div id="lesson-content" style="display:none;">
+  <div class="section-title">The Scenario</div>
+  <div class="section-sub">Read the story carefully. Something is very wrong.</div>
+
+  <div class="alert alert-danger">
+    <span class="alert-icon">⚠</span>
+    <span>This is a real type of attack happening today. AI tools can clone a voice from just a few minutes of audio found online.</span>
+  </div>
+
+  <div class="scenario-layout">
+    <div class="imessage-wrap">
+      <div class="imessage-phone">
+        <div class="imessage-statusbar">
+          <span>●●●○○ Sprint LTE</span>
+          <span>2:08 PM</span>
+          <span>75% ▮</span>
+        </div>
+        <div class="imessage-header">
+          <span class="imessage-back">&#8249; Messages</span>
+          <span class="imessage-contact">Tia</span>
+          <span class="imessage-details">Details</span>
+        </div>
+        <div class="imessage-body">
+          <div class="imsg received">Are you okay?! Did you get the money I sent? How did you end up in so much trouble?!</div>
+          <div class="imsg sent">What? No, Ive been home all day, what are you talking about?</div>
+          <div class="imsg received">You called me earlier from jail! You said you were arrested for stealing and needed bail money right away. It sounded exactly like you. I wired the money just like you told me to.</div>
+          <div class="imsg sent">Um what? I wasnt arrested?! Ive been home all day! And I havent called you today??</div>
+          <div class="imsg received">No im sure it was you, it sounded just like you! If this is a joke its not funny....</div>
+          <div class="imsg sent">No joke, I think you got scammed....</div>
+        </div>
+        <div class="imessage-footer">
+          <span class="imessage-cam">&#128247;</span>
+          <span class="imessage-input">iMessage</span>
+          <span class="imessage-mic">&#127908;</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:0; align-self:stretch;">
+      <div class="card-label">Background — 2 weeks earlier</div>
+      <p style="color:var(--text2); font-size:14px; line-height:1.7; margin:0;">You have a social media account where you post short videos of yourself. You received a friend request from someone with a name similar to a classmate. Assuming it was them, you accepted. That person was actually an adversary — a scammer — pretending to be someone you knew.</p>
+      <br>
+      <p style="color:var(--text2); font-size:14px; line-height:1.7; margin:0;">Once connected, the adversary scraped audio samples of your voice from your videos. They fed those clips into an AI voice cloning tool. They then searched your social media to identify your relatives and called one of them, using your cloned voice to tell a fake emergency story — getting money wired to them.</p>
+    </div>
+  </div>
+
+  <div class="attack-type-question">
+    <div class="atq-label">Think about it</div>
+    <div class="atq-q">Based on what you just read — what type of cyberattack do you think this is?</div>
+    <div class="atq-choices">
+      <button class="atq-btn" onclick="guessAttack(this, false)">Phishing email</button>
+      <button class="atq-btn" onclick="guessAttack(this, false)">Data breach</button>
+      <button class="atq-btn" onclick="guessAttack(this, true)">Voice cloning scam (Vishing)</button>
+      <button class="atq-btn" onclick="guessAttack(this, false)">Ransomware attack</button>
+    </div>
+    <div class="atq-feedback" id="atq-feedback"></div>
+  </div>
+
+  <div style="margin-top: 1.5rem;">
+    <div class="card-label" style="margin-bottom:0.5rem;">Your notes on this scenario</div>
+    <div class="annotate-area">
+      <label>Jot down your initial reaction or observations</label>
+      <textarea id="scenario-note-input" placeholder="What stood out to you? What questions do you have?"></textarea>
+      <button class="save-note-btn" onclick="saveNote('scenario')">Save note</button>
+      <div class="saved-notes" id="scenario-saved-notes"></div>
+    </div>
+  </div>
+
+  <button class="reveal-all-btn" style="margin-top:1.25rem;" onclick="switchTab('breakdown')">Continue to breakdown →</button>
+  </div><!-- end #lesson-content -->
+</div>
+
+<!-- ===================== BREAKDOWN ===================== -->
+<div id="tab-breakdown" class="tab-panel">
+  <div class="section-title">Break It Down</div>
+  <div class="section-sub">Click each step to reveal how the attack worked. Annotate your thinking as you go.</div>
+
+  <button class="reveal-all-btn" onclick="revealAll()">Reveal all steps</button>
+
+  <div class="timeline" id="timeline">
+
+    <div class="tl-step" id="step-0" onclick="revealStep(0)">
+      <div class="tl-step-header">
+        <span class="tl-badge">Step 1</span>
+        <span class="tl-title">The fake friend request</span>
+      </div>
+      <div class="tl-prompt" style="font-size:13px; color:var(--text3);">↓ Click to reveal</div>
+      <div class="tl-body">
+        The adversary created a fake account with a name very similar to someone you knew — a classmate. They sent you a friend request on social media. Because the name looked familiar, you accepted without verifying.<br><br>
+        <strong style="color:var(--accent);">Key vulnerability:</strong> You accepted a connection from someone you had not verified in real life.
+      </div>
+      <div class="annotate-area" style="display:none;" id="note-area-0">
+        <label>Your annotation for Step 1</label>
+        <textarea id="note-input-0" placeholder="Why do you think people accept requests without verifying? Have you done this?"></textarea>
+        <button class="save-note-btn" onclick="saveNote('step0')">Save</button>
+        <div class="saved-notes" id="step0-saved-notes"></div>
+      </div>
+    </div>
+
+    <div class="tl-step" id="step-1" onclick="revealStep(1)">
+      <div class="tl-step-header">
+        <span class="tl-badge">Step 2</span>
+        <span class="tl-title">Voice harvesting from social media</span>
+      </div>
+      <div class="tl-prompt" style="font-size:13px; color:var(--text3);">↓ Click to reveal</div>
+      <div class="tl-body">
+        Once connected, the adversary could watch all your videos. They recorded or "scraped" clips of your voice from your posts. Modern AI voice cloning tools need only 30–60 seconds of clear audio to produce a realistic voice clone. A few minutes gives even better results.<br><br>
+        <strong style="color:var(--accent);">Key vulnerability:</strong> Your public or semi-public videos contained extensive audio of your voice.
+      </div>
+      <div class="annotate-area" style="display:none;" id="note-area-1">
+        <label>Your annotation for Step 2</label>
+        <textarea id="note-input-1" placeholder="Did you know your voice could be cloned from videos? Does this change how you think about posting online?"></textarea>
+        <button class="save-note-btn" onclick="saveNote('step1')">Save</button>
+        <div class="saved-notes" id="step1-saved-notes"></div>
+      </div>
+    </div>
+
+    <div class="tl-step" id="step-2" onclick="revealStep(2)">
+      <div class="tl-step-header">
+        <span class="tl-badge">Step 3</span>
+        <span class="tl-title">AI voice cloning</span>
+      </div>
+      <div class="tl-prompt" style="font-size:13px; color:var(--text3);">↓ Click to reveal</div>
+      <div class="tl-body">
+        The adversary used a freely available or low-cost AI voice cloning tool. These tools analyze the tone, pitch, rhythm, and speech patterns from audio samples. The resulting clone can speak any text in your voice — even things you've never said.<br><br>
+        <strong style="color:var(--accent);">Key vulnerability:</strong> AI tools have made voice cloning cheap, fast, and accessible to anyone.
+      </div>
+      <div class="annotate-area" style="display:none;" id="note-area-2">
+        <label>Your annotation for Step 3</label>
+        <textarea id="note-input-2" placeholder="How does knowing AI did this make you feel? What else could someone do with a cloned voice?"></textarea>
+        <button class="save-note-btn" onclick="saveNote('step2')">Save</button>
+        <div class="saved-notes" id="step2-saved-notes"></div>
+      </div>
+    </div>
+
+    <div class="tl-step" id="step-3" onclick="revealStep(3)">
+      <div class="tl-step-header">
+        <span class="tl-badge">Step 4</span>
+        <span class="tl-title">Identifying the target</span>
+      </div>
+      <div class="tl-prompt" style="font-size:13px; color:var(--text3);">↓ Click to reveal</div>
+      <div class="tl-body">
+        The adversary searched your social media profiles to identify people close to you — family members, older relatives — and found contact information for one of them. Social media often reveals relationships through tagged photos, comments, and profile links.<br><br>
+        <strong style="color:var(--accent);">Key vulnerability:</strong> Your social media made your family relationships visible to strangers.
+      </div>
+      <div class="annotate-area" style="display:none;" id="note-area-3">
+        <label>Your annotation for Step 4</label>
+        <textarea id="note-input-3" placeholder="What personal connections can someone learn about you from your social media? Who might be a target?"></textarea>
+        <button class="save-note-btn" onclick="saveNote('step3')">Save</button>
+        <div class="saved-notes" id="step3-saved-notes"></div>
+      </div>
+    </div>
+
+    <div class="tl-step" id="step-4" onclick="revealStep(4)">
+      <div class="tl-step-header">
+        <span class="tl-badge">Step 5</span>
+        <span class="tl-title">The scam call</span>
+      </div>
+      <div class="tl-prompt" style="font-size:13px; color:var(--text3);">↓ Click to reveal</div>
+      <div class="tl-body">
+        Using your cloned voice, the adversary called your relative. They delivered a fake emergency story designed to create panic: arrest, jail, bail money needed immediately. Urgency and fear are classic social engineering tactics — they prevent the victim from thinking clearly or verifying the story.<br><br>
+        <strong style="color:var(--accent);">Key vulnerability:</strong> Your relative had no way to verify the call and acted under pressure.
+      </div>
+      <div class="annotate-area" style="display:none;" id="note-area-4">
+        <label>Your annotation for Step 5</label>
+        <textarea id="note-input-4" placeholder="Why does creating urgency and panic help scammers? What could your relative have done differently?"></textarea>
+        <button class="save-note-btn" onclick="saveNote('step4')">Save</button>
+        <div class="saved-notes" id="step4-saved-notes"></div>
+      </div>
+    </div>
+
+    <div class="tl-step" id="step-5" onclick="revealStep(5)">
+      <div class="tl-step-header">
+        <span class="tl-badge">Step 6</span>
+        <span class="tl-title">Money wired — scam complete</span>
+      </div>
+      <div class="tl-prompt" style="font-size:13px; color:var(--text3);">↓ Click to reveal</div>
+      <div class="tl-body">
+        Your relative wired the money as instructed. Wire transfers are nearly impossible to reverse once sent. The adversary disappeared with the funds. The entire attack — from voice cloning to money in hand — can happen within hours.<br><br>
+        <strong style="color:var(--accent);">Key vulnerability:</strong> Wire transfers are irreversible. There is no "undo."
+      </div>
+      <div class="annotate-area" style="display:none;" id="note-area-5">
+        <label>Your annotation for Step 6</label>
+        <textarea id="note-input-5" placeholder="What could stop this at the final step? How could families protect against emergency money requests?"></textarea>
+        <button class="save-note-btn" onclick="saveNote('step5')">Save</button>
+        <div class="saved-notes" id="step5-saved-notes"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== QUIZ ===================== -->
+<div id="tab-quiz" class="tab-panel">
+  <div class="section-title">Knowledge Check</div>
+  <div class="section-sub">Answer all 5 questions. Feedback is instant.</div>
+
+  <div class="quiz-progress" id="quiz-progress">
+    <div class="qp-dot active" id="dot-0"></div>
+    <div class="qp-dot" id="dot-1"></div>
+    <div class="qp-dot" id="dot-2"></div>
+    <div class="qp-dot" id="dot-3"></div>
+    <div class="qp-dot" id="dot-4"></div>
+  </div>
+
+  <div id="quiz-questions">
+    <!-- Q1 -->
+    <div class="quiz-card" id="qcard-0">
+      <div class="quiz-qnum">Question 1 of 5</div>
+      <div class="quiz-question">How did the adversary obtain samples of your voice?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="checkAnswer(0,0,false)"><span class="choice-letter">A</span>They hacked your phone's microphone remotely</button>
+        <button class="choice-btn" onclick="checkAnswer(0,1,true)"><span class="choice-letter">B</span>They scraped audio clips from your public social media videos</button>
+        <button class="choice-btn" onclick="checkAnswer(0,2,false)"><span class="choice-letter">C</span>They recorded you in person at school</button>
+        <button class="choice-btn" onclick="checkAnswer(0,3,false)"><span class="choice-letter">D</span>They purchased your data from a company</button>
+      </div>
+      <div class="quiz-feedback" id="qfb-0"></div>
+      <button class="next-q-btn" id="qnext-0" onclick="nextQ(1)">Next question →</button>
+    </div>
+
+    <!-- Q2 -->
+    <div class="quiz-card" id="qcard-1" style="display:none;">
+      <div class="quiz-qnum">Question 2 of 5</div>
+      <div class="quiz-question">What was the key mistake that allowed the adversary to access your content?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="checkAnswer(1,0,false)"><span class="choice-letter">A</span>You used a weak password on your account</button>
+        <button class="choice-btn" onclick="checkAnswer(1,1,false)"><span class="choice-letter">B</span>You posted too many videos of yourself</button>
+        <button class="choice-btn" onclick="checkAnswer(1,2,true)"><span class="choice-letter">C</span>You accepted a friend request without verifying who it was</button>
+        <button class="choice-btn" onclick="checkAnswer(1,3,false)"><span class="choice-letter">D</span>You left your phone unlocked in public</button>
+      </div>
+      <div class="quiz-feedback" id="qfb-1"></div>
+      <button class="next-q-btn" id="qnext-1" onclick="nextQ(2)">Next question →</button>
+    </div>
+
+    <!-- Q3 -->
+    <div class="quiz-card" id="qcard-2" style="display:none;">
+      <div class="quiz-qnum">Question 3 of 5</div>
+      <div class="quiz-question">Why did your relative believe the caller was really you?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="checkAnswer(2,0,false)"><span class="choice-letter">A</span>The caller knew personal details about your family</button>
+        <button class="choice-btn" onclick="checkAnswer(2,1,false)"><span class="choice-letter">B</span>Phone audio quality is too poor to tell voices apart</button>
+        <button class="choice-btn" onclick="checkAnswer(2,2,true)"><span class="choice-letter">C</span>AI voice cloning reproduced your voice convincingly from audio samples</button>
+        <button class="choice-btn" onclick="checkAnswer(2,3,false)"><span class="choice-letter">D</span>The adversary was a professional voice actor</button>
+      </div>
+      <div class="quiz-feedback" id="qfb-2"></div>
+      <button class="next-q-btn" id="qnext-2" onclick="nextQ(3)">Next question →</button>
+    </div>
+
+    <!-- Q4 -->
+    <div class="quiz-card" id="qcard-3" style="display:none;">
+      <div class="quiz-qnum">Question 4 of 5</div>
+      <div class="quiz-question">Why do scammers create urgency and panic in their stories?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="checkAnswer(3,0,true)"><span class="choice-letter">A</span>It stops victims from thinking clearly or verifying the story</button>
+        <button class="choice-btn" onclick="checkAnswer(3,1,false)"><span class="choice-letter">B</span>It makes the victim feel special and chosen</button>
+        <button class="choice-btn" onclick="checkAnswer(3,2,false)"><span class="choice-letter">C</span>It is required by law to disclose emergencies quickly</button>
+        <button class="choice-btn" onclick="checkAnswer(3,3,false)"><span class="choice-letter">D</span>Panicked victims wire money faster due to better bank service</button>
+      </div>
+      <div class="quiz-feedback" id="qfb-3"></div>
+      <button class="next-q-btn" id="qnext-3" onclick="nextQ(4)">Next question →</button>
+    </div>
+
+    <!-- Q5 -->
+    <div class="quiz-card" id="qcard-4" style="display:none;">
+      <div class="quiz-qnum">Question 5 of 5</div>
+      <div class="quiz-question">What is the best immediate action if a family member calls claiming to be you and asking for emergency money?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="checkAnswer(4,0,false)"><span class="choice-letter">A</span>Wire the money first, then investigate — emergencies can't wait</button>
+        <button class="choice-btn" onclick="checkAnswer(4,1,false)"><span class="choice-letter">B</span>Ask the caller to describe your physical appearance</button>
+        <button class="choice-btn" onclick="checkAnswer(4,2,true)"><span class="choice-letter">C</span>Hang up and call back on a known number, or ask a pre-agreed secret code word</button>
+        <button class="choice-btn" onclick="checkAnswer(4,3,false)"><span class="choice-letter">D</span>Trust your ears — if it sounds like you, it probably is</button>
+      </div>
+      <div class="quiz-feedback" id="qfb-4"></div>
+      <button class="next-q-btn" id="qnext-4" onclick="showScore()">See my results →</button>
+    </div>
+  </div>
+
+  <div class="score-display" id="score-display">
+    <div class="score-big" id="score-num">0/5</div>
+    <div class="score-label" id="score-msg"></div>
+    <br>
+    <button class="retry-btn" onclick="resetQuiz()">Retake quiz</button>
+  </div>
+</div>
+
+<!-- ===================== DISCUSSION ===================== -->
+<div id="tab-discuss" class="tab-panel">
+  <div class="section-title">Class Discussion</div>
+  <div class="section-sub">Share your thoughts. Respond to one or more of the questions below.</div>
+
+  <div class="discussion-prompts">
+    <div class="disc-prompt">
+      <div class="disc-prompt-q">Q1 — Online Connections</div>
+      <div class="disc-prompt-sub">Do you actually know all your online connections in real life? Do you know they are who they claim to be? How often do you verify before accepting?</div>
+    </div>
+    <div class="disc-prompt">
+      <div class="disc-prompt-q">Q2 — Impersonation Scams</div>
+      <div class="disc-prompt-sub">Have you heard of someone being impersonated to steal money from family? Has this (or something similar) ever happened to someone you know?</div>
+    </div>
+    <div class="disc-prompt">
+      <div class="disc-prompt-q">Q3 — Protecting Relatives</div>
+      <div class="disc-prompt-sub">How could you help protect your family members — especially older relatives — from becoming victims of a scam like this? What would you tell them?</div>
+    </div>
+  </div>
+
+  <div class="comment-form-section">
+    <h3>Add your response</h3>
+    <div class="form-row">
+      <div class="form-field">
+        <label>Your first name (or nickname)</label>
+        <input type="text" id="c-name" placeholder="e.g. Jordan" maxlength="30">
+      </div>
+      <div class="form-field">
+        <label>Responding to</label>
+        <select id="c-prompt">
+          <option value="Q1 — Online Connections">Q1 — Online Connections</option>
+          <option value="Q2 — Impersonation Scams">Q2 — Impersonation Scams</option>
+          <option value="Q3 — Protecting Relatives">Q3 — Protecting Relatives</option>
+          <option value="General Reflection">General Reflection</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-field" style="margin-bottom:0;">
+      <label>Your thoughts</label>
+      <textarea id="c-body" placeholder="Share your perspective, a story, a question, or a reaction to the scenario..."></textarea>
+    </div>
+    <button class="submit-btn" onclick="submitComment()">Submit response</button>
+    <div id="c-error" style="color:var(--accent); font-size:13px; margin-top:8px; display:none;"></div>
+    <div id="c-success" style="color:var(--green); font-size:13px; margin-top:8px; display:none;"></div>
+  </div>
+
+  <div style="margin-bottom:1rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+    <div style="font-family:var(--mono); font-size:11px; color:var(--text3); letter-spacing:0.1em; text-transform:uppercase;">Responses this session <span id="comment-count" style="color:var(--accent2);">0</span></div>
+    <select id="filter-prompt" onchange="renderComments()" style="background:var(--surface2); border:1px solid var(--border2); border-radius:6px; color:var(--text2); font-family:var(--mono); font-size:11px; padding:5px 10px; outline:none; cursor:pointer;">
+      <option value="all">All questions</option>
+      <option value="Q1 — Online Connections">Q1 only</option>
+      <option value="Q2 — Impersonation Scams">Q2 only</option>
+      <option value="Q3 — Protecting Relatives">Q3 only</option>
+      <option value="General Reflection">General only</option>
+    </select>
+  </div>
+
+  <div class="comments-list" id="comments-list">
+    <div class="no-comments"><div class="nc-icon">💬</div>No responses yet. Be the first!</div>
+  </div>
+</div>
+
+<!-- ===================== PROTECT ===================== -->
+<div id="tab-protect" class="tab-panel">
+  <div class="section-title">Stay Safe</div>
+  <div class="section-sub">Learn what this attack is called — and what you can do to stop it.</div>
+
+  <div class="vishing-explainer">
+    <div class="vishing-tag">Attack Type Identified</div>
+    <div class="vishing-name">Vishing — Voice Phishing</div>
+    <div class="vishing-body">
+      <p><strong>Vishing</strong> (voice phishing) is a scam where an adversary calls someone pretending to be a trusted person to trick them into giving up money or information. It's like email phishing — but over the phone.</p>
+      <p>What makes this attack different from classic vishing is the use of <strong>AI voice cloning</strong>. Instead of just impersonating someone, the adversary replicated an actual person's voice using audio scraped from social media — making it nearly impossible for the victim to tell the difference.</p>
+      <div class="vishing-stats">
+        <div class="vstat"><div class="vstat-num">30s</div><div class="vstat-label">of audio needed to clone a voice</div></div>
+        <div class="vstat"><div class="vstat-num">$11B+</div><div class="vstat-label">lost to phone scams per year (FTC)</div></div>
+        <div class="vstat"><div class="vstat-num">#1</div><div class="vstat-label">scam type targeting families</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-info">
+    <span class="alert-icon">ℹ</span>
+    <span>This scenario is preventable. Each step in the attack chain had a point where the right action could have stopped it entirely.</span>
+  </div>
+
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-icon-wrap" style="background:rgba(255,77,77,0.1);">🔍</div>
+      <h4>Verify before accepting</h4>
+      <p>Before accepting any friend request, message the person through a channel you already trust to confirm it's really them.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon-wrap" style="background:rgba(77,159,255,0.1);">🔒</div>
+      <h4>Restrict your audience</h4>
+      <p>Set your social media videos to friends-only. The less public audio of you that exists, the harder it is to clone your voice.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon-wrap" style="background:rgba(255,209,102,0.1);">🔑</div>
+      <h4>Create a family code word</h4>
+      <p>Agree on a secret word with close family. In any emergency call, they ask for the code. No code = it's a scam.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon-wrap" style="background:rgba(61,220,132,0.1);">📞</div>
+      <h4>Hang up and call back</h4>
+      <p>If a family member gets a call from "you" asking for money, they should hang up and call your known number directly.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon-wrap" style="background:rgba(255,140,66,0.1);">💬</div>
+      <h4>Talk to your relatives</h4>
+      <p>Tell older relatives about voice cloning scams. They need to know that even if a voice sounds familiar, it may not be real.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon-wrap" style="background:rgba(255,77,77,0.1);">🚨</div>
+      <h4>Report it immediately</h4>
+      <p>If it happens, report to the FTC at reportfraud.ftc.gov and contact your bank right away. Speed matters for wire transfers.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:0.5rem;">
+    <div class="card-label">The attack chain — and where to break it</div>
+    <div style="display:flex; flex-direction:column; gap:8px; margin-top:0.5rem;">
+      <div style="display:flex; align-items:center; gap:10px; font-size:13px;">
+        <span style="color:var(--accent); font-family:var(--mono); font-size:11px; width:70px; flex-shrink:0;">STEP 1</span>
+        <span style="color:var(--text2);">Fake friend request accepted</span>
+        <span style="margin-left:auto; color:var(--green); font-family:var(--mono); font-size:10px;">→ Verify connections</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; font-size:13px;">
+        <span style="color:var(--accent); font-family:var(--mono); font-size:11px; width:70px; flex-shrink:0;">STEP 2</span>
+        <span style="color:var(--text2);">Voice scraped from public videos</span>
+        <span style="margin-left:auto; color:var(--green); font-family:var(--mono); font-size:10px;">→ Lock your audience</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; font-size:13px;">
+        <span style="color:var(--accent); font-family:var(--mono); font-size:11px; width:70px; flex-shrink:0;">STEP 3</span>
+        <span style="color:var(--text2);">Relative identified via social media</span>
+        <span style="margin-left:auto; color:var(--green); font-family:var(--mono); font-size:10px;">→ Limit public relationships</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; font-size:13px;">
+        <span style="color:var(--accent); font-family:var(--mono); font-size:11px; width:70px; flex-shrink:0;">STEP 4</span>
+        <span style="color:var(--text2);">Relative panicked and wired money</span>
+        <span style="margin-left:auto; color:var(--green); font-family:var(--mono); font-size:10px;">→ Code word + call back</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="annotate-area" style="margin-top:1.5rem;">
+    <label>Your action plan — what will YOU do differently?</label>
+    <textarea id="protect-note-input" placeholder="List 2-3 specific actions you'll take based on what you learned today..."></textarea>
+    <button class="save-note-btn" onclick="saveNote('protect')">Save action plan</button>
+    <div class="saved-notes" id="protect-saved-notes"></div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  AI-Powered Cyberattacks — Interactive Cybersecurity Scenario &nbsp;·&nbsp;
+</footer>
+
+
+<script>
+// =================================================================
+// STUDENT DATA
+// =================================================================
+const data = {
+  name: '',
+  attackGuess: null,
+  notes: {},
+  stepsRevealed: [],
+  quizAnswers: [],
+  quizScore: null
+};
+
+function restoreData() {
+  data.name = localStorage.getItem('student_name') || '';
+  const keys = ['scenario','step0','step1','step2','step3','step4','step5','protect'];
+  keys.forEach(k => {
+    const stored = JSON.parse(localStorage.getItem('notes_' + k) || '[]');
+    data.notes[k] = stored.map(n => n.text);
+  });
+}
+
+// =================================================================
+// NAME GATE — first thing student sees on Scenario tab
+// =================================================================
+function startLesson() {
+  const inp = document.getElementById('student-name-input');
+  const n = inp.value.trim();
+  if (!n) {
+    document.getElementById('name-gate-error').style.display = 'block';
+    inp.focus();
+    return;
+  }
+  data.name = n;
+  localStorage.setItem('student_name', n);
+  // Show lesson, hide gate
+  document.getElementById('name-gate').style.display = 'none';
+  document.getElementById('lesson-content').style.display = 'block';
+  // Auto-fill discussion name field
+  const df = document.getElementById('c-name');
+  if (df) df.value = n;
+}
+
+// =================================================================
+// TAB NAVIGATION
+// =================================================================
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn:not(.export-btn)').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  const map = { scenario: 0, breakdown: 1, quiz: 2, discuss: 3, protect: 4 };
+  document.querySelectorAll('.tab-btn:not(.export-btn)')[map[id]].classList.add('active');
+  // Always keep discussion name field in sync
+  const df = document.getElementById('c-name');
+  if (df && data.name) df.value = data.name;
+  window.scrollTo(0, 0);
+}
+
+// =================================================================
+// ATTACK TYPE QUESTION
+// =================================================================
+let attackAnswered = false;
+function guessAttack(btn, correct) {
+  if (attackAnswered) return;
+  attackAnswered = true;
+  document.querySelectorAll('.atq-btn').forEach(b => b.disabled = true);
+  btn.classList.add(correct ? 'correct' : 'wrong');
+  const fb = document.getElementById('atq-feedback');
+  fb.className = 'atq-feedback show ' + (correct ? 'good' : 'bad');
+  fb.innerHTML = correct
+    ? '✓ Correct! This is a <strong>vishing attack</strong> (voice phishing) powered by AI voice cloning. Head to the Stay Safe tab to learn exactly what this means.'
+    : '✗ Not quite. This is a <strong>vishing attack</strong> — voice phishing powered by AI voice cloning. Head to Stay Safe to learn more.';
+  data.attackGuess = { answer: btn.textContent.trim(), correct };
+}
+
+// =================================================================
+// NOTES / ANNOTATIONS
+// =================================================================
+const NOTE_LABELS = {
+  scenario: 'Scenario Observations',
+  step0: 'Step 1 — Fake Friend Request',
+  step1: 'Step 2 — Voice Harvesting',
+  step2: 'Step 3 — AI Voice Cloning',
+  step3: 'Step 4 — Identifying the Target',
+  step4: 'Step 5 — The Scam Call',
+  step5: 'Step 6 — Money Wired',
+  protect: 'Action Plan'
+};
+
+function saveNote(key) {
+  const idMap = { scenario: 'scenario-note-input', protect: 'protect-note-input' };
+  const inputId = idMap[key] || ('note-input-' + key.replace('step',''));
+  const input = document.getElementById(inputId);
+  const val = input.value.trim();
+  if (!val) return;
+  const existing = JSON.parse(localStorage.getItem('notes_' + key) || '[]');
+  existing.push({ text: val, time: new Date().toLocaleTimeString() });
+  localStorage.setItem('notes_' + key, JSON.stringify(existing));
+  if (!data.notes[key]) data.notes[key] = [];
+  data.notes[key].push(val);
+  input.value = '';
+  renderNotes(key);
+}
+
+function renderNotes(key) {
+  const idMap = { scenario: 'scenario-saved-notes', protect: 'protect-saved-notes' };
+  const containerId = idMap[key] || (key + '-saved-notes');
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const notes = JSON.parse(localStorage.getItem('notes_' + key) || '[]');
+  container.innerHTML = notes.map((n, i) => `
+    <div class="saved-note">
+      <span>${escHtml(n.text)}</span>
+      <button class="delete-note" onclick="deleteNote('${key}', ${i})">×</button>
+    </div>`).join('');
+}
+
+function deleteNote(key, index) {
+  const notes = JSON.parse(localStorage.getItem('notes_' + key) || '[]');
+  notes.splice(index, 1);
+  localStorage.setItem('notes_' + key, JSON.stringify(notes));
+  data.notes[key] = notes.map(n => n.text);
+  renderNotes(key);
+}
+
+// =================================================================
+// TIMELINE
+// =================================================================
+function revealStep(i) {
+  const step = document.getElementById('step-' + i);
+  if (step.classList.contains('revealed')) return;
+  step.classList.add('revealed');
+  const noteArea = document.getElementById('note-area-' + i);
+  if (noteArea) { noteArea.style.display = 'block'; renderNotes('step' + i); }
+  if (!data.stepsRevealed.includes(i + 1)) data.stepsRevealed.push(i + 1);
+}
+function revealAll() { for (let i = 0; i < 6; i++) revealStep(i); }
+
+// =================================================================
+// QUIZ
+// =================================================================
+let quizScores = [null,null,null,null,null];
+const qLabels = [
+  'Q1 — How was the voice obtained?',
+  'Q2 — What was the key mistake?',
+  'Q3 — Why did the relative believe the caller?',
+  'Q4 — Why does urgency help scammers?',
+  'Q5 — What is the best response?'
+];
+const qAnswerTexts = [
+  ['Hacked microphone','Scraped from social media videos','Recorded in person','Purchased data'],
+  ['Weak password','Too many videos posted','Accepted unverified friend request','Phone unlocked in public'],
+  ['Caller knew personal details','Poor phone audio quality','AI voice cloning','Professional voice actor'],
+  ['Stops clear thinking / verification','Makes victim feel special','Required by law','Panicked victims pay faster'],
+  ['Wire money first then check','Ask caller to describe appearance','Hang up and call back / use code word','Trust your ears']
+];
+const feedbacks = [
+  { good: "Correct. Your public social media videos gave the adversary all the audio they needed.", bad: "Not quite. The critical source was your public social media videos." },
+  { good: "Right. Accepting without verification opened the door to your content.", bad: "The key mistake was accepting the friend request without verifying." },
+  { good: "Exactly. AI voice cloning tools can replicate a voice from just 30–60 seconds of audio.", bad: "AI voice cloning is the answer — these tools produce remarkably convincing replicas." },
+  { good: "Correct. Urgency bypasses rational thinking and creates panic-driven decisions.", bad: "Urgency is the answer — panic stops victims from pausing to verify." },
+  { good: "Correct. Hanging up and calling back breaks the adversary's control.", bad: "Never send money based on an incoming call. Always hang up and call back." }
+];
+
+function checkAnswer(qIndex, choiceIndex, correct) {
+  if (quizScores[qIndex] !== null) return;
+  quizScores[qIndex] = correct ? 1 : 0;
+  const card = document.getElementById('qcard-' + qIndex);
+  card.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+  card.querySelectorAll('.choice-btn')[choiceIndex].classList.add(correct ? 'correct' : 'wrong');
+  const fb = document.getElementById('qfb-' + qIndex);
+  fb.textContent = correct ? feedbacks[qIndex].good : feedbacks[qIndex].bad;
+  fb.className = 'quiz-feedback show ' + (correct ? 'good' : 'bad');
+  document.getElementById('qnext-' + qIndex).classList.add('show');
+  document.getElementById('dot-' + qIndex).classList.remove('active');
+  document.getElementById('dot-' + qIndex).classList.add('done');
+  data.quizAnswers[qIndex] = { question: qLabels[qIndex], chosen: qAnswerTexts[qIndex][choiceIndex], correct };
+}
+
+function nextQ(next) {
+  document.getElementById('qcard-' + (next-1)).style.display = 'none';
+  document.getElementById('qcard-' + next).style.display = 'block';
+  const dot = document.getElementById('dot-' + next);
+  if (dot) dot.classList.add('active');
+}
+
+function showScore() {
+  document.getElementById('qcard-4').style.display = 'none';
+  const total = quizScores.reduce((a,b) => a+(b||0), 0);
+  document.getElementById('score-num').textContent = total + '/5';
+  const msgs = ["Keep reviewing and try again!","Good start — revisit the breakdown.","Getting there! Review what you missed.","Solid understanding — great work!","Almost perfect — impressive!","Full marks! You've got this down."];
+  document.getElementById('score-msg').textContent = msgs[total];
+  document.getElementById('score-display').classList.add('show');
+  data.quizScore = total;
+}
+
+function resetQuiz() {
+  quizScores = [null,null,null,null,null];
+  for (let i = 0; i < 5; i++) {
+    const card = document.getElementById('qcard-' + i);
+    card.querySelectorAll('.choice-btn').forEach(b => { b.disabled = false; b.className = 'choice-btn'; });
+    document.getElementById('qfb-' + i).className = 'quiz-feedback';
+    document.getElementById('qnext-' + i).classList.remove('show');
+    card.style.display = i === 0 ? 'block' : 'none';
+    document.getElementById('dot-' + i).className = 'qp-dot' + (i === 0 ? ' active' : '');
+  }
+  document.getElementById('score-display').classList.remove('show');
+}
+
+// =================================================================
+// DISCUSSION
+// =================================================================
+const COLORS = ['#4d9fff','#ff4d4d','#3ddc84','#ffd166','#ff8c42','#c084fc','#f472b6','#34d399'];
+function getColor(name) { let h = 0; for (let c of name) h = (h*31+c.charCodeAt(0))%COLORS.length; return COLORS[h]; }
+function initials(name) { return name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+function getComments() { return JSON.parse(localStorage.getItem('class_comments')||'[]'); }
+function saveComments(c) { localStorage.setItem('class_comments', JSON.stringify(c)); }
+
+function submitComment() {
+  const nameField = document.getElementById('c-name');
+  const name = (nameField ? nameField.value.trim() : '') || data.name;
+  const prompt = document.getElementById('c-prompt').value;
+  const body = document.getElementById('c-body').value.trim();
+  const err = document.getElementById('c-error');
+  const suc = document.getElementById('c-success');
+  err.style.display = 'none'; suc.style.display = 'none';
+  if (!name) { err.textContent = 'Please enter your name.'; err.style.display='block'; return; }
+  if (!body || body.length < 10) { err.textContent = 'Please write at least a sentence.'; err.style.display='block'; return; }
+  if (!data.name) { data.name = name; localStorage.setItem('student_name', name); }
+  const comments = getComments();
+  comments.unshift({ id: Date.now(), name, prompt, body, time: new Date().toLocaleString(), likes: 0 });
+  saveComments(comments);
+  document.getElementById('c-body').value = '';
+  renderComments();
+  suc.textContent = '✓ Response recorded!';
+  suc.style.display = 'block';
+}
+
+function likeComment(id) {
+  const comments = getComments();
+  const c = comments.find(x => x.id === id);
+  if (!c) return;
+  const key = 'liked_' + id;
+  if (localStorage.getItem(key)) { c.likes = Math.max(0,c.likes-1); localStorage.removeItem(key); }
+  else { c.likes = (c.likes||0)+1; localStorage.setItem(key,'1'); }
+  saveComments(comments); renderComments();
+}
+
+function renderComments() {
+  const filter = document.getElementById('filter-prompt').value;
+  const all = getComments();
+  const shown = filter === 'all' ? all : all.filter(c => c.prompt === filter);
+  document.getElementById('comment-count').textContent = all.length;
+  const list = document.getElementById('comments-list');
+  if (shown.length === 0) {
+    list.innerHTML = '<div class="no-comments"><div class="nc-icon">💬</div>'+(all.length?'No responses for this question yet.':'No responses yet. Be the first!')+'</div>';
+    return;
+  }
+  list.innerHTML = shown.map(c => {
+    const color = getColor(c.name);
+    const liked = !!localStorage.getItem('liked_'+c.id);
+    return `<div class="card" style="padding:1.25rem;">
+      <div class="comment-header">
+        <div class="comment-avatar" style="background:${color}22;color:${color};">${initials(c.name)}</div>
+        <div class="comment-meta"><div class="comment-name">${escHtml(c.name)}</div></div>
+        <span class="comment-prompt-tag">${escHtml(c.prompt)}</span>
+      </div>
+      <div class="comment-body">${escHtml(c.body)}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">
+        <div class="comment-time">${c.time}</div>
+        <button class="like-btn ${liked?'liked':''}" onclick="likeComment(${c.id})">♥ ${c.likes||0}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+
+// =================================================================
+// EXPORT TO PDF — using jsPDF (text-based, sharp, properly paginated)
+// =================================================================
+async function exportDoc() {
+  const btn = document.querySelector('.export-btn');
+  btn.textContent = '⏳ Building PDF...';
+  btn.disabled = true;
+
+  // Sync latest data
+  restoreData();
+
+  // Load jsPDF from CDN
+  try {
+    if (!window.jspdf) {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+        s.onload = resolve; s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+  } catch(e) {
+    alert('Could not load PDF library. Please check your internet connection and try again.');
+    btn.textContent = '⬇ Export Analysis'; btn.disabled = false; return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+
+  // ── Page constants ──────────────────────────────────────────────
+  const PW = 612, PH = 792;
+  const ML = 54, MR = 54, MT = 54, MB = 60;
+  const CW = PW - ML - MR;  // 504pt content width
+  const BOTTOM = PH - MB;
+
+  // ── Colours ────────────────────────────────────────────────────
+  const RED   = [192,  0,  0];
+  const BLACK = [ 30, 30, 30];
+  const GRAY  = [140,140,140];
+  const LGRAY = [210,210,210];
+  const GREEN = [ 34,139, 34];
+  const BGRAY = [242,242,242];
+  const WHITE = [255,255,255];
+
+  // ── State ──────────────────────────────────────────────────────
+  let y = MT;
+  let pageNum = 1;
+
+  function newPage() {
+    // Footer on current page
+    doc.setFontSize(8); doc.setTextColor(...GRAY);
+    doc.text(`Page ${pageNum}`, PW / 2, PH - 20, { align: 'center' });
+    doc.addPage(); pageNum++;
+    y = MT;
+    doc.setTextColor(...BLACK);
+  }
+
+  function checkY(needed) { if (y + needed > BOTTOM) newPage(); }
+
+  // ── Drawing helpers ────────────────────────────────────────────
+  function rule() {
+    checkY(12);
+    doc.setDrawColor(...LGRAY); doc.setLineWidth(0.5);
+    doc.line(ML, y, ML + CW, y);
+    y += 10;
+  }
+
+  function sectionHeading(text) {
+    checkY(28);
+    y += 6;
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(...RED);
+    doc.text(text.toUpperCase(), ML, y);
+    y += 3;
+    doc.setDrawColor(...RED); doc.setLineWidth(0.75);
+    doc.line(ML, y, ML + CW, y);
+    y += 10;
+    doc.setTextColor(...BLACK);
+  }
+
+  // Wrap and print a line of text, returns new y
+  function textLine(text, opts = {}) {
+    const fs   = opts.size  || 10;
+    const font = opts.bold  ? 'bold' : opts.italic ? 'italic' : 'normal';
+    const col  = opts.color || BLACK;
+    const x    = opts.x !== undefined ? opts.x : ML;
+    const maxW = opts.maxW || CW - (x - ML);
+    doc.setFont('helvetica', font);
+    doc.setFontSize(fs);
+    doc.setTextColor(...col);
+    const lines = doc.splitTextToSize(text, maxW);
+    const lineH = fs * 1.35;
+    checkY(lines.length * lineH + 4);
+    lines.forEach(l => { doc.text(l, x, y); y += lineH; });
+    y += opts.after !== undefined ? opts.after : 2;
+    doc.setTextColor(...BLACK);
+  }
+
+  function labelValue(label, value, valueColor) {
+    const fs = 10, lineH = fs * 1.35;
+    checkY(lineH + 6);
+    doc.setFont('helvetica','bold'); doc.setFontSize(fs); doc.setTextColor(...BLACK);
+    doc.text(label, ML, y);
+    const lw = doc.getTextWidth(label);
+    doc.setFont('helvetica','normal'); doc.setTextColor(...(valueColor || BLACK));
+    doc.text(value, ML + lw, y);
+    y += lineH + 2;
+    doc.setTextColor(...BLACK);
+  }
+
+  function bulletItem(text, opts = {}) {
+    const fs = opts.size || 10;
+    const col = opts.italic ? GRAY : BLACK;
+    const indent = ML + 16;
+    const maxW = CW - 16;
+    doc.setFont('helvetica', opts.italic ? 'italic' : 'normal');
+    doc.setFontSize(fs); doc.setTextColor(...col);
+    const lines = doc.splitTextToSize(text, maxW);
+    const lineH = fs * 1.35;
+    checkY(lines.length * lineH + 4);
+    doc.text('\u2022', ML + 4, y);
+    lines.forEach((l, i) => { doc.text(l, indent, y); y += lineH; });
+    y += 2; doc.setTextColor(...BLACK);
+  }
+
+  // Quiz table
+  function quizTable(rows) {
+    const colW = [220, 180, 90];
+    const rowH = 22;
+    const cellPadX = 6, cellPadY = 6;
+    const fs = 9;
+
+    // Header
+    checkY(rowH + 4);
+    doc.setFillColor(...BGRAY); doc.setDrawColor(...LGRAY); doc.setLineWidth(0.4);
+    const headers = ['Question', 'Answer Selected', 'Result'];
+    let cx = ML;
+    headers.forEach((h, i) => {
+      doc.rect(cx, y, colW[i], rowH, 'FD');
+      doc.setFont('helvetica','bold'); doc.setFontSize(fs); doc.setTextColor(...BLACK);
+      doc.text(h, cx + cellPadX, y + rowH - cellPadY);
+      cx += colW[i];
+    });
+    y += rowH;
+
+    // Data rows
+    rows.forEach(({ q, answer, correct }) => {
+      // Estimate height needed
+      doc.setFontSize(fs);
+      const qLines = doc.splitTextToSize(q, colW[0] - cellPadX * 2).length;
+      const aLines = doc.splitTextToSize(answer || 'Not answered', colW[1] - cellPadX * 2).length;
+      const rH = Math.max(qLines, aLines) * (fs * 1.3) + cellPadY * 2;
+      checkY(rH + 2);
+
+      cx = ML;
+      const tickColor = correct === true ? GREEN : correct === false ? RED : GRAY;
+      const tick = correct === true ? '\u2713 Correct' : correct === false ? '\u2717 Incorrect' : '\u2014';
+      const cells = [
+        { text: q,       color: BLACK, bold: false },
+        { text: answer || 'Not answered', color: answer ? BLACK : GRAY, italic: !answer },
+        { text: tick,    color: tickColor, bold: true }
+      ];
+      cells.forEach((cell, i) => {
+        doc.setFillColor(...WHITE); doc.setDrawColor(...LGRAY);
+        doc.rect(cx, y, colW[i], rH, 'FD');
+        doc.setFont('helvetica', cell.bold ? 'bold' : cell.italic ? 'italic' : 'normal');
+        doc.setFontSize(fs); doc.setTextColor(...cell.color);
+        const wrapped = doc.splitTextToSize(cell.text, colW[i] - cellPadX * 2);
+        wrapped.forEach((l, li) => doc.text(l, cx + cellPadX, y + cellPadY + fs + li * fs * 1.3));
+        cx += colW[i];
+      });
+      y += rH;
+      doc.setTextColor(...BLACK);
+    });
+    y += 6;
+  }
+
+  // ── Build the PDF ──────────────────────────────────────────────
+  const name  = data.name || 'Student';
+  const date  = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+  // Header block — title text then red bar below
+  y += 10;
+  doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.setTextColor(...RED);
+  doc.text('AI-POWERED CYBERATTACKS', PW / 2, y, { align: 'center' });
+  y += 20;
+  doc.setFontSize(12);
+  doc.text('STUDENT ANALYSIS', PW / 2, y, { align: 'center' });
+  y += 14;
+
+  doc.setFillColor(...RED);
+  doc.rect(ML, y, CW, 4, 'F');
+  y += 18;
+
+  labelValue('Student:   ', name);
+  labelValue('Date:   ',    date);
+  y += 6;
+
+  // ── 1. Attack Type ─────────────────────────────────────────────
+  rule();
+  sectionHeading('Attack Type \u2013 What Type of Attack Is This?');
+  if (data.attackGuess) {
+    const g = data.attackGuess;
+    labelValue('Answer selected:   ', g.answer);
+    labelValue('Result:   ', g.correct ? '\u2713 Correct' : '\u2717 Incorrect', g.correct ? GREEN : RED);
+    labelValue('Correct answer:   ', 'Voice cloning scam (Vishing)');
+  } else {
+    textLine('Not attempted.', { italic: true, color: GRAY });
+  }
+
+  // ── 2. Scenario Observations ───────────────────────────────────
+  rule();
+  sectionHeading('Scenario Observations');
+  const scenNotes = data.notes['scenario'] || [];
+  if (scenNotes.length) scenNotes.forEach(n => bulletItem(n));
+  else textLine('No observations recorded.', { italic: true, color: GRAY });
+
+  // ── 3. Breakdown ───────────────────────────────────────────────
+  rule();
+  sectionHeading('Scenario Breakdown \u2013 Student Annotations');
+  const stepKeys   = ['step0','step1','step2','step3','step4','step5'];
+  const stepTitles = [
+    'Step 1 \u2014 The Fake Friend Request',
+    'Step 2 \u2014 Voice Harvesting from Social Media',
+    'Step 3 \u2014 AI Voice Cloning',
+    'Step 4 \u2014 Identifying the Target',
+    'Step 5 \u2014 The Scam Call',
+    'Step 6 \u2014 Money Wired'
+  ];
+  stepKeys.forEach((key, i) => {
+    const revealed = data.stepsRevealed.includes(i + 1);
+    const sNotes   = data.notes[key] || [];
+    checkY(20);
+    // Step label
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...BLACK);
+    doc.text(stepTitles[i] + ' ', ML, y);
+    const lw = doc.getTextWidth(stepTitles[i] + ' ');
+    doc.setFont('helvetica','normal'); doc.setFontSize(8);
+    doc.setTextColor(...(revealed ? GREEN : GRAY));
+    doc.text('(' + (revealed ? 'revealed' : 'not opened') + ')', ML + lw, y);
+    y += 14; doc.setTextColor(...BLACK);
+    if (sNotes.length) sNotes.forEach(n => bulletItem(n));
+    else bulletItem('No annotation written.', { italic: true });
+    y += 2;
+  });
+
+  // ── 4. Quiz ────────────────────────────────────────────────────
+  rule();
+  sectionHeading('Knowledge Check \u2013 Quiz Results');
+  const quizRows = qLabels.map((q, i) => {
+    const a = data.quizAnswers[i];
+    return { q, answer: a ? a.chosen : null, correct: a ? a.correct : null };
+  });
+  quizTable(quizRows);
+  const score = data.quizScore !== null && data.quizScore !== undefined ? data.quizScore + '/5' : 'Not completed';
+  checkY(18);
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...BLACK);
+  doc.text('Final score:   ', ML, y);
+  const sw = doc.getTextWidth('Final score:   ');
+  doc.setTextColor(...RED); doc.text(score, ML + sw, y);
+  y += 16; doc.setTextColor(...BLACK);
+
+  // ── 5. Discussion ──────────────────────────────────────────────
+  rule();
+  sectionHeading('Class Discussion \u2013 Student Responses');
+  const disc = getComments().filter(c => c.name === name);
+  if (disc.length) {
+    disc.forEach(d => {
+      textLine(d.prompt, { bold: true, color: RED, size: 10, after: 3 });
+      textLine(d.body, { size: 10, after: 10 });
+    });
+  } else {
+    textLine('No discussion responses submitted.', { italic: true, color: GRAY });
+  }
+
+  // ── 6. Action Plan ─────────────────────────────────────────────
+  rule();
+  sectionHeading('Action Plan \u2013 What Will You Do Differently?');
+  const plan = data.notes['protect'] || [];
+  if (plan.length) plan.forEach(n => bulletItem(n));
+  else textLine('No action plan recorded.', { italic: true, color: GRAY });
+
+  // Final footer
+  doc.setFontSize(8); doc.setTextColor(...GRAY);
+  doc.text(`Page ${pageNum}`, PW / 2, PH - 20, { align: 'center' });
+
+  // ── Save ───────────────────────────────────────────────────────
+  doc.save(name.replace(/\s+/g,'-') + '-Cyberattack-Analysis.pdf');
+
+  btn.textContent = '⬇ Export Analysis';
+  btn.disabled = false;
+
+  setTimeout(() => {
+    if (confirm('Your PDF has been downloaded!\n\nClear all responses to reset for the next student?')) {
+      clearAllData();
+    }
+  }, 600);
+}
+
+// =================================================================
+// CLEAR ALL DATA
+// =================================================================
+function clearAllData() {
+  const keys = ['student_name','class_comments','notes_scenario','notes_protect',
+    'notes_step0','notes_step1','notes_step2','notes_step3','notes_step4','notes_step5'];
+  keys.forEach(k => localStorage.removeItem(k));
+  // Clear liked keys
+  Object.keys(localStorage).filter(k => k.startsWith('liked_')).forEach(k => localStorage.removeItem(k));
+
+  // Reset data object
+  data.name = ''; data.attackGuess = null; data.notes = {};
+  data.stepsRevealed = []; data.quizAnswers = []; data.quizScore = null;
+
+  // Reset UI
+  attackAnswered = false;
+  document.querySelectorAll('.atq-btn').forEach(b => { b.disabled = false; b.classList.remove('correct','wrong'); });
+  document.getElementById('atq-feedback').className = 'atq-feedback';
+
+  // Reset quiz
+  resetQuiz();
+
+  // Clear note inputs and saved displays
+  const noteInputIds = ['scenario-note-input','protect-note-input','note-input-0','note-input-1','note-input-2','note-input-3','note-input-4','note-input-5'];
+  noteInputIds.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  const noteDisplayIds = ['scenario-saved-notes','protect-saved-notes','step0-saved-notes','step1-saved-notes','step2-saved-notes','step3-saved-notes','step4-saved-notes','step5-saved-notes'];
+  noteDisplayIds.forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = ''; });
+
+  // Reset timeline steps
+  for (let i = 0; i < 6; i++) {
+    const step = document.getElementById('step-' + i);
+    if (step) step.classList.remove('revealed');
+    const noteArea = document.getElementById('note-area-' + i);
+    if (noteArea) noteArea.style.display = 'none';
+  }
+
+  // Clear discussion form
+  const cb = document.getElementById('c-body');
+  if (cb) cb.value = '';
+  const cn = document.getElementById('c-name');
+  if (cn) cn.value = '';
+  document.getElementById('comment-count').textContent = '0';
+  document.getElementById('comments-list').innerHTML = '<div class="no-comments"><div class="nc-icon">💬</div>No responses yet. Be the first!</div>';
+
+  // Reset name gate — go back to beginning
+  document.getElementById('student-name-input').value = '';
+  document.getElementById('name-gate').style.display = 'flex';
+  document.getElementById('lesson-content').style.display = 'none';
+  switchTab('scenario');
+}
+
+// =================================================================
+// INIT
+// =================================================================
+document.addEventListener('DOMContentLoaded', () => {
+  restoreData();
+  // If name already stored (returning visit), skip gate
+  if (data.name) {
+    document.getElementById('student-name-input').value = data.name;
+    document.getElementById('name-gate').style.display = 'none';
+    document.getElementById('lesson-content').style.display = 'block';
+    const df = document.getElementById('c-name');
+    if (df) df.value = data.name;
+  }
+  renderNotes('scenario'); renderNotes('protect');
+  for (let i = 0; i < 6; i++) renderNotes('step'+i);
+  renderComments();
+});
+</script>
+
+</body>
+</html>

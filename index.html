@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Cybersecurity — Practice Scenarios</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & root ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg:       #0b0d11;
+  --surface:  #12151c;
+  --surface2: #191d27;
+  --surface3: #202535;
+  --border:   rgba(255,255,255,0.07);
+  --border2:  rgba(255,255,255,0.13);
+  --red:      #3067be;
+  --red2:     #ff5c5c;
+  --amber:    #f0a030;
+  --green:    #3ddc84;
+  --blue:     #4d9fff;
+  --text:     #eaedf5;
+  --text2:    #8891a8;
+  --text3:    #505870;
+  --mono:     'DM Mono', monospace;
+  --sans:     'DM Sans', sans-serif;
+  --display:  'Bebas Neue', sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Grain overlay ──────────────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity: 0.5;
+}
+
+/* ── Grid lines decoration ──────────────────────────────────────── */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ── Nav ────────────────────────────────────────────────────────── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem; height: 60px;
+  background: rgba(11,13,17,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: var(--display);
+  font-size: 22px; letter-spacing: 0.05em;
+  color: var(--text);
+  display: flex; align-items: center; gap: 10px;
+}
+.nav-logo-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 8px var(--red);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+.nav-tag {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text3); border: 1px solid var(--border2);
+  padding: 3px 10px; border-radius: 2px;
+}
+
+/* ── Hero ───────────────────────────────────────────────────────── */
+.hero {
+  position: relative; z-index: 1;
+  padding: 7rem 2.5rem 5rem;
+  max-width: 900px; margin: 0 auto;
+}
+.hero-eyebrow {
+  font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--red); margin-bottom: 1.25rem;
+  display: flex; align-items: center; gap: 10px;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: inline-block; width: 30px; height: 1px;
+  background: var(--red);
+}
+.hero h1 {
+  font-family: var(--display);
+  font-size: clamp(3.5rem, 9vw, 7rem);
+  line-height: 0.92; letter-spacing: 0.02em;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+.hero h1 span { color: var(--red); }
+.hero-desc {
+  font-size: 16px; color: var(--text2);
+  max-width: 520px; line-height: 1.75;
+  margin-bottom: 2.5rem;
+}
+.hero-stats {
+  display: flex; gap: 2.5rem; flex-wrap: wrap;
+}
+.hero-stat-num {
+  font-family: var(--display); font-size: 2.5rem;
+  color: var(--text); line-height: 1;
+}
+.hero-stat-label {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text3); margin-top: 2px;
+}
+
+/* ── Diagonal accent ────────────────────────────────────────────── */
+.accent-bar {
+  position: relative; z-index: 1;
+  height: 3px;
+  background: linear-gradient(90deg, var(--red) 0%, transparent 100%);
+  margin: 0 0 4rem;
+}
+
+/* ── Section ────────────────────────────────────────────────────── */
+section {
+  position: relative; z-index: 1;
+  max-width: 1100px; margin: 0 auto;
+  padding: 0 2.5rem 5rem;
+}
+.section-header {
+  display: flex; align-items: baseline;
+  justify-content: space-between; flex-wrap: wrap;
+  gap: 1rem; margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.section-label {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--red);
+}
+.section-title {
+  font-family: var(--display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  color: var(--text); line-height: 1;
+  margin-top: 4px;
+}
+.section-count {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--text3); letter-spacing: 0.08em;
+}
+
+/* ── Scenario cards grid ────────────────────────────────────────── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+.scenario-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex; flex-direction: column;
+  transition: border-color 0.2s, transform 0.2s, background 0.2s;
+  overflow: hidden;
+  animation: cardIn 0.5s ease both;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.scenario-card:nth-child(1) { animation-delay: 0.05s; }
+.scenario-card:nth-child(2) { animation-delay: 0.10s; }
+.scenario-card:nth-child(3) { animation-delay: 0.15s; }
+.scenario-card:nth-child(4) { animation-delay: 0.20s; }
+.scenario-card:nth-child(5) { animation-delay: 0.25s; }
+.scenario-card:nth-child(6) { animation-delay: 0.30s; }
+
+.scenario-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--card-accent, var(--red));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.scenario-card:hover { border-color: var(--border2); background: var(--surface2); transform: translateY(-3px); }
+.scenario-card:hover::before { transform: scaleX(1); }
+
+/* Coming soon card */
+.scenario-card.coming-soon {
+  border-style: dashed; opacity: 0.5; cursor: default; pointer-events: none;
+}
+.scenario-card.coming-soon:hover { transform: none; background: var(--surface); }
+
+.card-unit {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 0.75rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.card-unit-num {
+  background: var(--surface3); border-radius: 3px;
+  padding: 2px 7px; color: var(--text3);
+}
+.card-title {
+  font-family: var(--display);
+  font-size: 1.5rem; color: var(--text);
+  line-height: 1.1; margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
+}
+.card-desc {
+  font-size: 13px; color: var(--text2);
+  line-height: 1.65; flex: 1;
+  margin-bottom: 1.25rem;
+}
+.card-footer {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+.card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.card-tag {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 3px;
+  background: var(--surface3); color: var(--text3);
+}
+.card-arrow {
+  font-size: 18px; color: var(--text3);
+  transition: color 0.2s, transform 0.2s;
+}
+.scenario-card:hover .card-arrow { color: var(--card-accent, var(--red)); transform: translateX(4px); }
+
+.badge-new {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: var(--red); color: #fff;
+  padding: 2px 7px; border-radius: 3px;
+  margin-left: auto;
+}
+.badge-soon {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: var(--surface3); color: var(--text3);
+  padding: 2px 7px; border-radius: 3px;
+  margin-left: auto;
+}
+
+/* ── Difficulty dots ────────────────────────────────────────────── */
+.difficulty {
+  display: flex; align-items: center; gap: 5px;
+}
+.diff-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--border2);
+}
+.diff-dot.on { background: var(--card-accent, var(--red)); }
+
+/* ── How it works strip ─────────────────────────────────────────── */
+.how-strip {
+  position: relative; z-index: 1;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 3.5rem 2.5rem;
+  margin-bottom: 0;
+}
+.how-inner {
+  max-width: 1100px; margin: 0 auto;
+}
+.how-label {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--red); margin-bottom: 1.5rem;
+}
+.how-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2rem;
+}
+.how-step { position: relative; }
+.how-step-num {
+  font-family: var(--display); font-size: 3rem;
+  color: var(--border2); line-height: 1;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s;
+}
+.how-step:hover .how-step-num { color: var(--red); }
+.how-step-title {
+  font-size: 14px; font-weight: 500;
+  color: var(--text); margin-bottom: 0.25rem;
+}
+.how-step-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* ── Footer ─────────────────────────────────────────────────────── */
+footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 2rem 2.5rem;
+  display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer-logo {
+  font-family: var(--display); font-size: 18px;
+  color: var(--text3); letter-spacing: 0.05em;
+}
+.footer-note {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.08em; color: var(--text3);
+}
+
+/* ── Unit divider ────────────────────────────────────────────────── */
+.unit-divider {
+  grid-column: 1 / -1;
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text3);
+  padding: 0.5rem 0 0.75rem;
+  border-bottom: 1px solid var(--border);
+  margin-top: 1rem;
+}
+.unit-divider:first-child { margin-top: 0; }
+
+/* ── Scrollbar ──────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    AP CYBERSECURITY
+  </div>
+  <div class="nav-tag">Cybersecurity Scenarios</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Interactive Threat Scenarios</div>
+  <h1>REAL<br>THREATS.<br><span>REAL</span><br>SKILLS.</h1>
+  <p class="hero-desc">
+    Hands-on cybersecurity scenarios where students investigate attacks, annotate the evidence, test their knowledge, and walk away knowing how to protect themselves and their families.
+  </p>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num" id="stat-scenarios">1</div>
+        <div class="hero-stat-label">Scenarios Available</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">13</div>
+        <div class="hero-stat-label">Total Scenarios</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">5</div>
+        <div class="hero-stat-label">Units Covered</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">PDF</div>
+        <div class="hero-stat-label">Export Per Student</div>
+      </div>
+    </div>
+</div>
+
+<div class="accent-bar"></div>
+
+<!-- SCENARIOS -->
+<section>
+  <div class="section-header">
+    <div>
+      <div class="section-title">SCENARIOS</div>
+    </div>
+    <div class="section-count" id="section-count">1 of 13 available</div>
+  </div>
+
+  <div class="cards-grid">
+
+    <!-- ══ UNIT 1 — Introduction to Security ══════════════════════ -->
+    <div class="unit-divider">Unit 1 — Introduction to Security</div>
+
+    <!-- 1A — LIVE -->
+    <a class="scenario-card" href="scenario_1d_ai_cyberattacks.html" style="--card-accent:#3067be;">
+      <div class="card-unit">
+        <span class="card-unit-num">1D</span>
+        Unit 1
+        <span class="badge-new">Available</span>
+      </div>
+      <div class="card-title">AI-Powered Cyberattacks</div>
+      <div class="card-desc">A relative calls in a panic — they wired bail money after receiving what sounded exactly like your voice. Students investigate how AI voice cloning turned social media posts into a weapon.</div>
+      <div class="card-footer">
+        <div class="card-tags">
+          <span class="card-tag">Voice Cloning</span>
+          <span class="card-tag">Vishing</span>
+          <span class="card-tag">Social Eng.</span>
+        </div>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <!-- 1A -->
+    <div class="scenario-card coming-soon" style="--card-accent:#f0a030;">
+      <div class="card-unit"><span class="card-unit-num">1A</span> Unit 1 <span class="badge-soon">Coming Soon</span></div>
+      <div class="card-title">Detecting Phishing Messages</div>
+      <div class="card-desc">You're sitting with your teacher when they receive a suspicious email and almost click the link. Students learn to identify phishing tactics before they cause damage.</div>
+      <div class="card-footer">
+        <div class="card-tags"><span class="card-tag">Phishing</span><span class="card-tag">Email</span><span class="card-tag">Social Eng.</span></div>
+      </div>
+    </div>
+
+    <!-- 1B -->
+    <div class="scenario-card coming-soon" style="--card-accent:#4d9fff;">
+      <div class="card-unit"><span class="card-unit-num">1B</span> Unit 1 <span class="badge-soon">Coming Soon</span></div>
+      <div class="card-title">Detecting Unauthorized Logins</div>
+      <div class="card-desc">Your online game is running slow. You check your router and discover someone else has been using your account. Students trace how weak authentication enabled the breach.</div>
+      <div class="card-footer">
+        <div class="card-tags"><span class="card-tag">Authentication</span><span class="card-tag">Account Security</span></div>
+      </div>
+    </div>
+
+    <!-- 1C -->
+    <div class="scenario-card coming-soon" style="--card-accent:#3ddc84;">
+      <div class="card-unit"><span class="card-unit-num">1C</span> Unit 1 <span class="badge-soon">Coming Soon</span></div>
+      <div class="card-title">Verifying Network Authenticity</div>
+      <div class="card-desc">At a coffee shop, you connect to what looks like the store's Wi-Fi — but something isn't right. Students investigate evil twin attacks and how to stay safe on public networks.</div>
+      <div class="card-footer">
+        <div class="card-tags"><span class="card-tag">Wi-Fi</span><span class="card-tag">Evil Twin</span><span class="card-tag">Wireless</span></div>
+      </div>
+    </div>
+
+    <!-- 1E -->
+    <div class="scenario-card coming-soon" style="--card-accent:#c084fc;">
+      <div class="card-unit"><span class="card-unit-num">1E</span> Unit 1 <span class="badge-soon">Coming Soon</span></div>
+      <div class="card-title">AI-Powered Cyber Defense</div>
+      <div class="card-desc">Your company is building a new web application. Students explore how AI-powered tools are used defensively to protect networks, applications, and data from emerging threats.</div>
+      <div class="card-footer">
+        <div class="card-tags"><span class="card-tag">AI Defense</span><span class="card-tag">AppSec</span></div>
+      </div>
+    </div>
+
+    <!-- ══ UNIT 2 ══════════════════════════════════════════════════ -->
+    <div class="unit-divider">Unit 2 — Physical Security</div>
+
+    <!-- 2A -->
+    <div class="scenario-card coming-soon" style="--card-accent:#f0a030;">
+      <div class="card-unit"><span class="card-unit-num">2A</span> Unit 2 <span class="badge-soon">Coming Soon</span></div>
+      <div class="card-title">Securing Xtensr Labs</div>
+      <div class="card-desc">You work on the physical security team at Xtensr Research Labs, which is acquiring a new building. Students assess physical vulnerabilities and design layered security controls.</div>
+      <div class="card-footer">
+        <div class="card-tags"><span class="card-tag">Physical Security</span><span class="card-tag">Access Control</span></div>
+      </div>
+    </div>
+
+    <!-- ══ UNIT 3 ══════════════════════════════════════════════════ -->
+    <div class="unit-divider">Unit 3 — Network Security</div>
+
+    <!-- 3A -->
+    <div class="scenario-card coming-soon" style="--card-accent:#4d9fff;">
+      <div class="card-unit"><span class="card-unit-num">3A</span> Unit 3 <span class="badge-soon">Coming Soon</span></div>
+      <div class="card-title">Protecting Patient Medical Data</div>
+      <div class="card-desc">As a network security engineer at Adams County Hospital, students must secure sensitive patient data against network-based threats while maintaining system availability.</div>
+      <div class="card-footer">
+        <div class="card-tags"><span class="card-tag">Healthcare</span><span class="card-tag">Network Security</span><span class="card-tag">HIPAA</span></div>
+      </div>
+    </div>
+
+    <!-- 3B -->
+    <div class="scenario-card coming-soon" style="--card-accent:#3ddc84;">
+      <div class="card-unit"><span class="card-unit-num">3B</span> Unit 3 <span class="badge-soon">Coming Soon</span></div>
+      <div class="card-title">Configuring a Secure Wireless Network</div>
+      <div class="card-desc">In the aftermath of a natural disaster, as a network technician students must rapidly deploy a secure wireless network for emergency response teams in the field.</div>
+      <div class="card-footer">
+        <div class="card-tags"><span class="card-tag">Wireless</span><span class="card-tag">Network Config</span><span class="card-tag">Disaster Recovery</span></div>
+      </div>
+    </div>
+
+    <!-- 3C -->
+    <div class="scenario-card coming-soon" style="--card-accent:#3067be;">
+      <div class="card-unit"><span class="card-unit-num">3C</span> Unit 3 <span class="badge-soon">Coming Soon</span></div>
+      <div class="card-title">Protecting a Network on a Naval Submarine</div>
+      <div class="card-desc">Submarines rely on isolated, highly secure networks. Students analyze the unique network security challenges of an air-gapped naval environment and how to defend it.</div>
+      <div class="card-footer">
+        <div class="card-tags"><span class="card-tag">Air-Gapped</span><span class="card-tag">Defense</span><span class="card-tag">Network Isolation</span></div>
+      </div>
+    </div>
+
+    <!-- ══ UNIT 4 ══════════════════════════════════════════════════ -->
+    <div class="unit-divider">Unit 4 — System & Application Security</div>
+
+    <!-- 4A -->
+    <div class="scenario-card coming-soon" style="--card-accent:#f0a030;">
+      <div class="card-unit"><span class="card-unit-num">4A</span> Unit 4 <span class="badge-soon">Coming Soon</span></div>
+      <div class="card-title">Designing Secure Connected Farm Equipment</div>
+      <div class="card-desc">You're a security engineer for a manufacturer of internet-connected farm equipment. Students identify IoT vulnerabilities and design security controls for embedded systems.</div>
+      <div class="card-footer">
+        <div class="card-tags"><span class="card-tag">IoT</span><span class="card-tag">Embedded Systems</span><span class="card-tag">Hardware Security</span></div>
+      </div>
+    </div>
+
+    <!-- 4B -->
+    <div class="scenario-card coming-soon" style="--card-accent:#4d9fff;">
+      <div class="card-unit"><span class="card-unit-num">4B</span> Unit 4 <span class="badge-soon">Coming Soon</span></div>
+      <div class="card-title">Configuring Authentication Settings</div>
+      <div class="card-desc">As a junior sysadmin at engineering firm Aceshack, a new security policy requires updating authentication settings across all systems. Students configure MFA and access controls.</div>
+      <div class="card-footer">
+        <div class="card-tags"><span class="card-tag">MFA</span><span class="card-tag">Sysadmin</span><span class="card-tag">Access Control</span></div>
+      </div>
+    </div>
+
+    <!-- 4C -->
+    <div class="scenario-card coming-soon" style="--card-accent:#3ddc84;">
+      <div class="card-unit"><span class="card-unit-num">4C</span> Unit 4 <span class="badge-soon">Coming Soon</span></div>
+      <div class="card-title">Analyzing Log Files for Indicators of Compromise</div>
+      <div class="card-desc">As a forensic analyst at Dynamic manufacturing, students dig through system logs to identify indicators of compromise and reconstruct the timeline of a security incident.</div>
+      <div class="card-footer">
+        <div class="card-tags"><span class="card-tag">Forensics</span><span class="card-tag">Log Analysis</span><span class="card-tag">Incident Response</span></div>
+      </div>
+    </div>
+
+    <!-- ══ UNIT 5 ══════════════════════════════════════════════════ -->
+    <div class="unit-divider">Unit 5 — Data Security & Cryptography</div>
+
+    <!-- 5A -->
+    <div class="scenario-card coming-soon" style="--card-accent:#c084fc;">
+      <div class="card-unit"><span class="card-unit-num">5A</span> Unit 5 <span class="badge-soon">Coming Soon</span></div>
+      <div class="card-title">Protecting Sensitive Data</div>
+      <div class="card-desc">On the security team at Vitahealth Solutions, a pharmaceutical company, students must classify and protect sensitive research data using encryption and data loss prevention controls.</div>
+      <div class="card-footer">
+        <div class="card-tags"><span class="card-tag">Data Classification</span><span class="card-tag">Encryption</span><span class="card-tag">DLP</span></div>
+      </div>
+    </div>
+
+    <!-- 5B -->
+    <div class="scenario-card coming-soon" style="--card-accent:#f0a030;">
+      <div class="card-unit"><span class="card-unit-num">5B</span> Unit 5 <span class="badge-soon">Coming Soon</span></div>
+      <div class="card-title">Sending Encrypted Messages</div>
+      <div class="card-desc">As a security engineer at LightningGrid, a utility company, students implement end-to-end encrypted communications to protect critical infrastructure operations from interception.</div>
+      <div class="card-footer">
+        <div class="card-tags"><span class="card-tag">Cryptography</span><span class="card-tag">PKI</span><span class="card-tag">Critical Infrastructure</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<div class="how-strip">
+  <div class="how-inner">
+    <div class="how-label">How each scenario works</div>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-step-num">01</div>
+        <div class="how-step-title">Read the Scenario</div>
+        <div class="how-step-desc">Students encounter a real-world attack unfolding in real time through messages, calls, and events.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">02</div>
+        <div class="how-step-title">Break It Down</div>
+        <div class="how-step-desc">Each step of the attack is revealed one at a time. Students annotate their thinking at every stage.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">03</div>
+        <div class="how-step-title">Test Knowledge</div>
+        <div class="how-step-desc">A 5-question quiz checks comprehension with instant feedback and explanations.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">04</div>
+        <div class="how-step-title">Discuss</div>
+        <div class="how-step-desc">Guided questions prompt students to connect the scenario to their own lives and protect their families.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">05</div>
+        <div class="how-step-title">Export PDF</div>
+        <div class="how-step-desc">Every response, annotation, and quiz result exports as a clean PDF for grading or portfolios.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">AP CYBERSECURITY</div>
+  <div class="footer-note">Cybersecurity Scenarios &nbsp;·&nbsp; Interactive Practice Scenarios</div>
+</footer>
+
+<script>
+const live = document.querySelectorAll('.scenario-card:not(.coming-soon)').length;
+document.getElementById('stat-scenarios').textContent = live;
+document.getElementById('section-count').textContent = live + ' of 13 available';
+</script>
+
+</body>
+</html>
