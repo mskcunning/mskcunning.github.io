@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scenario 5A — Protecting Sensitive Data</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0e13;
+  --surface: #12161f;
+  --surface2: #181d28;
+  --surface3: #1f2535;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --accent: #a78bfa;
+  --accent2: #7c3aed;
+  --blue: #4d9fff;
+  --green: #3ddc84;
+  --red: #ff4d4d;
+  --yellow: #ffd166;
+  --teal: #2dd4bf;
+  --text: #e8eaf0;
+  --text2: #9099b0;
+  --text3: #5a6378;
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+  --display: 'Syne', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 15px; line-height: 1.7; min-height: 100vh; }
+
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+/* HERO */
+.hero { position: relative; padding: 4rem 2rem 3rem; max-width: 860px; margin: 0 auto; text-align: center; }
+.hero-tag { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); padding: 4px 12px; border-radius: 2px; margin-bottom: 1.5rem; }
+.hero h1 { font-family: var(--display); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1rem; background: linear-gradient(135deg, #fff 40%, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero p { color: var(--text2); font-size: 16px; max-width: 520px; margin: 0 auto 2rem; }
+
+/* TAB NAV */
+.tab-nav { display: flex; flex-wrap: wrap; gap: 4px; max-width: 860px; margin: 0 auto 2rem; padding: 0 1.5rem; }
+.tab-btn { flex-shrink: 0; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 16px; border: 1px solid var(--border2); background: var(--surface); color: var(--text2); cursor: pointer; border-radius: 4px; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+.tab-btn .num { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; background: var(--surface3); font-size: 10px; color: var(--text3); }
+.tab-btn.active { background: var(--accent2); border-color: var(--accent); color: #fff; }
+.tab-btn.active .num { background: rgba(0,0,0,0.3); color: #fff; }
+.tab-btn:hover:not(.active) { border-color: var(--border2); color: var(--text); background: var(--surface2); }
+.export-btn { background: #1a3d2b !important; border-color: var(--green) !important; color: var(--green) !important; font-weight: 500; }
+.export-btn:hover { background: var(--green) !important; color: #000 !important; }
+
+/* MAIN */
+main { max-width: 860px; margin: 0 auto; padding: 0 1.5rem 4rem; position: relative; z-index: 1; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: fadeUp 0.3s ease; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* CARDS & BASICS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+.card-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); margin-bottom: 0.75rem; }
+.section-title { font-family: var(--display); font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 0.375rem; }
+.section-sub { font-size: 14px; color: var(--text2); margin-bottom: 1.5rem; }
+
+/* ALERTS */
+.alert { border-radius: 8px; padding: 14px 16px; font-size: 14px; line-height: 1.6; margin-bottom: 1rem; display: flex; gap: 10px; align-items: start; }
+.alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.alert-warn { background: rgba(255,209,102,0.1); border: 1px solid rgba(255,209,102,0.2); color: var(--yellow); }
+.alert-info { background: rgba(77,159,255,0.1); border: 1px solid rgba(77,159,255,0.2); color: var(--blue); }
+.alert-purple { background: rgba(167,139,250,0.1); border: 1px solid rgba(167,139,250,0.2); color: var(--accent); }
+
+/* NAME GATE */
+.name-gate-wrap { display: flex; justify-content: center; align-items: center; padding: 3rem 1rem; }
+.name-gate-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 12px; padding: 2rem; max-width: 460px; width: 100%; text-align: center; }
+.name-gate-title { font-family: var(--display); font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 0.5rem; }
+.name-gate-sub { font-size: 14px; color: var(--text2); line-height: 1.6; }
+.submit-btn { margin-top: 10px; width: 100%; font-family: var(--display); font-size: 14px; font-weight: 700; padding: 12px; background: linear-gradient(90deg, var(--accent2), var(--accent)); border: none; border-radius: 6px; color: #fff; cursor: pointer; letter-spacing: 0.03em; transition: opacity 0.2s; }
+.submit-btn:hover { opacity: 0.88; }
+
+/* FILE TREE */
+.file-tree { background: #080b10; border: 1px solid var(--border2); border-radius: 10px; padding: 1.25rem 1.5rem; font-family: var(--mono); font-size: 13px; line-height: 2; margin-bottom: 1rem; }
+.tree-dir { color: var(--blue); font-weight: 500; }
+.tree-file { color: var(--text2); }
+.tree-indent { padding-left: 1.5rem; }
+.tree-indent2 { padding-left: 3rem; }
+.tree-perm { margin-left: 8px; font-size: 11px; }
+.perm-full { color: var(--green); }
+.perm-rx { color: var(--yellow); }
+.perm-r { color: var(--teal); }
+.perm-none { color: var(--red); }
+
+/* PERMISSION BUILDER */
+.perm-builder { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+.perm-builder-title { font-family: var(--display); font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 0.375rem; }
+.perm-builder-path { font-family: var(--mono); font-size: 12px; color: var(--accent); margin-bottom: 1rem; }
+.perm-builder-desc { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 1.25rem; }
+.perm-table { width: 100%; border-collapse: collapse; margin-bottom: 1.25rem; }
+.perm-table th { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); padding: 8px 12px; text-align: left; background: var(--surface2); border-bottom: 1px solid var(--border2); }
+.perm-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
+.perm-table tr:last-child td { border-bottom: none; }
+.perm-who { font-weight: 500; color: var(--text); }
+.perm-who small { display: block; font-size: 11px; color: var(--text3); font-weight: 400; font-family: var(--mono); }
+.perm-checks { display: flex; gap: 12px; }
+.perm-check { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.perm-check input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+.perm-check label { font-family: var(--mono); font-size: 10px; color: var(--text3); letter-spacing: 0.05em; }
+.perm-display { font-family: var(--mono); font-size: 13px; color: var(--text); background: var(--surface3); padding: 4px 10px; border-radius: 4px; min-width: 60px; text-align: center; }
+.perm-octal { font-family: var(--mono); font-size: 20px; font-weight: 500; color: var(--accent); }
+.chmod-preview { background: #080b10; border: 1px solid var(--border2); border-radius: 8px; padding: 0.875rem 1.25rem; font-family: var(--mono); font-size: 13px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.cmd-sudo { color: var(--yellow); }
+.cmd-chmod { color: var(--green); }
+.cmd-flags { color: var(--accent); }
+.cmd-octal { color: var(--teal); font-weight: 500; }
+.cmd-path { color: var(--blue); }
+.cmd-placeholder { color: var(--text3); font-style: italic; }
+.check-btn { font-family: var(--mono); font-size: 11px; padding: 7px 16px; background: transparent; border: 1px solid var(--accent); color: var(--accent); border-radius: 4px; cursor: pointer; transition: all 0.2s; margin-top: 0.75rem; }
+.check-btn:hover { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+.perm-feedback { margin-top: 0.75rem; padding: 10px 14px; border-radius: 8px; font-size: 13px; display: none; }
+.perm-feedback.show { display: block; animation: fadeUp 0.2s ease; }
+.perm-feedback.correct { background: rgba(61,220,132,0.1); color: var(--green); border: 1px solid rgba(61,220,132,0.25); }
+.perm-feedback.wrong { background: rgba(255,77,77,0.1); color: #ff8a8a; border: 1px solid rgba(255,77,77,0.25); }
+.perm-note-area { margin-top: 1rem; }
+.perm-note-area label { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+.perm-note-area textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-family: var(--sans); font-size: 13px; padding: 10px 12px; resize: vertical; min-height: 65px; outline: none; transition: border-color 0.2s; }
+.perm-note-area textarea:focus { border-color: var(--accent); }
+
+/* REFERENCE PANEL */
+.ref-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; }
+.ref-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
+.ref-card h4 { font-family: var(--display); font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem; }
+.ref-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.ref-table td { padding: 5px 8px; border-bottom: 1px solid var(--border); color: var(--text2); }
+.ref-table tr:last-child td { border-bottom: none; }
+.ref-table td:first-child { font-family: var(--mono); color: var(--teal); font-weight: 500; }
+.sym-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.sym-table th { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); padding: 5px 8px; background: var(--surface2); }
+.sym-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 12px; color: var(--text2); text-align: center; }
+.sym-table tr:last-child td { border-bottom: none; }
+.sym-r { color: var(--teal); }
+.sym-w { color: var(--yellow); }
+.sym-x { color: var(--green); }
+.sym-dash { color: var(--text3); }
+.octal-pill { display: inline-block; background: var(--surface3); border-radius: 4px; padding: 1px 6px; font-family: var(--mono); font-size: 11px; color: var(--accent); }
+
+/* QUIZ */
+.quiz-progress { display: flex; gap: 6px; margin-bottom: 1.5rem; }
+.qp-dot { flex: 1; height: 3px; background: var(--surface3); border-radius: 2px; transition: background 0.3s; }
+.qp-dot.done { background: var(--green); }
+.qp-dot.active { background: var(--accent); }
+.quiz-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+.quiz-qnum { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); margin-bottom: 0.5rem; }
+.quiz-question { font-family: var(--display); font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; line-height: 1.4; }
+.quiz-context { font-family: var(--mono); font-size: 12px; color: var(--text3); background: var(--surface2); border-radius: 6px; padding: 8px 12px; margin-bottom: 1.25rem; }
+.choices { display: flex; flex-direction: column; gap: 8px; }
+.choice-btn { text-align: left; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-family: var(--mono); font-size: 13px; color: var(--text); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
+.choice-letter { width: 22px; height: 22px; border-radius: 50%; background: var(--surface3); border: 1px solid var(--border2); font-family: var(--mono); font-size: 10px; display: flex; align-items: center; justify-content: center; color: var(--text3); flex-shrink: 0; transition: all 0.2s; }
+.choice-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--surface3); }
+.choice-btn:hover:not(:disabled) .choice-letter { border-color: var(--accent); color: var(--accent); }
+.choice-btn.correct { border-color: var(--green); background: rgba(61,220,132,0.07); }
+.choice-btn.correct .choice-letter { background: var(--green); border-color: var(--green); color: #000; }
+.choice-btn.wrong { border-color: var(--red); background: rgba(255,77,77,0.07); }
+.choice-btn.wrong .choice-letter { background: var(--red); border-color: var(--red); color: #fff; }
+.quiz-feedback { margin-top: 0.875rem; padding: 12px 14px; border-radius: 8px; font-size: 13px; line-height: 1.6; display: none; }
+.quiz-feedback.show { display: block; animation: fadeUp 0.2s ease; }
+.quiz-feedback.good { background: rgba(61,220,132,0.1); color: var(--green); border: 1px solid rgba(61,220,132,0.2); }
+.quiz-feedback.bad { background: rgba(255,77,77,0.1); color: #ff8a8a; border: 1px solid rgba(255,77,77,0.2); }
+.next-q-btn { margin-top: 1rem; font-family: var(--mono); font-size: 11px; padding: 8px 18px; background: transparent; border: 1px solid var(--blue); color: var(--blue); border-radius: 4px; cursor: pointer; display: none; transition: all 0.2s; }
+.next-q-btn:hover { background: var(--blue); color: #000; }
+.next-q-btn.show { display: inline-block; }
+.score-display { background: var(--surface2); border: 1px solid var(--border2); border-radius: 12px; padding: 2rem; text-align: center; display: none; }
+.score-display.show { display: block; animation: fadeUp 0.3s ease; }
+.score-big { font-family: var(--display); font-size: 4rem; font-weight: 800; background: linear-gradient(135deg, var(--green), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; margin-bottom: 0.5rem; }
+.retry-btn { font-family: var(--mono); font-size: 11px; padding: 8px 20px; border: 1px solid var(--text3); background: transparent; color: var(--text2); border-radius: 4px; cursor: pointer; margin-right: 8px; transition: all 0.2s; }
+.retry-btn:hover { border-color: var(--text); color: var(--text); }
+
+/* DISCUSSION */
+.disc-prompt { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; }
+.disc-prompt-q { font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--accent); margin-bottom: 0.5rem; }
+.disc-prompt-sub { font-size: 13px; color: var(--text2); }
+.comment-form-section { background: var(--surface); border: 1px solid var(--border2); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+.comment-form-section h3 { font-family: var(--display); font-size: 16px; font-weight: 700; margin-bottom: 1rem; color: var(--text); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+@media(max-width:540px) { .form-row { grid-template-columns: 1fr; } }
+.form-field { display: flex; flex-direction: column; gap: 5px; }
+.form-field label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); }
+.form-field input, .form-field select, .form-field textarea { background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-family: var(--sans); font-size: 14px; padding: 10px 12px; outline: none; transition: border-color 0.2s; }
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--accent); }
+.form-field textarea { resize: vertical; min-height: 100px; }
+.like-btn { background: none; border: 1px solid var(--border); border-radius: 20px; color: var(--text3); font-size: 12px; padding: 3px 10px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 5px; font-family: var(--mono); }
+.like-btn:hover { border-color: var(--accent); color: var(--accent); }
+.like-btn.liked { border-color: var(--accent); color: var(--accent); background: rgba(167,139,250,0.1); }
+.no-comments { text-align: center; padding: 3rem 1rem; color: var(--text3); font-size: 14px; }
+.no-comments .nc-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+.comment-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.comment-name { font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--text); }
+.comment-prompt-tag { font-family: var(--mono); font-size: 10px; padding: 2px 8px; border-radius: 3px; background: var(--surface3); color: var(--text3); }
+.comment-body { font-size: 14px; color: var(--text2); line-height: 1.6; }
+.comment-time { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 6px; }
+
+/* NOTES */
+.save-note-btn { margin-top: 6px; font-family: var(--mono); font-size: 11px; padding: 6px 14px; background: transparent; border: 1px solid var(--accent); color: var(--accent); border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+.save-note-btn:hover { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+.saved-notes { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+.saved-note { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-size: 13px; color: var(--text2); display: flex; justify-content: space-between; align-items: start; gap: 8px; }
+.delete-note { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 16px; line-height: 1; flex-shrink: 0; transition: color 0.15s; }
+.delete-note:hover { color: var(--red); }
+.reveal-all-btn { font-family: var(--mono); font-size: 11px; padding: 7px 16px; background: transparent; border: 1px solid var(--accent); color: var(--accent); border-radius: 4px; cursor: pointer; margin-bottom: 1.25rem; transition: all 0.2s; }
+.reveal-all-btn:hover { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+
+/* UBUNTU STEPS */
+.ubuntu-step { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 0.75rem; overflow: hidden; }
+.ubuntu-step-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; cursor: pointer; transition: background 0.15s; }
+.ubuntu-step-header:hover { background: var(--surface2); }
+.ubuntu-step-left { display: flex; align-items: center; gap: 12px; }
+.ubuntu-step-num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); background: var(--surface3); padding: 3px 9px; border-radius: 3px; flex-shrink: 0; }
+.ubuntu-step-title { font-family: var(--display); font-size: 15px; font-weight: 700; color: var(--text); }
+.ubuntu-step-chev { font-size: 20px; color: var(--text3); transition: transform 0.2s; }
+.ubuntu-step.open .ubuntu-step-chev { transform: rotate(90deg); }
+.ubuntu-step-body { padding: 0 1.25rem 1.25rem; border-top: 1px solid var(--border); }
+.ubuntu-explain { margin: 0.875rem 0; }
+.ubuntu-explain p { font-size: 14px; color: var(--text2); line-height: 1.65; margin-bottom: 0.5rem; }
+.ubuntu-explain code { font-family: var(--mono); font-size: 12px; background: var(--surface3); padding: 2px 6px; border-radius: 3px; color: var(--teal); }
+.ubuntu-cmd-block { background: #060810; border: 1px solid rgba(45,212,191,0.15); border-radius: 8px; padding: 1rem 1.25rem; margin: 0.875rem 0; }
+.ubuntu-cmd-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+.ubuntu-terminal { display: flex; flex-direction: column; gap: 2px; }
+.term-line { font-family: var(--mono); font-size: 13px; display: flex; align-items: baseline; gap: 8px; }
+.term-prompt { color: var(--teal); flex-shrink: 0; }
+.term-cmd { color: #e8eaf0; }
+.term-comment { font-family: var(--mono); font-size: 11px; color: var(--text3); padding-left: 1.5rem; font-style: italic; }
+.ubuntu-fields { display: flex; flex-direction: column; gap: 0; margin-top: 0.875rem; }
+.ubuntu-input { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-family: var(--sans); font-size: 13px; padding: 10px 12px; outline: none; transition: border-color 0.2s; }
+.ubuntu-input:focus { border-color: var(--teal); }
+textarea.ubuntu-input { resize: vertical; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
+footer { text-align: center; padding: 2rem; font-family: var(--mono); font-size: 11px; color: var(--text3); letter-spacing: 0.05em; border-top: 1px solid var(--border); max-width: 860px; margin: 0 auto; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-tag">Scenario 5A — Unit 5: Securing Applications and Data</div>
+  <h1>Protecting<br>Sensitive Data</h1>
+  <p>You're a security engineer at a pharmaceutical company. Proprietary research needs protecting. You control who gets in.</p>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('briefing')"><span class="num">1</span> Briefing</button>
+  <button class="tab-btn" onclick="switchTab('reference')"><span class="num">2</span> Reference</button>
+  <button class="tab-btn" onclick="switchTab('lab')"><span class="num">3</span> Permissions Lab</button>
+  <button class="tab-btn" onclick="switchTab('quiz')"><span class="num">4</span> Quiz</button>
+  <button class="tab-btn" onclick="switchTab('discuss')"><span class="num">5</span> Discussion</button>
+  <button class="tab-btn export-btn" onclick="exportDoc()">⬇ Export PDF</button>
+</div>
+
+<main>
+
+<!-- ===================== BRIEFING ===================== -->
+<div id="tab-briefing" class="tab-panel active">
+
+  <div id="name-gate" class="name-gate-wrap">
+    <div class="name-gate-card">
+      <div class="name-gate-title">Security Team — Access Granted</div>
+      <div class="name-gate-sub">Enter your name to begin. You'll be configuring real file permissions for a pharmaceutical company's most sensitive research.</div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:1rem;">
+        <input type="text" id="student-name-input" placeholder="Your name" style="flex:1;min-width:180px;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--sans);font-size:14px;padding:10px 12px;outline:none;" onkeydown="if(event.key==='Enter')startLesson()">
+        <button class="submit-btn" style="width:auto;padding:10px 24px;margin-top:0;" onclick="startLesson()">Begin Mission →</button>
+      </div>
+      <div id="name-gate-error" style="color:var(--red);font-size:13px;margin-top:8px;display:none;">Please enter your name to continue.</div>
+    </div>
+  </div>
+
+  <div id="lesson-content" style="display:none;">
+    <div class="section-title">Your Briefing</div>
+    <div class="section-sub">Read carefully. The company's most sensitive research depends on you getting this right.</div>
+
+    <div class="alert alert-purple">
+      <span class="alert-icon">🔒</span>
+      <span>Vitahealth Solutions is developing a new pharmaceutical product called <strong>Strype</strong>. The R&amp;D data is on an air-gapped computer — not connected to the internet. Your job is to configure the file system permissions so only the right people can access the right files.</span>
+    </div>
+
+    <div class="card" style="margin-bottom:1rem;">
+      <div class="card-label">Company Structure</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:0.5rem;">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1rem;">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">R&amp;D Team</div>
+          <div style="font-size:13px;color:var(--text2);">Researchers working on Strype. Full access to research files, read/execute on Formula.</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:6px;">group: randd</div>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1rem;">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Head Researcher</div>
+          <div style="font-size:13px;color:var(--text2);">Only person with full control of the Formula directory. Owns the intellectual property.</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:6px;">user: headresearcher</div>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1rem;">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">IT Team / Others</div>
+          <div style="font-size:13px;color:var(--text2);">Support staff. Can read the top-level R&amp;D directory only. No access to sensitive subdirectories.</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:6px;">group: others</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:1rem;">
+      <div class="card-label">Directory Structure — Strype Research</div>
+      <div class="file-tree">
+        <div><span class="tree-dir">📁 /RandD/</span></div>
+        <div class="tree-indent"><span class="tree-dir">📁 Research/</span></div>
+        <div class="tree-indent2"><span class="tree-file">📄 strype_trials.csv</span></div>
+        <div class="tree-indent2"><span class="tree-file">📄 clinical_data.xlsx</span></div>
+        <div class="tree-indent"><span class="tree-dir">📁 Formula/</span></div>
+        <div class="tree-indent2"><span class="tree-file">📄 compound_formula.txt</span></div>
+        <div class="tree-indent2"><span class="tree-file">📄 synthesis_process.pdf</span></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:1.5rem;">
+      <div class="card-label">Your access control requirements</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:0.5rem;">
+        <div style="display:flex;align-items:start;gap:12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:500;flex-shrink:0;margin-top:1px;">REQ 1</div>
+          <div style="font-size:14px;color:var(--text2);">All R&amp;D team members → <strong style="color:var(--green)">full access</strong> to <code style="font-family:var(--mono);font-size:12px;background:var(--surface3);padding:1px 5px;border-radius:3px;color:var(--blue)">/RandD</code>. All other users → <strong style="color:var(--teal)">read access</strong> only.</div>
+        </div>
+        <div style="display:flex;align-items:start;gap:12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:500;flex-shrink:0;margin-top:1px;">REQ 2</div>
+          <div style="font-size:14px;color:var(--text2);">All R&amp;D team members → <strong style="color:var(--green)">full access</strong> to <code style="font-family:var(--mono);font-size:12px;background:var(--surface3);padding:1px 5px;border-radius:3px;color:var(--blue)">/RandD/Research</code>. All other users → <strong style="color:var(--red)">no access</strong>.</div>
+        </div>
+        <div style="display:flex;align-items:start;gap:12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:500;flex-shrink:0;margin-top:1px;">REQ 3</div>
+          <div style="font-size:14px;color:var(--text2);">Head researcher → <strong style="color:var(--green)">full access (rwx)</strong> to <code style="font-family:var(--mono);font-size:12px;background:var(--surface3);padding:1px 5px;border-radius:3px;color:var(--blue)">/RandD/Formula</code>. R&amp;D team → <strong style="color:var(--yellow)">read &amp; execute (r-x)</strong>. Everyone else → <strong style="color:var(--red)">no access</strong>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-info">
+      <span class="alert-icon">💡</span>
+      <span>Not sure how Linux file permissions work? Head to the <strong>Reference</strong> tab first — it covers everything you need: rwx notation, octal codes, and how chmod works.</span>
+    </div>
+
+    <div style="margin-top:1.25rem;">
+      <div class="card-label" style="margin-bottom:0.5rem;">Initial thoughts</div>
+      <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:1rem;">
+        <label style="display:block;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">Before you begin — what does "air-gapped" mean, and why does it matter here?</label>
+        <textarea id="briefing-note-input" style="width:100%;background:var(--surface3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--sans);font-size:13px;padding:10px 12px;resize:vertical;min-height:70px;outline:none;" placeholder="Write your understanding of air-gapped systems and why physical access controls matter..."></textarea>
+        <button class="save-note-btn" onclick="saveNote('briefing')">Save note</button>
+        <div class="saved-notes" id="briefing-saved-notes"></div>
+      </div>
+    </div>
+
+    <button class="reveal-all-btn" style="margin-top:1.25rem;" onclick="switchTab('reference')">Study the reference material →</button>
+  </div>
+</div>
+
+<!-- ===================== REFERENCE ===================== -->
+<div id="tab-reference" class="tab-panel">
+  <div class="section-title">Linux File Permissions — Reference</div>
+  <div class="section-sub">Everything you need to configure access controls correctly. Study this before working on the lab.</div>
+
+  <div class="ref-grid">
+    <div class="ref-card">
+      <h4>Permission Types</h4>
+      <table class="ref-table">
+        <tr><td>r</td><td>Read — view contents of a file or list a directory</td></tr>
+        <tr><td>w</td><td>Write — modify a file or create/delete files in a directory</td></tr>
+        <tr><td>x</td><td>Execute — run a file as a program, or enter (cd into) a directory</td></tr>
+        <tr><td>-</td><td>No permission for that action</td></tr>
+      </table>
+    </div>
+
+    <div class="ref-card">
+      <h4>Who the Permissions Apply To</h4>
+      <table class="ref-table">
+        <tr><td>u</td><td>User — the owner of the file</td></tr>
+        <tr><td>g</td><td>Group — users in the file's assigned group</td></tr>
+        <tr><td>o</td><td>Others — everyone else on the system</td></tr>
+        <tr><td>a</td><td>All — user + group + others combined</td></tr>
+      </table>
+    </div>
+
+    <div class="ref-card">
+      <h4>Octal (Numeric) Values</h4>
+      <table class="ref-table">
+        <tr><td>4</td><td>Read (r)</td></tr>
+        <tr><td>2</td><td>Write (w)</td></tr>
+        <tr><td>1</td><td>Execute (x)</td></tr>
+        <tr><td>7</td><td>rwx (4+2+1 = full access)</td></tr>
+        <tr><td>5</td><td>r-x (4+0+1 = read &amp; execute)</td></tr>
+        <tr><td>4</td><td>r-- (read only)</td></tr>
+        <tr><td>0</td><td>--- (no access)</td></tr>
+      </table>
+    </div>
+
+    <div class="ref-card">
+      <h4>Reading a Permission String</h4>
+      <div style="font-family:var(--mono);font-size:13px;margin-bottom:0.75rem;background:var(--surface2);border-radius:6px;padding:10px 12px;letter-spacing:0.05em;">
+        <span style="color:var(--text3);">d</span><span class="sym-r">r</span><span class="sym-w">w</span><span class="sym-x">x</span><span class="sym-r">r</span><span class="sym-dash">-</span><span class="sym-x">x</span><span class="sym-dash">-</span><span class="sym-dash">-</span><span class="sym-dash">-</span>
+      </div>
+      <table class="ref-table">
+        <tr><td style="color:var(--text3);">d</td><td>Directory (d) or file (-)</td></tr>
+        <tr><td><span class="sym-r">r</span><span class="sym-w">w</span><span class="sym-x">x</span></td><td>Owner: read, write, execute = <span class="octal-pill">7</span></td></tr>
+        <tr><td><span class="sym-r">r</span><span class="sym-dash">-</span><span class="sym-x">x</span></td><td>Group: read, execute = <span class="octal-pill">5</span></td></tr>
+        <tr><td><span class="sym-dash">-</span><span class="sym-dash">-</span><span class="sym-dash">-</span></td><td>Others: no access = <span class="octal-pill">0</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:1rem;">
+    <div class="card-label">The chmod command</div>
+    <div style="background:#080b10;border:1px solid var(--border2);border-radius:8px;padding:1rem 1.25rem;font-family:var(--mono);font-size:13px;margin-bottom:0.875rem;">
+      <span class="cmd-sudo">sudo</span> <span class="cmd-chmod">chmod</span> <span class="cmd-flags">-R</span> <span class="cmd-octal">750</span> <span class="cmd-path">/RandD/Formula</span>
+    </div>
+    <table class="ref-table" style="font-size:13px;">
+      <tr><td style="font-family:var(--mono);color:var(--yellow);">sudo</td><td>Run as superuser (required for system directories)</td></tr>
+      <tr><td style="font-family:var(--mono);color:var(--green);">chmod</td><td>Change mode — the command to set permissions</td></tr>
+      <tr><td style="font-family:var(--mono);color:var(--accent);">-R</td><td>Recursive — apply to all files inside the directory too</td></tr>
+      <tr><td style="font-family:var(--mono);color:var(--teal);">750</td><td>Octal code: owner=7 (rwx), group=5 (r-x), others=0 (---)</td></tr>
+      <tr><td style="font-family:var(--mono);color:var(--blue);">/path</td><td>The directory or file to change</td></tr>
+    </table>
+  </div>
+
+  <div class="card" style="margin-bottom:1rem;">
+    <div class="card-label">Common octal codes for this scenario</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:0.5rem;">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1rem;">
+        <div style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--green);margin-bottom:4px;">777</div>
+        <div style="font-size:12px;color:var(--text2);">rwxrwxrwx — full access for everyone</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1rem;">
+        <div style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--teal);margin-bottom:4px;">774</div>
+        <div style="font-size:12px;color:var(--text2);">rwxrwxr-- — owner &amp; group full, others read-only</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1rem;">
+        <div style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--yellow);margin-bottom:4px;">770</div>
+        <div style="font-size:12px;color:var(--text2);">rwxrwx--- — owner &amp; group full, others no access</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1rem;">
+        <div style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--accent);margin-bottom:4px;">750</div>
+        <div style="font-size:12px;color:var(--text2);">rwxr-x--- — owner full, group r-x, others none</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-warn">
+    <span class="alert-icon">⚠</span>
+    <span>In Linux, permissions are set for <strong>user (owner)</strong>, <strong>group</strong>, and <strong>others</strong> — in that order. For this scenario, the head researcher is the <em>owner (user)</em> of the Formula directory, and the R&amp;D team is the <em>group</em>.</span>
+  </div>
+
+  <button class="reveal-all-btn" onclick="switchTab('lab')">Go to Permissions Lab →</button>
+</div>
+
+<!-- ===================== LAB ===================== -->
+<div id="tab-lab" class="tab-panel">
+  <div class="section-title">Permissions Lab</div>
+  <div class="section-sub">Use the interactive builders to work out the correct chmod command for each directory. Check your answers as you go.</div>
+
+  <!-- /RandD -->
+  <div class="perm-builder">
+    <div class="perm-builder-title">Requirement 1 — Top-Level Directory</div>
+    <div class="perm-builder-path">📁 /RandD</div>
+    <div class="perm-builder-desc">R&amp;D team members need <strong>full access</strong> (read, write, execute). All other users need <strong>read access only</strong> (they can see the directory but not modify it).</div>
+
+    <table class="perm-table">
+      <thead><tr><th>Who</th><th>Permissions</th><th>Notation</th><th>Octal</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><div class="perm-who">Owner (head researcher)<small>u</small></div></td>
+          <td>
+            <div class="perm-checks">
+              <div class="perm-check"><input type="checkbox" id="d1-u-r" onchange="updatePerm('d1')"><label>r</label></div>
+              <div class="perm-check"><input type="checkbox" id="d1-u-w" onchange="updatePerm('d1')"><label>w</label></div>
+              <div class="perm-check"><input type="checkbox" id="d1-u-x" onchange="updatePerm('d1')"><label>x</label></div>
+            </div>
+          </td>
+          <td><div class="perm-display" id="d1-u-sym">---</div></td>
+          <td><div class="perm-octal" id="d1-u-oct">0</div></td>
+        </tr>
+        <tr>
+          <td><div class="perm-who">Group (R&amp;D team)<small>g</small></div></td>
+          <td>
+            <div class="perm-checks">
+              <div class="perm-check"><input type="checkbox" id="d1-g-r" onchange="updatePerm('d1')"><label>r</label></div>
+              <div class="perm-check"><input type="checkbox" id="d1-g-w" onchange="updatePerm('d1')"><label>w</label></div>
+              <div class="perm-check"><input type="checkbox" id="d1-g-x" onchange="updatePerm('d1')"><label>x</label></div>
+            </div>
+          </td>
+          <td><div class="perm-display" id="d1-g-sym">---</div></td>
+          <td><div class="perm-octal" id="d1-g-oct">0</div></td>
+        </tr>
+        <tr>
+          <td><div class="perm-who">Others<small>o</small></div></td>
+          <td>
+            <div class="perm-checks">
+              <div class="perm-check"><input type="checkbox" id="d1-o-r" onchange="updatePerm('d1')"><label>r</label></div>
+              <div class="perm-check"><input type="checkbox" id="d1-o-w" onchange="updatePerm('d1')"><label>w</label></div>
+              <div class="perm-check"><input type="checkbox" id="d1-o-x" onchange="updatePerm('d1')"><label>x</label></div>
+            </div>
+          </td>
+          <td><div class="perm-display" id="d1-o-sym">---</div></td>
+          <td><div class="perm-octal" id="d1-o-oct">0</div></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="chmod-preview">
+      <span class="cmd-sudo">sudo</span>
+      <span class="cmd-chmod">chmod</span>
+      <span class="cmd-flags">-R</span>
+      <span class="cmd-octal" id="d1-preview">000</span>
+      <span class="cmd-path">/RandD</span>
+    </div>
+    <button class="check-btn" onclick="checkPerm('d1', '774')">Check my answer</button>
+    <div class="perm-feedback" id="d1-feedback"></div>
+
+    <div class="perm-note-area" style="margin-top:1rem;">
+      <label>Why did you choose these permissions? What happens if "others" had write access?</label>
+      <textarea id="note-d1" placeholder="Explain your reasoning..." oninput="saveLabNote('d1', this.value)"></textarea>
+    </div>
+  </div>
+
+  <!-- /RandD/Research -->
+  <div class="perm-builder">
+    <div class="perm-builder-title">Requirement 2 — Research Directory</div>
+    <div class="perm-builder-path">📁 /RandD/Research</div>
+    <div class="perm-builder-desc">R&amp;D team members need <strong>full access</strong> (read, write, execute). All other users should have <strong>no access</strong> whatsoever — they cannot even see it exists.</div>
+
+    <table class="perm-table">
+      <thead><tr><th>Who</th><th>Permissions</th><th>Notation</th><th>Octal</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><div class="perm-who">Owner (head researcher)<small>u</small></div></td>
+          <td>
+            <div class="perm-checks">
+              <div class="perm-check"><input type="checkbox" id="d2-u-r" onchange="updatePerm('d2')"><label>r</label></div>
+              <div class="perm-check"><input type="checkbox" id="d2-u-w" onchange="updatePerm('d2')"><label>w</label></div>
+              <div class="perm-check"><input type="checkbox" id="d2-u-x" onchange="updatePerm('d2')"><label>x</label></div>
+            </div>
+          </td>
+          <td><div class="perm-display" id="d2-u-sym">---</div></td>
+          <td><div class="perm-octal" id="d2-u-oct">0</div></td>
+        </tr>
+        <tr>
+          <td><div class="perm-who">Group (R&amp;D team)<small>g</small></div></td>
+          <td>
+            <div class="perm-checks">
+              <div class="perm-check"><input type="checkbox" id="d2-g-r" onchange="updatePerm('d2')"><label>r</label></div>
+              <div class="perm-check"><input type="checkbox" id="d2-g-w" onchange="updatePerm('d2')"><label>w</label></div>
+              <div class="perm-check"><input type="checkbox" id="d2-g-x" onchange="updatePerm('d2')"><label>x</label></div>
+            </div>
+          </td>
+          <td><div class="perm-display" id="d2-g-sym">---</div></td>
+          <td><div class="perm-octal" id="d2-g-oct">0</div></td>
+        </tr>
+        <tr>
+          <td><div class="perm-who">Others<small>o</small></div></td>
+          <td>
+            <div class="perm-checks">
+              <div class="perm-check"><input type="checkbox" id="d2-o-r" onchange="updatePerm('d2')"><label>r</label></div>
+              <div class="perm-check"><input type="checkbox" id="d2-o-w" onchange="updatePerm('d2')"><label>w</label></div>
+              <div class="perm-check"><input type="checkbox" id="d2-o-x" onchange="updatePerm('d2')"><label>x</label></div>
+            </div>
+          </td>
+          <td><div class="perm-display" id="d2-o-sym">---</div></td>
+          <td><div class="perm-octal" id="d2-o-oct">0</div></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="chmod-preview">
+      <span class="cmd-sudo">sudo</span>
+      <span class="cmd-chmod">chmod</span>
+      <span class="cmd-flags">-R</span>
+      <span class="cmd-octal" id="d2-preview">000</span>
+      <span class="cmd-path">/RandD/Research</span>
+    </div>
+    <button class="check-btn" onclick="checkPerm('d2', '770')">Check my answer</button>
+    <div class="perm-feedback" id="d2-feedback"></div>
+
+    <div class="perm-note-area" style="margin-top:1rem;">
+      <label>Why should "others" have zero access to the Research directory specifically?</label>
+      <textarea id="note-d2" placeholder="Think about what's inside this directory and the risk if IT staff could read it..." oninput="saveLabNote('d2', this.value)"></textarea>
+    </div>
+  </div>
+
+  <!-- /RandD/Formula -->
+  <div class="perm-builder">
+    <div class="perm-builder-title">Requirement 3 — Formula Directory</div>
+    <div class="perm-builder-path">📁 /RandD/Formula</div>
+    <div class="perm-builder-desc">This is the most sensitive directory. The <strong>head researcher (owner)</strong> needs full access (rwx). The <strong>R&amp;D team (group)</strong> needs read and execute only — they can view and run but not modify. <strong>Everyone else</strong> has no access.</div>
+
+    <table class="perm-table">
+      <thead><tr><th>Who</th><th>Permissions</th><th>Notation</th><th>Octal</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><div class="perm-who">Owner (head researcher)<small>u</small></div></td>
+          <td>
+            <div class="perm-checks">
+              <div class="perm-check"><input type="checkbox" id="d3-u-r" onchange="updatePerm('d3')"><label>r</label></div>
+              <div class="perm-check"><input type="checkbox" id="d3-u-w" onchange="updatePerm('d3')"><label>w</label></div>
+              <div class="perm-check"><input type="checkbox" id="d3-u-x" onchange="updatePerm('d3')"><label>x</label></div>
+            </div>
+          </td>
+          <td><div class="perm-display" id="d3-u-sym">---</div></td>
+          <td><div class="perm-octal" id="d3-u-oct">0</div></td>
+        </tr>
+        <tr>
+          <td><div class="perm-who">Group (R&amp;D team)<small>g</small></div></td>
+          <td>
+            <div class="perm-checks">
+              <div class="perm-check"><input type="checkbox" id="d3-g-r" onchange="updatePerm('d3')"><label>r</label></div>
+              <div class="perm-check"><input type="checkbox" id="d3-g-w" onchange="updatePerm('d3')"><label>w</label></div>
+              <div class="perm-check"><input type="checkbox" id="d3-g-x" onchange="updatePerm('d3')"><label>x</label></div>
+            </div>
+          </td>
+          <td><div class="perm-display" id="d3-g-sym">---</div></td>
+          <td><div class="perm-octal" id="d3-g-oct">0</div></td>
+        </tr>
+        <tr>
+          <td><div class="perm-who">Others<small>o</small></div></td>
+          <td>
+            <div class="perm-checks">
+              <div class="perm-check"><input type="checkbox" id="d3-o-r" onchange="updatePerm('d3')"><label>r</label></div>
+              <div class="perm-check"><input type="checkbox" id="d3-o-w" onchange="updatePerm('d3')"><label>w</label></div>
+              <div class="perm-check"><input type="checkbox" id="d3-o-x" onchange="updatePerm('d3')"><label>x</label></div>
+            </div>
+          </td>
+          <td><div class="perm-display" id="d3-o-sym">---</div></td>
+          <td><div class="perm-octal" id="d3-o-oct">0</div></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="chmod-preview">
+      <span class="cmd-sudo">sudo</span>
+      <span class="cmd-chmod">chmod</span>
+      <span class="cmd-flags">-R</span>
+      <span class="cmd-octal" id="d3-preview">000</span>
+      <span class="cmd-path">/RandD/Formula</span>
+    </div>
+    <button class="check-btn" onclick="checkPerm('d3', '750')">Check my answer</button>
+    <div class="perm-feedback" id="d3-feedback"></div>
+
+    <div class="perm-note-area" style="margin-top:1rem;">
+      <label>Why does the R&amp;D team need execute (x) but not write (w) on the Formula directory?</label>
+      <textarea id="note-d3" placeholder="Think about what execute means for a directory vs. a file..." oninput="saveLabNote('d3', this.value)"></textarea>
+    </div>
+  </div>
+
+  <!-- Summary view -->
+  <div class="card" style="margin-top:0.5rem;">
+    <div class="card-label">Your completed chmod commands</div>
+    <div style="background:#080b10;border:1px solid var(--border2);border-radius:8px;padding:1.25rem;font-family:var(--mono);font-size:13px;display:flex;flex-direction:column;gap:10px;margin-top:0.5rem;">
+      <div><span class="cmd-sudo">sudo</span> <span class="cmd-chmod">chmod</span> <span class="cmd-flags">-R</span> <span class="cmd-octal" id="summary-d1">?</span> <span class="cmd-path">/RandD</span></div>
+      <div><span class="cmd-sudo">sudo</span> <span class="cmd-chmod">chmod</span> <span class="cmd-flags">-R</span> <span class="cmd-octal" id="summary-d2">?</span> <span class="cmd-path">/RandD/Research</span></div>
+      <div><span class="cmd-sudo">sudo</span> <span class="cmd-chmod">chmod</span> <span class="cmd-flags">-R</span> <span class="cmd-octal" id="summary-d3">?</span> <span class="cmd-path">/RandD/Formula</span></div>
+    </div>
+  </div>
+
+  <!-- ── UBUNTU SETUP LAB ───────────────────────────────────────── -->
+  <div style="margin-top:2rem;">
+    <div class="section-title" style="font-size:18px;">Ubuntu Linux — Hands-On Setup</div>
+    <div class="section-sub" style="margin-bottom:1rem;">Now run the real commands in your Ubuntu terminal. Work through each step in order and record your output.</div>
+
+    <div class="alert alert-warn">
+      <span class="alert-icon">⚠</span>
+      <span>Only run these commands in your <strong>classroom lab environment or a VM</strong> your teacher has set up. Do not run on a personal or shared production machine without authorization.</span>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="ubuntu-step" id="ustep-0">
+      <div class="ubuntu-step-header" onclick="toggleUStep(0)">
+        <div class="ubuntu-step-left">
+          <div class="ubuntu-step-num">Step 1</div>
+          <div class="ubuntu-step-title">Create the Groups</div>
+        </div>
+        <div class="ubuntu-step-chev" id="uchev-0">›</div>
+      </div>
+      <div class="ubuntu-step-body" id="ubody-0">
+        <div class="ubuntu-explain">
+          <p>Before setting permissions, the <code>randd</code> group must exist on the system. Linux permissions work at the group level — every user assigned to <code>randd</code> automatically inherits the group permissions you set.</p>
+        </div>
+        <div class="ubuntu-cmd-block">
+          <div class="ubuntu-cmd-label">Commands to run</div>
+          <div class="ubuntu-terminal">
+            <div class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">sudo groupadd randd</span></div>
+            <div class="term-comment"># Creates the R&D team group</div>
+            <div class="term-line" style="margin-top:6px;"><span class="term-prompt">$</span> <span class="term-cmd">getent group randd</span></div>
+            <div class="term-comment"># Verify the group was created — should show: randd:x:NNNN:</div>
+          </div>
+        </div>
+        <div class="ubuntu-fields">
+          <div class="form-field">
+            <label>Output of getent group randd</label>
+            <input type="text" class="ubuntu-input" id="u0-out" placeholder="randd:x:1001:" oninput="saveUbuntuField('s1-groupadd', this.value)" style="font-family:var(--mono);">
+          </div>
+          <div class="form-field" style="margin-top:0.75rem;">
+            <label>What does the number after x: represent?</label>
+            <textarea class="ubuntu-input" id="u0-note" placeholder="e.g. It's the Group ID (GID) — a unique number the OS uses to identify this group..." oninput="saveUbuntuField('s1-note', this.value)" style="min-height:65px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="ubuntu-step" id="ustep-1">
+      <div class="ubuntu-step-header" onclick="toggleUStep(1)">
+        <div class="ubuntu-step-left">
+          <div class="ubuntu-step-num">Step 2</div>
+          <div class="ubuntu-step-title">Create the Users</div>
+        </div>
+        <div class="ubuntu-step-chev" id="uchev-1">›</div>
+      </div>
+      <div class="ubuntu-step-body" id="ubody-1" style="display:none;">
+        <div class="ubuntu-explain">
+          <p>Create the <strong>head researcher</strong> (who will own the directories) and a sample <strong>R&amp;D team member</strong>. The <code>-m</code> flag creates a home directory; <code>-g</code> sets the primary group; <code>-G</code> adds secondary groups.</p>
+        </div>
+        <div class="ubuntu-cmd-block">
+          <div class="ubuntu-cmd-label">Commands to run</div>
+          <div class="ubuntu-terminal">
+            <div class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">sudo useradd -m -g randd headresearcher</span></div>
+            <div class="term-comment"># Creates head researcher with randd as primary group</div>
+            <div class="term-line" style="margin-top:6px;"><span class="term-prompt">$</span> <span class="term-cmd">sudo useradd -m -g randd researcher1</span></div>
+            <div class="term-comment"># Creates a sample R&D team member</div>
+            <div class="term-line" style="margin-top:6px;"><span class="term-prompt">$</span> <span class="term-cmd">sudo useradd -m itstaff1</span></div>
+            <div class="term-comment"># Creates an IT staff user NOT in the randd group</div>
+            <div class="term-line" style="margin-top:6px;"><span class="term-prompt">$</span> <span class="term-cmd">id headresearcher</span></div>
+            <div class="term-comment"># Verify: should show uid, gid=randd, groups=randd</div>
+          </div>
+        </div>
+        <div class="ubuntu-fields">
+          <div class="form-field">
+            <label>Output of id headresearcher</label>
+            <input type="text" class="ubuntu-input" id="u1-out" placeholder="uid=1001(headresearcher) gid=1001(randd) groups=1001(randd)" oninput="saveUbuntuField('s2-id', this.value)" style="font-family:var(--mono);font-size:12px;">
+          </div>
+          <div class="form-field" style="margin-top:0.75rem;">
+            <label>What is the difference between a primary group (-g) and a secondary group (-G)?</label>
+            <textarea class="ubuntu-input" id="u1-note" placeholder="A primary group is assigned to files created by the user. Secondary groups grant additional access..." oninput="saveUbuntuField('s2-note', this.value)" style="min-height:65px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="ubuntu-step" id="ustep-2">
+      <div class="ubuntu-step-header" onclick="toggleUStep(2)">
+        <div class="ubuntu-step-left">
+          <div class="ubuntu-step-num">Step 3</div>
+          <div class="ubuntu-step-title">Create the Directory Structure</div>
+        </div>
+        <div class="ubuntu-step-chev" id="uchev-2">›</div>
+      </div>
+      <div class="ubuntu-step-body" id="ubody-2" style="display:none;">
+        <div class="ubuntu-explain">
+          <p>Create the full directory tree from the scenario. The <code>-p</code> flag creates all parent directories in one command. Then create some placeholder files inside each directory to test permissions against.</p>
+        </div>
+        <div class="ubuntu-cmd-block">
+          <div class="ubuntu-cmd-label">Commands to run</div>
+          <div class="ubuntu-terminal">
+            <div class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">sudo mkdir -p /RandD/Research /RandD/Formula</span></div>
+            <div class="term-comment"># Creates all three directories at once</div>
+            <div class="term-line" style="margin-top:6px;"><span class="term-prompt">$</span> <span class="term-cmd">sudo touch /RandD/Research/strype_trials.csv</span></div>
+            <div class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">sudo touch /RandD/Research/clinical_data.xlsx</span></div>
+            <div class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">sudo touch /RandD/Formula/compound_formula.txt</span></div>
+            <div class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">sudo touch /RandD/Formula/synthesis_process.pdf</span></div>
+            <div class="term-comment"># Creates placeholder research files</div>
+            <div class="term-line" style="margin-top:6px;"><span class="term-prompt">$</span> <span class="term-cmd">ls -la /RandD/</span></div>
+            <div class="term-comment"># List directories — note default permissions before we change them</div>
+          </div>
+        </div>
+        <div class="ubuntu-fields">
+          <div class="form-field">
+            <label>Output of ls -la /RandD/ (paste your terminal output)</label>
+            <textarea class="ubuntu-input" id="u2-out" placeholder="total 16&#10;drwxr-xr-x 4 root root 4096 ...&#10;drwxr-xr-x 2 root root 4096 ...&#10;..." oninput="saveUbuntuField('s3-ls', this.value)" style="min-height:90px;font-family:var(--mono);font-size:12px;"></textarea>
+          </div>
+          <div class="form-field" style="margin-top:0.75rem;">
+            <label>What are the default permissions before you change them? Who owns the directories?</label>
+            <textarea class="ubuntu-input" id="u2-note" placeholder="By default, directories are owned by root and have 755 permissions..." oninput="saveUbuntuField('s3-note', this.value)" style="min-height:65px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="ubuntu-step" id="ustep-3">
+      <div class="ubuntu-step-header" onclick="toggleUStep(3)">
+        <div class="ubuntu-step-left">
+          <div class="ubuntu-step-num">Step 4</div>
+          <div class="ubuntu-step-title">Set Ownership</div>
+        </div>
+        <div class="ubuntu-step-chev" id="uchev-3">›</div>
+      </div>
+      <div class="ubuntu-step-body" id="ubody-3" style="display:none;">
+        <div class="ubuntu-explain">
+          <p>Before permissions mean anything, ownership must be correct. Use <code>chown</code> to set the <strong>owner</strong> (user) and <strong>group</strong> for each directory. The format is <code>chown owner:group path</code>. The head researcher should own everything; the group should be <code>randd</code>.</p>
+        </div>
+        <div class="ubuntu-cmd-block">
+          <div class="ubuntu-cmd-label">Commands to run</div>
+          <div class="ubuntu-terminal">
+            <div class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">sudo chown -R headresearcher:randd /RandD</span></div>
+            <div class="term-comment"># Sets owner=headresearcher, group=randd on all files recursively</div>
+            <div class="term-line" style="margin-top:6px;"><span class="term-prompt">$</span> <span class="term-cmd">ls -la /RandD/</span></div>
+            <div class="term-comment"># Verify ownership changed</div>
+            <div class="term-line" style="margin-top:6px;"><span class="term-prompt">$</span> <span class="term-cmd">ls -la /RandD/Formula/</span></div>
+            <div class="term-comment"># Check files inside Formula too</div>
+          </div>
+        </div>
+        <div class="ubuntu-fields">
+          <div class="form-field">
+            <label>Output of ls -la /RandD/ after chown</label>
+            <textarea class="ubuntu-input" id="u3-out" placeholder="drwxr-xr-x 4 headresearcher randd 4096 ...&#10;drwxr-xr-x 2 headresearcher randd 4096 Research&#10;drwxr-xr-x 2 headresearcher randd 4096 Formula" oninput="saveUbuntuField('s4-chown', this.value)" style="min-height:90px;font-family:var(--mono);font-size:12px;"></textarea>
+          </div>
+          <div class="form-field" style="margin-top:0.75rem;">
+            <label>Why must you set ownership before setting permissions?</label>
+            <textarea class="ubuntu-input" id="u3-note" placeholder="Permissions are applied based on who the owner and group are. If root still owns the files, the 'user' permission slot applies to root, not headresearcher..." oninput="saveUbuntuField('s4-note', this.value)" style="min-height:65px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="ubuntu-step" id="ustep-4">
+      <div class="ubuntu-step-header" onclick="toggleUStep(4)">
+        <div class="ubuntu-step-left">
+          <div class="ubuntu-step-num">Step 5</div>
+          <div class="ubuntu-step-title">Apply the chmod Permissions</div>
+        </div>
+        <div class="ubuntu-step-chev" id="uchev-4">›</div>
+      </div>
+      <div class="ubuntu-step-body" id="ubody-4" style="display:none;">
+        <div class="ubuntu-explain">
+          <p>Now apply the three chmod commands you worked out in the Permissions Lab above. Run them in order — <strong>parent directory first</strong>, then subdirectories.</p>
+        </div>
+        <div class="ubuntu-cmd-block">
+          <div class="ubuntu-cmd-label">Commands to run — use your octal codes from the lab</div>
+          <div class="ubuntu-terminal">
+            <div class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">sudo chmod -R <span style="color:var(--accent2);">774</span> /RandD</span></div>
+            <div class="term-comment"># Req 1: R&D full (7), others read-only (4)</div>
+            <div class="term-line" style="margin-top:6px;"><span class="term-prompt">$</span> <span class="term-cmd">sudo chmod -R <span style="color:var(--accent2);">770</span> /RandD/Research</span></div>
+            <div class="term-comment"># Req 2: R&D full (7), others none (0)</div>
+            <div class="term-line" style="margin-top:6px;"><span class="term-prompt">$</span> <span class="term-cmd">sudo chmod -R <span style="color:var(--accent2);">750</span> /RandD/Formula</span></div>
+            <div class="term-comment"># Req 3: Owner rwx (7), R&D r-x (5), others none (0)</div>
+            <div class="term-line" style="margin-top:6px;"><span class="term-prompt">$</span> <span class="term-cmd">ls -la /RandD/ &amp;&amp; ls -la /RandD/Research/ &amp;&amp; ls -la /RandD/Formula/</span></div>
+            <div class="term-comment"># Verify all three permission sets</div>
+          </div>
+        </div>
+        <div class="ubuntu-fields">
+          <div class="form-field">
+            <label>Full output of all three ls -la commands (paste everything)</label>
+            <textarea class="ubuntu-input" id="u4-out" placeholder="Paste your terminal output here — look for drwxrwxr--, drwxrwx---, drwxr-x---" oninput="saveUbuntuField('s5-chmod', this.value)" style="min-height:110px;font-family:var(--mono);font-size:12px;"></textarea>
+          </div>
+          <div class="form-field" style="margin-top:0.75rem;">
+            <label>Do the permission strings match what you expected? Note anything surprising.</label>
+            <textarea class="ubuntu-input" id="u4-note" placeholder="e.g. /RandD shows drwxrwxr-- which is 774 — owner and group have full access, others have read-only..." oninput="saveUbuntuField('s5-note', this.value)" style="min-height:65px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 6 -->
+    <div class="ubuntu-step" id="ustep-5">
+      <div class="ubuntu-step-header" onclick="toggleUStep(5)">
+        <div class="ubuntu-step-left">
+          <div class="ubuntu-step-num">Step 6</div>
+          <div class="ubuntu-step-title">Test the Permissions</div>
+        </div>
+        <div class="ubuntu-step-chev" id="uchev-5">›</div>
+      </div>
+      <div class="ubuntu-step-body" id="ubody-5" style="display:none;">
+        <div class="ubuntu-explain">
+          <p>Testing is a critical part of security configuration — never assume permissions work, always verify. Switch between users and try to access each directory. A correctly configured system will allow and deny access exactly as specified.</p>
+        </div>
+        <div class="ubuntu-cmd-block">
+          <div class="ubuntu-cmd-label">Test as researcher1 (R&amp;D team member)</div>
+          <div class="ubuntu-terminal">
+            <div class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">sudo -u researcher1 ls /RandD/Research/</span></div>
+            <div class="term-comment"># Expected: lists files — R&D has full access</div>
+            <div class="term-line" style="margin-top:4px;"><span class="term-prompt">$</span> <span class="term-cmd">sudo -u researcher1 cat /RandD/Formula/compound_formula.txt</span></div>
+            <div class="term-comment"># Expected: can read — R&D has r-x on Formula</div>
+            <div class="term-line" style="margin-top:4px;"><span class="term-prompt">$</span> <span class="term-cmd">sudo -u researcher1 touch /RandD/Formula/test.txt</span></div>
+            <div class="term-comment"># Expected: Permission denied — R&D cannot write to Formula</div>
+          </div>
+        </div>
+        <div class="ubuntu-cmd-block" style="margin-top:0.75rem;">
+          <div class="ubuntu-cmd-label">Test as itstaff1 (not in randd group)</div>
+          <div class="ubuntu-terminal">
+            <div class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">sudo -u itstaff1 ls /RandD/</span></div>
+            <div class="term-comment"># Expected: lists top-level contents — others have read on /RandD</div>
+            <div class="term-line" style="margin-top:4px;"><span class="term-prompt">$</span> <span class="term-cmd">sudo -u itstaff1 ls /RandD/Research/</span></div>
+            <div class="term-comment"># Expected: Permission denied — others have no access to Research</div>
+            <div class="term-line" style="margin-top:4px;"><span class="term-prompt">$</span> <span class="term-cmd">sudo -u itstaff1 ls /RandD/Formula/</span></div>
+            <div class="term-comment"># Expected: Permission denied — others have no access to Formula</div>
+          </div>
+        </div>
+        <div class="ubuntu-fields">
+          <div class="form-field">
+            <label>Results — researcher1 tests (did each command behave as expected?)</label>
+            <textarea class="ubuntu-input" id="u5-r1" placeholder="e.g. ls /RandD/Research/ ✓ showed files | cat compound_formula.txt ✓ showed contents | touch test.txt ✓ Permission denied" oninput="saveUbuntuField('s6-researcher', this.value)" style="min-height:80px;"></textarea>
+          </div>
+          <div class="form-field" style="margin-top:0.75rem;">
+            <label>Results — itstaff1 tests (did each command behave as expected?)</label>
+            <textarea class="ubuntu-input" id="u5-it" placeholder="e.g. ls /RandD/ ✓ listed directories | ls /RandD/Research/ ✓ Permission denied | ls /RandD/Formula/ ✓ Permission denied" oninput="saveUbuntuField('s6-itstaff', this.value)" style="min-height:80px;"></textarea>
+          </div>
+          <div class="form-field" style="margin-top:0.75rem;">
+            <label>Did any test fail or behave unexpectedly? What does that tell you?</label>
+            <textarea class="ubuntu-input" id="u5-unexpected" placeholder="If something didn't work as expected, describe what happened and why you think it occurred..." oninput="saveUbuntuField('s6-unexpected', this.value)" style="min-height:65px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 7 -->
+    <div class="ubuntu-step" id="ustep-6">
+      <div class="ubuntu-step-header" onclick="toggleUStep(6)">
+        <div class="ubuntu-step-left">
+          <div class="ubuntu-step-num">Step 7</div>
+          <div class="ubuntu-step-title">Verify with stat &amp; getfacl</div>
+        </div>
+        <div class="ubuntu-step-chev" id="uchev-6">›</div>
+      </div>
+      <div class="ubuntu-step-body" id="ubody-6" style="display:none;">
+        <div class="ubuntu-explain">
+          <p>Security engineers document their configurations. The <code>stat</code> command shows detailed file metadata including exact octal permissions. <code>getfacl</code> shows the full Access Control List in human-readable form — this is what you'd include in a security audit report.</p>
+        </div>
+        <div class="ubuntu-cmd-block">
+          <div class="ubuntu-cmd-label">Commands to run</div>
+          <div class="ubuntu-terminal">
+            <div class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">stat /RandD /RandD/Research /RandD/Formula</span></div>
+            <div class="term-comment"># Shows octal permission codes — look for "Access: (0774/drwxrwxr--)"</div>
+            <div class="term-line" style="margin-top:6px;"><span class="term-prompt">$</span> <span class="term-cmd">getfacl /RandD /RandD/Research /RandD/Formula</span></div>
+            <div class="term-comment"># Shows full ACL — owner, group, other in readable format</div>
+          </div>
+        </div>
+        <div class="ubuntu-fields">
+          <div class="form-field">
+            <label>stat output — what are the exact octal codes for each directory?</label>
+            <textarea class="ubuntu-input" id="u6-stat" placeholder="/RandD: 0774&#10;/RandD/Research: 0770&#10;/RandD/Formula: 0750" oninput="saveUbuntuField('s7-stat', this.value)" style="min-height:80px;font-family:var(--mono);font-size:12px;"></textarea>
+          </div>
+          <div class="form-field" style="margin-top:0.75rem;">
+            <label>getfacl output for /RandD/Formula (paste here)</label>
+            <textarea class="ubuntu-input" id="u6-acl" placeholder="# file: RandD/Formula&#10;# owner: headresearcher&#10;# group: randd&#10;user::rwx&#10;group::r-x&#10;other::---" oninput="saveUbuntuField('s7-acl', this.value)" style="min-height:100px;font-family:var(--mono);font-size:12px;"></textarea>
+          </div>
+          <div class="form-field" style="margin-top:0.75rem;">
+            <label>Reflection — why is it important to verify and document permissions after setting them?</label>
+            <textarea class="ubuntu-input" id="u6-reflect" placeholder="Security configuration without verification is incomplete. Mistakes happen, and documentation provides an audit trail..." oninput="saveUbuntuField('s7-reflect', this.value)" style="min-height:65px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end ubuntu lab -->
+</div>
+
+<!-- ===================== QUIZ ===================== -->
+<div id="tab-quiz" class="tab-panel">
+  <div class="section-title">Knowledge Check</div>
+  <div class="section-sub">Test your understanding of Linux file permissions and access controls.</div>
+
+  <div class="quiz-progress">
+    <div class="qp-dot active" id="dot-0"></div>
+    <div class="qp-dot" id="dot-1"></div>
+    <div class="qp-dot" id="dot-2"></div>
+    <div class="qp-dot" id="dot-3"></div>
+    <div class="qp-dot" id="dot-4"></div>
+  </div>
+
+  <div id="quiz-questions">
+
+    <div class="quiz-card" id="qcard-0">
+      <div class="quiz-qnum">Question 1 of 5</div>
+      <div class="quiz-question">What does the octal code <code style="background:var(--surface2);padding:2px 8px;border-radius:4px;font-family:var(--mono);">750</code> mean in terms of permissions?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="checkAnswer(0,0,false)"><span class="choice-letter">A</span>Owner: rwx, Group: r-x, Others: ---</button>
+        <button class="choice-btn" onclick="checkAnswer(0,1,false)"><span class="choice-letter">B</span>Owner: rwx, Group: rwx, Others: r--</button>
+        <button class="choice-btn" onclick="checkAnswer(0,2,true)"><span class="choice-letter">C</span>Owner: rwx (7), Group: r-x (5), Others: none (0)</button>
+        <button class="choice-btn" onclick="checkAnswer(0,3,false)"><span class="choice-letter">D</span>Owner: rw-, Group: r-x, Others: ---</button>
+      </div>
+      <div class="quiz-feedback" id="qfb-0"></div>
+      <button class="next-q-btn" id="qnext-0" onclick="nextQ(1)">Next question →</button>
+    </div>
+
+    <div class="quiz-card" id="qcard-1" style="display:none;">
+      <div class="quiz-qnum">Question 2 of 5</div>
+      <div class="quiz-question">A member of the IT team tries to open a file in /RandD/Research. What happens, and why?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="checkAnswer(1,0,false)"><span class="choice-letter">A</span>They can read it but not edit it — the permissions allow read-only</button>
+        <button class="choice-btn" onclick="checkAnswer(1,1,true)"><span class="choice-letter">B</span>Access is denied — the "others" permission is 0 (---), meaning no access at all</button>
+        <button class="choice-btn" onclick="checkAnswer(1,2,false)"><span class="choice-letter">C</span>They can access it because IT has admin rights on all systems</button>
+        <button class="choice-btn" onclick="checkAnswer(1,3,false)"><span class="choice-letter">D</span>They can list the files but not read their contents</button>
+      </div>
+      <div class="quiz-feedback" id="qfb-1"></div>
+      <button class="next-q-btn" id="qnext-1" onclick="nextQ(2)">Next question →</button>
+    </div>
+
+    <div class="quiz-card" id="qcard-2" style="display:none;">
+      <div class="quiz-qnum">Question 3 of 5</div>
+      <div class="quiz-question">Why does the R&amp;D team need the execute (x) permission on the /RandD/Formula <em>directory</em>, even if they don't need to run any programs?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="checkAnswer(2,0,false)"><span class="choice-letter">A</span>Execute on a directory means they can run scripts stored inside it</button>
+        <button class="choice-btn" onclick="checkAnswer(2,1,false)"><span class="choice-letter">B</span>Execute is always required alongside read — they always go together</button>
+        <button class="choice-btn" onclick="checkAnswer(2,2,true)"><span class="choice-letter">C</span>Execute on a directory allows users to enter (cd) into it and access its contents</button>
+        <button class="choice-btn" onclick="checkAnswer(2,3,false)"><span class="choice-letter">D</span>Execute lets them see the directory name when listed by others</button>
+      </div>
+      <div class="quiz-feedback" id="qfb-2"></div>
+      <button class="next-q-btn" id="qnext-2" onclick="nextQ(3)">Next question →</button>
+    </div>
+
+    <div class="quiz-card" id="qcard-3" style="display:none;">
+      <div class="quiz-qnum">Question 4 of 5</div>
+      <div class="quiz-question">What is the correct chmod command to give the R&amp;D group full access to /RandD/Research while giving others no access?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="checkAnswer(3,0,false)"><span class="choice-letter">A</span><span style="font-family:var(--mono);font-size:12px;">sudo chmod -R 755 /RandD/Research</span></button>
+        <button class="choice-btn" onclick="checkAnswer(3,1,true)"><span class="choice-letter">B</span><span style="font-family:var(--mono);font-size:12px;">sudo chmod -R 770 /RandD/Research</span></button>
+        <button class="choice-btn" onclick="checkAnswer(3,2,false)"><span class="choice-letter">C</span><span style="font-family:var(--mono);font-size:12px;">sudo chmod -R 700 /RandD/Research</span></button>
+        <button class="choice-btn" onclick="checkAnswer(3,3,false)"><span class="choice-letter">D</span><span style="font-family:var(--mono);font-size:12px;">sudo chmod -R 774 /RandD/Research</span></button>
+      </div>
+      <div class="quiz-feedback" id="qfb-3"></div>
+      <button class="next-q-btn" id="qnext-3" onclick="nextQ(4)">Next question →</button>
+    </div>
+
+    <div class="quiz-card" id="qcard-4" style="display:none;">
+      <div class="quiz-qnum">Question 5 of 5</div>
+      <div class="quiz-question">The Vitahealth research computer is "air-gapped." What does this mean, and why is it relevant to data security?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="checkAnswer(4,0,false)"><span class="choice-letter">A</span>The computer uses encrypted drives that require an air key to unlock</button>
+        <button class="choice-btn" onclick="checkAnswer(4,1,false)"><span class="choice-letter">B</span>The computer is stored in a temperature-controlled room to prevent hardware damage</button>
+        <button class="choice-btn" onclick="checkAnswer(4,2,true)"><span class="choice-letter">C</span>The computer has no network connection — data cannot be exfiltrated remotely, making physical access controls critical</button>
+        <button class="choice-btn" onclick="checkAnswer(4,3,false)"><span class="choice-letter">D</span>The computer runs on battery power only so it cannot be remotely shut down</button>
+      </div>
+      <div class="quiz-feedback" id="qfb-4"></div>
+      <button class="next-q-btn" id="qnext-4" onclick="showScore()">See my results →</button>
+    </div>
+  </div>
+
+  <div class="score-display" id="score-display">
+    <div class="score-big" id="score-num">0/5</div>
+    <div style="color:var(--text2);font-size:14px;margin-bottom:1.5rem;" id="score-msg"></div>
+    <button class="retry-btn" onclick="resetQuiz()">Retake quiz</button>
+  </div>
+</div>
+
+<!-- ===================== DISCUSSION ===================== -->
+<div id="tab-discuss" class="tab-panel">
+  <div class="section-title">Discussion</div>
+  <div class="section-sub">Connect this scenario to broader questions about data security, access control, and professional responsibility.</div>
+
+  <div class="alert alert-purple" style="margin-bottom:1.5rem;">
+    <span class="alert-icon">💬</span>
+    <span>Think beyond the commands. Access control is a policy decision as much as a technical one — who decides who gets access, and what happens when that decision is wrong?</span>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.5rem;">
+    <div class="disc-prompt">
+      <div class="disc-prompt-q">Q1 — Least Privilege</div>
+      <div class="disc-prompt-sub">The principle of "least privilege" means giving users only the access they need to do their job — nothing more. How does this scenario apply that principle? Can you think of a real-world example where too much access caused a breach?</div>
+    </div>
+    <div class="disc-prompt">
+      <div class="disc-prompt-q">Q2 — Insider Threats</div>
+      <div class="disc-prompt-sub">Even with correct permissions, a member of the R&amp;D team could copy the Formula files to a USB drive. What additional controls — technical or managerial — could Vitahealth implement to prevent insider data theft?</div>
+    </div>
+    <div class="disc-prompt">
+      <div class="disc-prompt-q">Q3 — Air Gaps vs. Connectivity</div>
+      <div class="disc-prompt-sub">Air-gapping prevents remote attacks but creates operational challenges — patches must be applied manually, data must be transferred physically. What are the tradeoffs? When is an air gap worth it?</div>
+    </div>
+  </div>
+
+  <div class="comment-form-section">
+    <h3>Add your response</h3>
+    <div class="form-row">
+      <div class="form-field">
+        <label>Your name</label>
+        <input type="text" id="c-name" placeholder="Auto-filled">
+      </div>
+      <div class="form-field">
+        <label>Responding to</label>
+        <select id="c-prompt">
+          <option value="Q1 — Least Privilege">Q1 — Least Privilege</option>
+          <option value="Q2 — Insider Threats">Q2 — Insider Threats</option>
+          <option value="Q3 — Air Gaps vs. Connectivity">Q3 — Air Gaps vs. Connectivity</option>
+          <option value="General Reflection">General Reflection</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-field" style="margin-bottom:0;">
+      <label>Your thoughts</label>
+      <textarea id="c-body" placeholder="Share your perspective, a real-world example, or a question..."></textarea>
+    </div>
+    <button class="submit-btn" onclick="submitComment()">Post to class discussion</button>
+    <div id="c-error" style="color:var(--red);font-size:13px;margin-top:8px;display:none;"></div>
+    <div id="c-success" style="color:var(--green);font-size:13px;margin-top:8px;display:none;"></div>
+  </div>
+
+  <div style="margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+    <div style="font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;">Responses <span id="comment-count" style="color:var(--accent);">0</span></div>
+    <select id="filter-prompt" onchange="renderComments()" style="background:var(--surface2);border:1px solid var(--border2);border-radius:6px;color:var(--text2);font-family:var(--mono);font-size:11px;padding:5px 10px;outline:none;cursor:pointer;">
+      <option value="all">All questions</option>
+      <option value="Q1 — Least Privilege">Q1 only</option>
+      <option value="Q2 — Insider Threats">Q2 only</option>
+      <option value="Q3 — Air Gaps vs. Connectivity">Q3 only</option>
+      <option value="General Reflection">General only</option>
+    </select>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:0.75rem;" id="comments-list">
+    <div class="no-comments"><div class="nc-icon">💬</div>No responses yet. Be the first!</div>
+  </div>
+</div>
+
+</main>
+
+<footer>AP Cybersecurity · Scenario 5A — Protecting Sensitive Data · Unit 5: Securing Applications and Data</footer>
+
+<script>
+// =================================================================
+// DATA
+// =================================================================
+const data = {
+  name: '',
+  labPerms: { d1: '000', d2: '000', d3: '000' },
+  labNotes: { d1: '', d2: '', d3: '' },
+  labCorrect: { d1: false, d2: false, d3: false },
+  briefingNotes: [],
+  quizAnswers: [],
+  quizScore: null
+};
+
+function restoreData() {
+  data.name = localStorage.getItem('s5a_name') || '';
+  data.labNotes.d1 = localStorage.getItem('s5a_note_d1') || '';
+  data.labNotes.d2 = localStorage.getItem('s5a_note_d2') || '';
+  data.labNotes.d3 = localStorage.getItem('s5a_note_d3') || '';
+  data.labCorrect.d1 = localStorage.getItem('s5a_correct_d1') === 'true';
+  data.labCorrect.d2 = localStorage.getItem('s5a_correct_d2') === 'true';
+  data.labCorrect.d3 = localStorage.getItem('s5a_correct_d3') === 'true';
+}
+
+// =================================================================
+// NAME GATE
+// =================================================================
+function startLesson() {
+  const inp = document.getElementById('student-name-input');
+  const n = inp.value.trim();
+  if (!n) { document.getElementById('name-gate-error').style.display = 'block'; inp.focus(); return; }
+  data.name = n;
+  localStorage.setItem('s5a_name', n);
+  document.getElementById('name-gate').style.display = 'none';
+  document.getElementById('lesson-content').style.display = 'block';
+  const df = document.getElementById('c-name'); if (df) df.value = n;
+}
+
+// =================================================================
+// TAB NAV
+// =================================================================
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn:not(.export-btn)').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  const map = { briefing: 0, reference: 1, lab: 2, quiz: 3, discuss: 4 };
+  document.querySelectorAll('.tab-btn:not(.export-btn)')[map[id]].classList.add('active');
+  const df = document.getElementById('c-name'); if (df && data.name) df.value = data.name;
+  window.scrollTo(0, 0);
+}
+
+// =================================================================
+// PERMISSION BUILDER
+// =================================================================
+function calcOctal(r, w, x) { return (r ? 4 : 0) + (w ? 2 : 0) + (x ? 1 : 0); }
+function calcSym(r, w, x) { return (r ? 'r' : '-') + (w ? 'w' : '-') + (x ? 'x' : '-'); }
+
+function updatePerm(dir) {
+  const ur = document.getElementById(dir + '-u-r').checked;
+  const uw = document.getElementById(dir + '-u-w').checked;
+  const ux = document.getElementById(dir + '-u-x').checked;
+  const gr = document.getElementById(dir + '-g-r').checked;
+  const gw = document.getElementById(dir + '-g-w').checked;
+  const gx = document.getElementById(dir + '-g-x').checked;
+  const or = document.getElementById(dir + '-o-r').checked;
+  const ow = document.getElementById(dir + '-o-w').checked;
+  const ox = document.getElementById(dir + '-o-x').checked;
+
+  const uo = calcOctal(ur, uw, ux), go = calcOctal(gr, gw, gx), oo = calcOctal(or, ow, ox);
+  const octal = '' + uo + go + oo;
+
+  document.getElementById(dir + '-u-sym').textContent = calcSym(ur, uw, ux);
+  document.getElementById(dir + '-u-oct').textContent = uo;
+  document.getElementById(dir + '-g-sym').textContent = calcSym(gr, gw, gx);
+  document.getElementById(dir + '-g-oct').textContent = go;
+  document.getElementById(dir + '-o-sym').textContent = calcSym(or, ow, ox);
+  document.getElementById(dir + '-o-oct').textContent = oo;
+  document.getElementById(dir + '-preview').textContent = octal;
+
+  // Update summary
+  const sumMap = { d1: 'summary-d1', d2: 'summary-d2', d3: 'summary-d3' };
+  document.getElementById(sumMap[dir]).textContent = octal;
+
+  data.labPerms[dir] = octal;
+  localStorage.setItem('s5a_perm_' + dir, octal);
+}
+
+function checkPerm(dir, correct) {
+  const current = data.labPerms[dir];
+  const fb = document.getElementById(dir + '-feedback');
+  fb.className = 'perm-feedback show ' + (current === correct ? 'correct' : 'wrong');
+  if (current === correct) {
+    fb.innerHTML = '✓ Correct! <code style="font-family:var(--mono);background:rgba(61,220,132,0.15);padding:1px 6px;border-radius:3px;">' + correct + '</code> is the right permission code. Your chmod command is ready.';
+    data.labCorrect[dir] = true;
+    localStorage.setItem('s5a_correct_' + dir, 'true');
+  } else {
+    const hints = { d1: 'Hint: R&D team needs full (7), others need read-only (4). What about the owner?', d2: 'Hint: R&D team needs full (7), others need nothing (0). What about the owner?', d3: 'Hint: Owner needs 7, R&D team needs r-x (5), others need nothing (0).' };
+    fb.innerHTML = '✗ Not quite — you have <code style="font-family:var(--mono);background:rgba(255,77,77,0.15);padding:1px 6px;border-radius:3px;">' + (current||'000') + '</code>. ' + hints[dir];
+    data.labCorrect[dir] = false;
+    localStorage.setItem('s5a_correct_' + dir, 'false');
+  }
+}
+
+function saveLabNote(dir, val) {
+  data.labNotes[dir] = val;
+  localStorage.setItem('s5a_note_' + dir, val);
+}
+
+function restoreLabPerms() {
+  ['d1','d2','d3'].forEach(dir => {
+    const saved = localStorage.getItem('s5a_perm_' + dir);
+    if (!saved) return;
+    const u = parseInt(saved[0]||0), g = parseInt(saved[1]||0), o = parseInt(saved[2]||0);
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.checked = val; };
+    set(dir+'-u-r', !!(u&4)); set(dir+'-u-w', !!(u&2)); set(dir+'-u-x', !!(u&1));
+    set(dir+'-g-r', !!(g&4)); set(dir+'-g-w', !!(g&2)); set(dir+'-g-x', !!(g&1));
+    set(dir+'-o-r', !!(o&4)); set(dir+'-o-w', !!(o&2)); set(dir+'-o-x', !!(o&1));
+    updatePerm(dir);
+    const noteEl = document.getElementById('note-' + dir);
+    if (noteEl) noteEl.value = data.labNotes[dir] || '';
+  });
+}
+
+// =================================================================
+// NOTES
+// =================================================================
+function saveNote(key) {
+  const inp = document.getElementById(key + '-note-input');
+  const val = inp.value.trim();
+  if (!val) return;
+  const existing = JSON.parse(localStorage.getItem('s5a_note_' + key) || '[]');
+  existing.push({ text: val, time: new Date().toLocaleTimeString() });
+  localStorage.setItem('s5a_note_' + key, JSON.stringify(existing));
+  inp.value = '';
+  renderNotes(key);
+}
+
+function renderNotes(key) {
+  const c = document.getElementById(key + '-saved-notes');
+  if (!c) return;
+  const notes = JSON.parse(localStorage.getItem('s5a_note_' + key) || '[]');
+  c.innerHTML = notes.map((n, i) => `<div class="saved-note"><span>${escHtml(n.text||n)}</span><button class="delete-note" onclick="deleteNote('${key}',${i})">×</button></div>`).join('');
+}
+
+function deleteNote(key, index) {
+  const notes = JSON.parse(localStorage.getItem('s5a_note_' + key) || '[]');
+  notes.splice(index, 1);
+  localStorage.setItem('s5a_note_' + key, JSON.stringify(notes));
+  renderNotes(key);
+}
+
+// =================================================================
+// QUIZ
+// =================================================================
+let quizScores = [null,null,null,null,null];
+const qLabels = ['Q1 — Octal 750 meaning','Q2 — IT team access to Research','Q3 — Execute on a directory','Q4 — Correct chmod for Research','Q5 — Air-gapped meaning'];
+const qAnswerTexts = [
+  ['Owner: rwx, Group: r-x, Others: ---','Owner: rwx, Group: rwx, Others: r--','Owner: rwx (7), Group: r-x (5), Others: none (0)','Owner: rw-, Group: r-x, Others: ---'],
+  ['They can read but not edit','Access is denied — others permission is 0','They can access it — IT has admin rights','They can list files but not read them'],
+  ['Execute lets them run scripts inside','Execute always pairs with read','Execute on a directory allows entering (cd) into it','Execute lets others see the directory name'],
+  ['sudo chmod -R 755 /RandD/Research','sudo chmod -R 770 /RandD/Research','sudo chmod -R 700 /RandD/Research','sudo chmod -R 774 /RandD/Research'],
+  ['Uses encrypted drives needing an air key','Stored in a temperature-controlled room','No network connection — physical access controls are critical','Runs on battery power only']
+];
+const feedbacks = [
+  { good: "Correct. 7=rwx (owner), 5=r-x (group), 0=--- (others). The octal system adds r(4)+w(2)+x(1) for each category.", bad: "750 breaks down as: 7=rwx (4+2+1), 5=r-x (4+0+1), 0=--- (0+0+0). Each digit represents one category." },
+  { good: "Correct. With 'others' set to 0 (---), any user outside the group gets a 'Permission denied' error — they cannot even confirm the directory exists.", bad: "IT staff are in 'others' — their permission is 0 (---), meaning zero access. Being on the IT team doesn't grant permissions not set in the file system." },
+  { good: "Exactly right. For directories, the execute bit means the ability to 'traverse' into them — without it, you can't cd into the directory or access anything inside it.", bad: "For directories specifically, execute means the ability to enter (cd) the directory and access its contents. Without x, r alone is useless — you can see the name but not go inside." },
+  { good: "Correct. 770 gives owner=rwx (7), group=rwx (7), others=--- (0). This gives the R&D group full access while blocking everyone else.", bad: "770 is correct: owner gets 7 (rwx), group gets 7 (rwx = full access), others get 0 (---= no access). 755 would give others read access, and 700 would block even the R&D team." },
+  { good: "Correct. Air-gapped means physically isolated from any network. This eliminates remote attacks entirely, making local file permissions the primary — and critical — security control.", bad: "Air-gapped means no network connection whatsoever. This makes remote data exfiltration impossible, which is why file permissions and physical access controls are the main defence." }
+];
+
+function checkAnswer(qIndex, choiceIndex, correct) {
+  if (quizScores[qIndex] !== null) return;
+  quizScores[qIndex] = correct ? 1 : 0;
+  const card = document.getElementById('qcard-' + qIndex);
+  card.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+  card.querySelectorAll('.choice-btn')[choiceIndex].classList.add(correct ? 'correct' : 'wrong');
+  const fb = document.getElementById('qfb-' + qIndex);
+  fb.textContent = correct ? feedbacks[qIndex].good : feedbacks[qIndex].bad;
+  fb.className = 'quiz-feedback show ' + (correct ? 'good' : 'bad');
+  document.getElementById('qnext-' + qIndex).classList.add('show');
+  document.getElementById('dot-' + qIndex).classList.remove('active');
+  document.getElementById('dot-' + qIndex).classList.add('done');
+  data.quizAnswers[qIndex] = { question: qLabels[qIndex], chosen: qAnswerTexts[qIndex][choiceIndex], correct };
+}
+
+function nextQ(next) {
+  document.getElementById('qcard-' + (next-1)).style.display = 'none';
+  document.getElementById('qcard-' + next).style.display = 'block';
+  const dot = document.getElementById('dot-' + next);
+  if (dot) dot.classList.add('active');
+}
+
+function showScore() {
+  document.getElementById('qcard-4').style.display = 'none';
+  const total = quizScores.reduce((a,b) => a+(b||0), 0);
+  document.getElementById('score-num').textContent = total + '/5';
+  const msgs = ["Keep reviewing the reference material and try again!","Good start — revisit the permissions lab.","Getting there! Review what you missed.","Solid understanding — great work!","Almost perfect — impressive!","Full marks! You've got this down."];
+  document.getElementById('score-msg').textContent = msgs[total];
+  document.getElementById('score-display').classList.add('show');
+  data.quizScore = total;
+}
+
+function resetQuiz() {
+  quizScores = [null,null,null,null,null];
+  for (let i = 0; i < 5; i++) {
+    const card = document.getElementById('qcard-' + i);
+    card.querySelectorAll('.choice-btn').forEach(b => { b.disabled = false; b.className = 'choice-btn'; });
+    document.getElementById('qfb-' + i).className = 'quiz-feedback';
+    document.getElementById('qnext-' + i).classList.remove('show');
+    card.style.display = i === 0 ? 'block' : 'none';
+    document.getElementById('dot-' + i).className = 'qp-dot' + (i === 0 ? ' active' : '');
+  }
+  document.getElementById('score-display').classList.remove('show');
+}
+
+// =================================================================
+// DISCUSSION
+// =================================================================
+const COLORS = ['#4d9fff','#ff4d4d','#3ddc84','#ffd166','#a78bfa','#c084fc','#f472b6','#34d399'];
+function getColor(n) { let h=0; for(let c of n) h=(h*31+c.charCodeAt(0))%COLORS.length; return COLORS[h]; }
+function initials(n) { return n.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+function getComments() { return JSON.parse(localStorage.getItem('s5a_comments')||'[]'); }
+function saveComments(c) { localStorage.setItem('s5a_comments', JSON.stringify(c)); }
+
+function submitComment() {
+  const nameField = document.getElementById('c-name');
+  const name = (nameField ? nameField.value.trim() : '') || data.name;
+  const prompt = document.getElementById('c-prompt').value;
+  const body = document.getElementById('c-body').value.trim();
+  const err = document.getElementById('c-error'), suc = document.getElementById('c-success');
+  err.style.display = 'none'; suc.style.display = 'none';
+  if (!name) { err.textContent = 'Please enter your name.'; err.style.display='block'; return; }
+  if (!body || body.length < 10) { err.textContent = 'Please write at least a sentence.'; err.style.display='block'; return; }
+  if (!data.name) { data.name = name; localStorage.setItem('s5a_name', name); }
+  const comments = getComments();
+  comments.unshift({ id: Date.now(), name, prompt, body, time: new Date().toLocaleString(), likes: 0 });
+  saveComments(comments);
+  document.getElementById('c-body').value = '';
+  renderComments();
+  suc.textContent = '✓ Response recorded!'; suc.style.display = 'block';
+}
+
+function likeComment(id) {
+  const comments = getComments(), c = comments.find(x => x.id === id);
+  if (!c) return;
+  const key = 's5a_liked_' + id;
+  if (localStorage.getItem(key)) { c.likes = Math.max(0,c.likes-1); localStorage.removeItem(key); }
+  else { c.likes = (c.likes||0)+1; localStorage.setItem(key,'1'); }
+  saveComments(comments); renderComments();
+}
+
+function renderComments() {
+  const filter = document.getElementById('filter-prompt').value;
+  const all = getComments();
+  const shown = filter === 'all' ? all : all.filter(c => c.prompt === filter);
+  document.getElementById('comment-count').textContent = all.length;
+  const list = document.getElementById('comments-list');
+  if (shown.length === 0) {
+    list.innerHTML = '<div class="no-comments"><div class="nc-icon">💬</div>'+(all.length?'No responses for this question yet.':'No responses yet. Be the first!')+'</div>';
+    return;
+  }
+  list.innerHTML = shown.map(c => {
+    const color = getColor(c.name), liked = !!localStorage.getItem('s5a_liked_'+c.id);
+    return `<div class="card" style="padding:1.25rem;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
+        <div class="comment-avatar" style="background:${color}22;color:${color};">${initials(c.name)}</div>
+        <div style="flex:1;"><div class="comment-name">${escHtml(c.name)}</div></div>
+        <span class="comment-prompt-tag">${escHtml(c.prompt)}</span>
+      </div>
+      <div class="comment-body">${escHtml(c.body)}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">
+        <div class="comment-time">${c.time}</div>
+        <button class="like-btn ${liked?'liked':''}" onclick="likeComment(${c.id})">♥ ${c.likes||0}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+
+// =================================================================
+// UBUNTU LAB
+// =================================================================
+const UBUNTU_FIELDS = ['s1-groupadd','s1-note','s2-id','s2-note','s3-ls','s3-note','s4-chown','s4-note','s5-chmod','s5-note','s6-researcher','s6-itstaff','s6-unexpected','s7-stat','s7-acl','s7-reflect'];
+const UBUNTU_INPUT_IDS = { 's1-groupadd':'u0-out','s1-note':'u0-note','s2-id':'u1-out','s2-note':'u1-note','s3-ls':'u2-out','s3-note':'u2-note','s4-chown':'u3-out','s4-note':'u3-note','s5-chmod':'u4-out','s5-note':'u4-note','s6-researcher':'u5-r1','s6-itstaff':'u5-it','s6-unexpected':'u5-unexpected','s7-stat':'u6-stat','s7-acl':'u6-acl','s7-reflect':'u6-reflect' };
+
+function saveUbuntuField(key, value) { localStorage.setItem('s5a_ub_' + key, value); }
+function getUbuntuField(key) { return localStorage.getItem('s5a_ub_' + key) || ''; }
+
+function restoreUbuntuFields() {
+  UBUNTU_FIELDS.forEach(key => {
+    const el = document.getElementById(UBUNTU_INPUT_IDS[key]);
+    if (el) el.value = getUbuntuField(key);
+  });
+}
+
+function toggleUStep(i) {
+  const body = document.getElementById('ubody-' + i);
+  const chev = document.getElementById('uchev-' + i);
+  const step = document.getElementById('ustep-' + i);
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  chev.style.transform = isOpen ? '' : 'rotate(90deg)';
+  if (!isOpen) step.classList.add('open'); else step.classList.remove('open');
+}
+
+// =================================================================
+// PDF EXPORT
+// =================================================================
+async function exportDoc() {
+  const btn = document.querySelector('.export-btn');
+  btn.textContent = '⏳ Building PDF...'; btn.disabled = true;
+  restoreData();
+
+  try {
+    if (!window.jspdf) {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+        s.onload = resolve; s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+  } catch(e) {
+    alert('Could not load PDF library. Check your internet connection and try again.');
+    btn.textContent = '⬇ Export PDF'; btn.disabled = false; return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  const PW=612, PH=792, ML=54, MT=54, MB=60, CW=504, BOTTOM=PH-MB;
+  const PURPLE=[120,80,220], BLACK=[30,30,30], GRAY=[140,140,140], LGRAY=[210,210,210];
+  const GREEN=[34,139,34], RED=[192,0,0], TEAL=[20,180,160], BGRAY=[242,242,242], WHITE=[255,255,255];
+
+  let y=MT, pageNum=1;
+
+  function newPage() {
+    doc.setFontSize(8); doc.setTextColor(...GRAY);
+    doc.text('Page '+pageNum, PW/2, PH-20, {align:'center'});
+    doc.addPage(); pageNum++; y=MT; doc.setTextColor(...BLACK);
+  }
+  function checkY(n) { if (y+n>BOTTOM) newPage(); }
+
+  function hRule() {
+    checkY(10); doc.setDrawColor(...LGRAY); doc.setLineWidth(0.5);
+    doc.line(ML, y, ML+CW, y); y+=10;
+  }
+
+  function sectionHead(text) {
+    checkY(28); y+=6;
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(...PURPLE);
+    doc.text(text.toUpperCase(), ML, y); y+=3;
+    doc.setDrawColor(...PURPLE); doc.setLineWidth(0.75);
+    doc.line(ML, y, ML+CW, y); y+=10; doc.setTextColor(...BLACK);
+  }
+
+  function textLine(text, opts={}) {
+    const fs=opts.size||10, font=opts.bold?'bold':opts.italic?'italic':'normal', col=opts.color||BLACK;
+    const x=opts.x||ML, maxW=opts.maxW||(CW-(x-ML));
+    doc.setFont('helvetica',font); doc.setFontSize(fs); doc.setTextColor(...col);
+    const lines=doc.splitTextToSize(text,maxW), lineH=fs*1.35;
+    checkY(lines.length*lineH+4);
+    lines.forEach(l=>{doc.text(l,x,y);y+=lineH;});
+    y+=opts.after!==undefined?opts.after:2; doc.setTextColor(...BLACK);
+  }
+
+  function labelValue(label, value, vc) {
+    const fs=10, lineH=fs*1.35; checkY(lineH+6);
+    doc.setFont('helvetica','bold'); doc.setFontSize(fs); doc.setTextColor(...BLACK);
+    doc.text(label, ML, y);
+    const lw=doc.getTextWidth(label);
+    doc.setFont('helvetica','normal'); doc.setTextColor(...(vc||BLACK));
+    doc.text(value, ML+lw, y); y+=lineH+2; doc.setTextColor(...BLACK);
+  }
+
+  function bulletItem(text, opts={}) {
+    const fs=opts.size||10, col=opts.italic?GRAY:BLACK, indent=ML+14;
+    doc.setFont('helvetica',opts.italic?'italic':'normal');
+    doc.setFontSize(fs); doc.setTextColor(...col);
+    const lines=doc.splitTextToSize(text,CW-14), lineH=fs*1.35;
+    checkY(lines.length*lineH+4);
+    doc.text('\u2022', ML+3, y);
+    lines.forEach(l=>{doc.text(l,indent,y);y+=lineH;});
+    y+=2; doc.setTextColor(...BLACK);
+  }
+
+  const name = data.name||'Student';
+  const date = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+  // TITLE
+  y+=10;
+  doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.setTextColor(...PURPLE);
+  doc.text('PROTECTING SENSITIVE DATA', PW/2, y, {align:'center'}); y+=20;
+  doc.setFontSize(11); doc.setTextColor(...GRAY);
+  doc.text('Access Control Report \u2014 Scenario 5A', PW/2, y, {align:'center'}); y+=14;
+  doc.setFillColor(...PURPLE); doc.rect(ML, y, CW, 3, 'F'); y+=18;
+  labelValue('Engineer:   ', name);
+  labelValue('Date:   ', date);
+  labelValue('Unit:   ', '5 \u2014 Securing Applications and Data (Topic 5.2)');
+  y+=6;
+
+  // BRIEFING NOTES
+  const bn = JSON.parse(localStorage.getItem('s5a_note_briefing')||'[]');
+  hRule(); sectionHead('Initial Observations');
+  if (bn.length) bn.forEach(n=>bulletItem(n.text||n));
+  else textLine('No observations recorded.', {italic:true,color:GRAY});
+
+  // PERMISSIONS LAB
+  hRule(); sectionHead('Access Control Configuration');
+
+  const permData = [
+    { label: '/RandD', dir: 'd1', correct: '774', req: 'R&D team: full access. Others: read only.' },
+    { label: '/RandD/Research', dir: 'd2', correct: '770', req: 'R&D team: full access. Others: no access.' },
+    { label: '/RandD/Formula', dir: 'd3', correct: '750', req: 'Head researcher: rwx. R&D team: r-x. Others: no access.' }
+  ];
+
+  // Draw permissions table
+  const bdColor=[210,210,210], cellPad=5, fs=9, rowH=22;
+  const colW=[160,90,90,60,100];
+
+  checkY(rowH+4);
+  doc.setFillColor(...BGRAY); doc.setDrawColor(...bdColor); doc.setLineWidth(0.4);
+  let rx=ML;
+  ['Directory','Student Code','Correct Code','Status','Requirement'].forEach((h,ci)=>{
+    doc.rect(rx,y,colW[ci],rowH,'FD');
+    doc.setFont('helvetica','bold'); doc.setFontSize(fs-1); doc.setTextColor(...BLACK);
+    doc.text(h, rx+cellPad, y+rowH-cellPad); rx+=colW[ci];
+  });
+  y+=rowH;
+
+  permData.forEach(pd=>{
+    const studentCode = localStorage.getItem('s5a_perm_'+pd.dir)||'Not set';
+    const isCorrect = data.labCorrect[pd.dir] || studentCode===pd.correct;
+    const statusColor = isCorrect ? GREEN : GRAY;
+    const statusText = isCorrect ? '\u2713 Correct' : (studentCode==='000'||studentCode==='Not set' ? 'Not attempted' : '\u2717 Incorrect');
+
+    checkY(rowH+2); rx=ML;
+    const cells=[
+      {t:pd.label,c:BLACK},
+      {t:studentCode,c:isCorrect?GREEN:[100,100,200]},
+      {t:pd.correct,c:TEAL},
+      {t:statusText,c:statusColor},
+      {t:pd.req,c:GRAY}
+    ];
+    cells.forEach(({t,c},ci)=>{
+      doc.setFillColor(...WHITE); doc.setDrawColor(...bdColor); doc.rect(rx,y,colW[ci],rowH,'FD');
+      doc.setFont('helvetica','normal'); doc.setFontSize(fs-1); doc.setTextColor(...c);
+      const wrapped=doc.splitTextToSize(t,colW[ci]-cellPad*2);
+      wrapped.forEach((l,li)=>doc.text(l,rx+cellPad,y+cellPad+fs+li*fs*1.15));
+      rx+=colW[ci];
+    });
+    y+=rowH;
+  });
+  y+=8;
+
+  // Lab notes
+  ['d1','d2','d3'].forEach((dir,i)=>{
+    const note = localStorage.getItem('s5a_note_'+dir)||'';
+    const labels = ['RandD directory note','Research directory note','Formula directory note'];
+    if (note.trim()) { textLine(labels[i]+':', {bold:true,size:9,after:1}); textLine(note, {size:9,after:6,x:ML+10,maxW:CW-10}); }
+  });
+
+  // CHMOD SUMMARY
+  checkY(60);
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...BLACK);
+  doc.text('Complete chmod commands:', ML, y); y+=14;
+  const cmdBg=[8,11,16];
+  doc.setFillColor(...cmdBg); doc.rect(ML,y,CW,70,'F');
+  const cmds=[
+    `sudo chmod -R ${localStorage.getItem('s5a_perm_d1')||'???'} /RandD`,
+    `sudo chmod -R ${localStorage.getItem('s5a_perm_d2')||'???'} /RandD/Research`,
+    `sudo chmod -R ${localStorage.getItem('s5a_perm_d3')||'???'} /RandD/Formula`
+  ];
+  doc.setFont('courier','normal'); doc.setFontSize(10); doc.setTextColor(...TEAL);
+  cmds.forEach((cmd,i)=>{ doc.text(cmd, ML+10, y+18+i*20); });
+  y+=78; doc.setTextColor(...BLACK);
+
+  // ── UBUNTU LAB ────────────────────────────────────────────────
+  hRule(); sectionHead('Ubuntu Linux \u2014 Hands-On Setup');
+
+  const ubSteps = [
+    { title: 'Step 1 \u2014 Create the Groups', fields: [['groupadd output (getent group randd)','s1-groupadd'],['What the GID number represents','s1-note']] },
+    { title: 'Step 2 \u2014 Create the Users', fields: [['id headresearcher output','s2-id'],['Primary vs secondary group difference','s2-note']] },
+    { title: 'Step 3 \u2014 Create the Directory Structure', fields: [['ls -la /RandD/ output (before chmod)','s3-ls'],['Default permissions and ownership','s3-note']] },
+    { title: 'Step 4 \u2014 Set Ownership (chown)', fields: [['ls -la /RandD/ output after chown','s4-chown'],['Why ownership must be set before permissions','s4-note']] },
+    { title: 'Step 5 \u2014 Apply chmod Permissions', fields: [['All three ls -la outputs after chmod','s5-chmod'],['Observations / anything surprising','s5-note']] },
+    { title: 'Step 6 \u2014 Test the Permissions', fields: [['researcher1 test results','s6-researcher'],['itstaff1 test results','s6-itstaff'],['Unexpected results / troubleshooting','s6-unexpected']] },
+    { title: 'Step 7 \u2014 Verify with stat & getfacl', fields: [['stat output \u2014 octal codes','s7-stat'],['getfacl output for /RandD/Formula','s7-acl'],['Why verification and documentation matter','s7-reflect']] }
+  ];
+
+  ubSteps.forEach(step => {
+    const hasContent = step.fields.some(([,k]) => getUbuntuField(k).trim());
+    checkY(18);
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...TEAL);
+    doc.text(step.title, ML, y); y+=14; doc.setTextColor(...BLACK);
+    if (hasContent) {
+      step.fields.forEach(([label, key]) => {
+        const val = getUbuntuField(key);
+        if (!val || !val.trim()) return;
+        textLine(label+':', {bold:true, size:9, after:1});
+        textLine(val, {size:9, after:6, x:ML+10, maxW:CW-10});
+      });
+    } else {
+      textLine('Not completed.', {italic:true, color:GRAY, size:9});
+    }
+    y+=4;
+  });
+
+  // QUIZ
+  hRule(); sectionHead('Knowledge Check Results');
+  const bdQ=[204,204,204], qColW=[200,180,120];
+  checkY(rowH+4);
+  doc.setFillColor(...BGRAY); rx=ML;
+  ['Question','Answer Selected','Result'].forEach((h,ci)=>{
+    doc.rect(rx,y,qColW[ci],rowH,'FD');
+    doc.setFont('helvetica','bold'); doc.setFontSize(fs); doc.setTextColor(...BLACK);
+    doc.text(h,rx+cellPad,y+rowH-cellPad); rx+=qColW[ci];
+  });
+  y+=rowH;
+  qLabels.forEach((q,i)=>{
+    const a=data.quizAnswers[i];
+    const tick=a?(a.correct?'\u2713 Correct':'\u2717 Incorrect'):'\u2014';
+    const tColor=a?(a.correct?GREEN:RED):GRAY;
+    const rH=Math.max(rowH, Math.max(doc.splitTextToSize(q,qColW[0]-cellPad*2).length, a?doc.splitTextToSize(a.chosen||'',qColW[1]-cellPad*2).length:1)*fs*1.2+cellPad*2);
+    checkY(rH+2); rx=ML;
+    [[q,BLACK],[a?a.chosen:'Not answered',a?BLACK:GRAY],[tick,tColor]].forEach(([txt,col],ci)=>{
+      doc.setFillColor(...WHITE); doc.setDrawColor(...bdQ); doc.rect(rx,y,qColW[ci],rH,'FD');
+      doc.setFont('helvetica','normal'); doc.setFontSize(fs); doc.setTextColor(...col);
+      const wrapped=doc.splitTextToSize(txt,qColW[ci]-cellPad*2);
+      wrapped.forEach((l,li)=>doc.text(l,rx+cellPad,y+cellPad+fs+li*fs*1.2)); rx+=qColW[ci];
+    });
+    y+=rH;
+  });
+  y+=8;
+  const score=data.quizScore!==null?data.quizScore+'/5':'Not completed';
+  labelValue('Final score:   ', score, PURPLE);
+
+  // DISCUSSION
+  hRule(); sectionHead('Discussion Responses');
+  const disc=getComments().filter(c=>c.name===name);
+  if (disc.length) disc.forEach(d=>{ textLine(d.prompt,{bold:true,color:PURPLE,size:10,after:3}); textLine(d.body,{size:10,after:10}); });
+  else textLine('No discussion responses submitted.',{italic:true,color:GRAY});
+
+  // final footer
+  doc.setFontSize(8); doc.setTextColor(...GRAY);
+  doc.text('Page '+pageNum, PW/2, PH-20, {align:'center'});
+
+  doc.save(name.replace(/\s+/g,'-')+'-Scenario5A-ProtectingData.pdf');
+  btn.textContent='⬇ Export PDF'; btn.disabled=false;
+
+  setTimeout(()=>{
+    if (confirm('PDF downloaded!\n\nClear all responses to reset for the next student?')) clearAllData();
+  }, 600);
+}
+
+// =================================================================
+// CLEAR
+// =================================================================
+function clearAllData() {
+  const keys=['s5a_name','s5a_comments','s5a_note_briefing','s5a_note_d1','s5a_note_d2','s5a_note_d3','s5a_perm_d1','s5a_perm_d2','s5a_perm_d3','s5a_correct_d1','s5a_correct_d2','s5a_correct_d3'];
+  UBUNTU_FIELDS.forEach(k => keys.push('s5a_ub_' + k));
+  keys.forEach(k=>localStorage.removeItem(k));
+  Object.keys(localStorage).filter(k=>k.startsWith('s5a_liked_')).forEach(k=>localStorage.removeItem(k));
+
+  // Reset checkboxes
+  ['d1','d2','d3'].forEach(dir=>{
+    ['u','g','o'].forEach(who=>{
+      ['r','w','x'].forEach(perm=>{
+        const el=document.getElementById(dir+'-'+who+'-'+perm); if(el) el.checked=false;
+      });
+    });
+    updatePerm(dir);
+    const fb=document.getElementById(dir+'-feedback'); if(fb) { fb.className='perm-feedback'; fb.innerHTML=''; }
+    const note=document.getElementById('note-'+dir); if(note) note.value='';
+  });
+
+  // Reset quiz
+  resetQuiz(); data.quizAnswers=[]; data.quizScore=null;
+
+  // Reset notes
+  const bni=document.getElementById('briefing-note-input'); if(bni) bni.value='';
+  renderNotes('briefing');
+
+  // Reset discussion
+  const cb=document.getElementById('c-body'); if(cb) cb.value='';
+  document.getElementById('comment-count').textContent='0';
+  document.getElementById('comments-list').innerHTML='<div class="no-comments"><div class="nc-icon">💬</div>No responses yet. Be the first!</div>';
+
+  UBUNTU_FIELDS.forEach(k => { const el = document.getElementById(UBUNTU_INPUT_IDS[k]); if(el) el.value=''; });
+  for(let i=0;i<7;i++) { const b=document.getElementById('ubody-'+i); if(b&&i>0) b.style.display='none'; const c=document.getElementById('uchev-'+i); if(c) c.style.transform=''; const s=document.getElementById('ustep-'+i); if(s) s.classList.remove('open'); }
+
+  // Reset name gate
+  data.name='';
+  document.getElementById('student-name-input').value='';
+  document.getElementById('name-gate').style.display='flex';
+  document.getElementById('lesson-content').style.display='none';
+  switchTab('briefing');
+}
+
+// =================================================================
+// INIT
+// =================================================================
+document.addEventListener('DOMContentLoaded', ()=>{
+  restoreData();
+  if (data.name) {
+    document.getElementById('student-name-input').value=data.name;
+    document.getElementById('name-gate').style.display='none';
+    document.getElementById('lesson-content').style.display='block';
+    const df=document.getElementById('c-name'); if(df) df.value=data.name;
+  }
+  renderNotes('briefing');
+  restoreLabPerms();
+  restoreUbuntuFields();
+  renderComments();
+});
+</script>
+</body>
+</html>
