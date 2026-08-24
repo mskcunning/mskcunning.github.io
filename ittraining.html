@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ITC Safety Training — Cyber Safety &amp; Ergonomics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F1F3EE;
+    --paper-raised:#FFFFFF;
+    --ink:#1B2430;
+    --ink-soft:#5B6572;
+    --teal:#7C3AED;
+    --teal-deep:#5B21B6;
+    --amber:#D98E3F;
+    --blue:#3E6C9E;
+    --mist:#D9DED8;
+    --err:#B9483F;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  h1,h2,h3{
+    font-family:'Space Grotesk',sans-serif;
+    margin:0 0 .4em 0;
+    letter-spacing:-0.01em;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:var(--teal-deep);}
+
+  /* ---------- Header / Trail ---------- */
+  header.trailhead{
+    position:sticky; top:0; z-index:10;
+    background:var(--paper);
+    border-bottom:1px solid var(--mist);
+    padding:14px 20px 10px;
+  }
+  .trail-top{
+    max-width:820px; margin:0 auto 10px;
+    display:flex; align-items:baseline; justify-content:space-between;
+    gap:12px;
+  }
+  .brand{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700; font-size:1.05rem;
+    display:flex; align-items:center; gap:8px;
+  }
+  .brand svg{flex:none;}
+  .trail-meta{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem; color:var(--ink-soft);
+    text-transform:uppercase; letter-spacing:.06em;
+  }
+  .trail-track{
+    max-width:820px; margin:0 auto;
+    position:relative;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .trail-line{
+    position:absolute; left:18px; right:18px; top:15px;
+    height:3px; background:var(--mist); z-index:0; border-radius:3px;
+  }
+  .trail-line-fill{
+    position:absolute; left:18px; top:15px;
+    height:3px; background:var(--teal); z-index:1; border-radius:3px;
+    width:0%; transition:width .5s ease;
+  }
+  .node{
+    position:relative; z-index:2;
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    flex:1;
+  }
+  .stamp{
+    width:32px; height:32px; border-radius:50%;
+    background:var(--paper-raised);
+    border:2.5px solid var(--mist);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-size:.68rem; font-weight:600;
+    color:var(--ink-soft);
+    transition:all .25s ease;
+  }
+  .node.done .stamp{ background:var(--teal); border-color:var(--teal); color:#fff; }
+  .node.current .stamp{ border-color:var(--amber); color:var(--amber); box-shadow:0 0 0 4px rgba(217,142,63,.18); }
+  .node-label{
+    font-size:.62rem; color:var(--ink-soft); text-align:center;
+    max-width:64px; line-height:1.15;
+    display:none;
+  }
+  @media(min-width:640px){ .node-label{display:block;} }
+
+  /* ---------- Layout ---------- */
+  main{
+    max-width:720px; margin:0 auto; padding:34px 20px 80px;
+  }
+  .screen{ display:none; animation:fade .35s ease; }
+  .screen.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  .card{
+    background:var(--paper-raised);
+    border:1px solid var(--mist);
+    border-radius:var(--radius);
+    padding:26px 26px 22px;
+    margin-bottom:20px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--teal-deep); margin-bottom:6px; display:block;
+  }
+  .lede{ color:var(--ink-soft); font-size:1rem; margin-bottom:0; }
+  .lesson-list{ margin:16px 0 0; padding:0; list-style:none; }
+  .lesson-list li{
+    display:flex; gap:12px; padding:10px 0;
+    border-top:1px solid var(--mist);
+    font-size:.96rem; line-height:1.45;
+  }
+  .lesson-list li:first-child{ border-top:none; }
+  .lesson-list li::before{
+    content:"→"; color:var(--teal); font-weight:700; flex:none;
+  }
+
+  .posture-wrap{ display:flex; justify-content:center; margin:18px 0 4px; }
+
+  .video-card{
+    position:relative; display:block; width:100%; padding-bottom:56.25%; height:0;
+    margin-top:18px; border-radius:10px; overflow:hidden; border:1px solid var(--mist);
+    background:#12161c center/cover no-repeat; text-decoration:none;
+  }
+  .video-card img{
+    position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover;
+    transition:transform .25s ease;
+  }
+  .video-card:hover img{ transform:scale(1.03); }
+  .video-card .play-badge{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:58px; height:58px; border-radius:50%;
+    background:rgba(27,36,48,.82);
+    display:flex; align-items:center; justify-content:center;
+    transition:background .2s ease;
+  }
+  .video-card:hover .play-badge{ background:var(--teal-deep); }
+  .video-card .play-badge svg{ margin-left:4px; }
+  .video-card .yt-tag{
+    position:absolute; bottom:8px; right:10px;
+    font-family:'IBM Plex Mono',monospace; font-size:.65rem; letter-spacing:.04em;
+    color:#fff; background:rgba(0,0,0,.55); padding:3px 8px; border-radius:5px;
+    text-transform:uppercase;
+  }
+  .video-caption{ font-size:.78rem; color:var(--ink-soft); margin-top:7px; }
+  .video-caption a{ color:var(--blue); font-weight:600; text-decoration:none; }
+  .video-caption a:hover{ text-decoration:underline; }
+
+  .watch-confirm{
+    display:flex; align-items:center; gap:9px;
+    margin-top:12px; padding:10px 12px;
+    background:var(--paper); border:1px solid var(--mist); border-radius:9px;
+    font-size:.85rem; cursor:pointer; user-select:none;
+  }
+  .watch-confirm input{ accent-color:var(--teal-deep); width:16px; height:16px; flex:none; }
+  .watch-confirm input:disabled + span{ color:var(--ink-soft); }
+  .watch-confirm.ready{ border-color:var(--teal); }
+  .watch-confirm .wc-hint{ font-family:'IBM Plex Mono',monospace; font-size:.68rem; color:var(--amber); margin-left:auto; }
+
+  /* ---------- Quiz ---------- */
+  .quiz-heading{
+    display:flex; align-items:center; justify-content:space-between;
+    margin:26px 0 4px;
+  }
+  .quiz-heading h3{ font-size:1.05rem; }
+  .question{
+    background:var(--paper);
+    border:1px solid var(--mist);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-top:14px;
+  }
+  .q-text{ font-weight:600; margin:0 0 10px; font-size:.96rem; }
+  .options label{
+    display:flex; align-items:flex-start; gap:10px;
+    padding:8px 10px; border-radius:8px;
+    font-size:.92rem; cursor:pointer;
+    border:1px solid transparent;
+  }
+  .options label:hover{ background:rgba(62,108,158,.06); }
+  .options input{ margin-top:3px; accent-color:var(--teal-deep); }
+  .options label.correct{ background:rgba(124,58,237,.12); border-color:var(--teal); }
+  .options label.incorrect{ background:rgba(185,72,63,.10); border-color:var(--err); }
+  .feedback{
+    display:none; margin-top:10px; font-size:.85rem;
+    padding:9px 12px; border-radius:8px; line-height:1.4;
+  }
+  .feedback.show{ display:block; }
+  .feedback.correct{ background:rgba(124,58,237,.10); color:var(--teal-deep); }
+  .feedback.incorrect{ background:rgba(185,72,63,.08); color:var(--err); }
+
+  /* ---------- Buttons ---------- */
+  .btn-row{ display:flex; gap:10px; margin-top:22px; flex-wrap:wrap; }
+  .btn{
+    font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:.9rem;
+    padding:11px 20px; border-radius:999px; border:none; cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+  }
+  .btn:active{ transform:scale(.97); }
+  .btn-primary{ background:var(--teal-deep); color:#fff; }
+  .btn-primary:hover{ box-shadow:0 4px 14px rgba(91,33,182,.28); }
+  .btn-primary:disabled{ background:var(--mist); color:var(--ink-soft); cursor:not-allowed; box-shadow:none; }
+  .btn-ghost{ background:transparent; color:var(--ink-soft); border:1px solid var(--mist); }
+  .btn-ghost:hover{ border-color:var(--ink-soft); }
+  .btn-amber{ background:var(--amber); color:#fff; }
+  .btn-amber:hover{ box-shadow:0 4px 14px rgba(217,142,63,.32); }
+
+  input[type=text]{
+    width:100%; font-family:'Inter',sans-serif; font-size:1rem;
+    padding:12px 14px; border-radius:10px; border:1.5px solid var(--mist);
+    margin-top:6px; background:var(--paper);
+  }
+  input[type=text]:focus{ outline:2px solid var(--teal); border-color:var(--teal); }
+
+  /* ---------- Report ---------- */
+  .score-hero{
+    display:flex; align-items:center; gap:18px; margin-bottom:8px;
+  }
+  .score-ring{
+    width:86px; height:86px; border-radius:50%; flex:none;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:1.3rem;
+    background:conic-gradient(var(--teal) calc(var(--pct,0)*1%), var(--mist) 0);
+  }
+  .score-ring-inner{
+    width:68px; height:68px; border-radius:50%; background:var(--paper-raised);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .badge-tag{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:.72rem;
+    letter-spacing:.05em; text-transform:uppercase; padding:4px 10px;
+    border-radius:999px; background:rgba(124,58,237,.14); color:var(--teal-deep);
+    margin-top:4px;
+  }
+  table.report-table{ width:100%; border-collapse:collapse; margin-top:18px; font-size:.9rem; }
+  table.report-table th, table.report-table td{
+    text-align:left; padding:10px 8px; border-bottom:1px solid var(--mist);
+  }
+  table.report-table th{ font-family:'IBM Plex Mono',monospace; font-size:.7rem; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); }
+  .status-pill{ font-size:.76rem; padding:2px 9px; border-radius:999px; font-weight:600; }
+  .status-pill.good{ background:rgba(124,58,237,.14); color:var(--teal-deep); }
+  .status-pill.review{ background:rgba(217,142,63,.18); color:#8a5a1f; }
+
+  footer.foot{
+    max-width:720px; margin:0 auto; padding:0 20px 40px;
+    color:var(--ink-soft); font-size:.78rem; text-align:center;
+  }
+</style>
+</head>
+<body>
+
+<header class="trailhead">
+  <div class="trail-top">
+    <div class="brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 20 L10 6 L13 13 L16 8 L20 20" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      ITC Safety Training
+    </div>
+    <div class="trail-meta" id="progressLabel">Start · ~55 min total</div>
+  </div>
+  <div class="trail-track">
+    <div class="trail-line"></div>
+    <div class="trail-line-fill" id="trailFill"></div>
+    <div class="node" data-node="0"><div class="stamp">◆</div><div class="node-label">Start</div></div>
+    <div class="node" data-node="1"><div class="stamp">1</div><div class="node-label">Passwords</div></div>
+    <div class="node" data-node="2"><div class="stamp">2</div><div class="node-label">Phishing</div></div>
+    <div class="node" data-node="3"><div class="stamp">3</div><div class="node-label">Privacy</div></div>
+    <div class="node" data-node="4"><div class="stamp">4</div><div class="node-label">Devices</div></div>
+    <div class="node" data-node="5"><div class="stamp">5</div><div class="node-label">Ergonomics</div></div>
+    <div class="node" data-node="6"><div class="stamp">✓</div><div class="node-label">Report</div></div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SCREEN 0: START -->
+  <section class="screen active" id="screen-0">
+    <div class="card">
+      <span class="eyebrow">Before you set out</span>
+      <h1>Welcome to ITC Safety Training</h1>
+      <p class="lede">Five short checkpoints on staying safe online and taking care of your body while you work — about 8–10 minutes each. Answer honestly; there's no penalty for a wrong answer, only a chance to learn the right one before you move on.</p>
+      <ul class="lesson-list">
+        <li>Checkpoint 1 — Passwords &amp; Account Security</li>
+        <li>Checkpoint 2 — Phishing &amp; Scams</li>
+        <li>Checkpoint 3 — Privacy &amp; Sharing Online</li>
+        <li>Checkpoint 4 — Device &amp; Wi-Fi Safety</li>
+        <li>Checkpoint 5 — IT Ergonomics</li>
+      </ul>
+      <label style="display:block; margin-top:22px; font-weight:600; font-size:.9rem;">
+        What's your name? <span style="font-weight:400; color:var(--ink-soft);">(used only on your certificate/report)</span>
+        <input type="text" id="studentName" placeholder="Type your name">
+      </label>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="startTrail()">Begin the Trail →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHECKPOINT TEMPLATE WILL BE INSERTED FOR CP 1-5 -->
+  <section class="screen" id="screen-1" data-cp="1">
+    <div class="card">
+      <span class="eyebrow">Checkpoint 1 of 5 · ~8 min</span>
+      <h2>Passwords &amp; Account Security</h2>
+      <ul class="lesson-list">
+        <li>Use long passphrases (12+ characters) instead of simple words.</li>
+        <li>Never reuse the same password across different accounts.</li>
+        <li>Turn on two-factor authentication (2FA) wherever it's offered.</li>
+        <li>Never share your password — not even with a friend, "just this once."</li>
+        <li>Consider a password manager instead of notes apps or paper.</li>
+      </ul>
+      <a class="video-card" href="https://www.youtube.com/watch?v=9LxdtaSvQ3I" target="_blank" rel="noopener">
+        <img src="https://img.youtube.com/vi/9LxdtaSvQ3I/hqdefault.jpg" alt="Strong Passwords video thumbnail" loading="lazy">
+        <span class="play-badge"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span>
+        <span class="yt-tag">▶ YouTube</span>
+      </a>
+      <p class="video-caption">Watch: <a href="https://www.youtube.com/watch?v=9LxdtaSvQ3I" target="_blank" rel="noopener">Strong Passwords</a> <span class="mono">(~2:30)</span> — a quick primer on why passwords matter and how to build a good one.</p>
+      <label class="watch-confirm" data-cp="1">
+        <input type="checkbox" class="watch-checkbox" disabled>
+        <span>I watched the video above</span>
+        <span class="wc-hint">Click the video first</span>
+      </label>
+    </div>
+    <div class="card quiz" data-quiz="1">
+      <div class="quiz-heading"><h3>Quick Check</h3><span class="mono" style="font-size:.75rem;color:var(--ink-soft);">4 questions</span></div>
+
+      <div class="question" data-correct="1">
+        <p class="q-text">1. Which of these passwords is strongest?</p>
+        <div class="options">
+          <label><input type="radio" name="cp1-q1" value="0">password123</label>
+          <label><input type="radio" name="cp1-q1" value="1">Tr@ilBlazer!47_Hawks</label>
+          <label><input type="radio" name="cp1-q1" value="2">iloveyou</label>
+          <label><input type="radio" name="cp1-q1" value="3">qwerty</label>
+        </div>
+        <div class="feedback">Long, unpredictable passphrases mixing words, numbers, and symbols are far harder to crack than common words or patterns.</div>
+      </div>
+
+      <div class="question" data-correct="1">
+        <p class="q-text">2. True or False: It's fine to reuse one strong password across your email, school portal, and social media.</p>
+        <div class="options">
+          <label><input type="radio" name="cp1-q2" value="0">True</label>
+          <label><input type="radio" name="cp1-q2" value="1">False</label>
+        </div>
+        <div class="feedback">If one site is breached, a reused password lets attackers into all your other accounts too.</div>
+      </div>
+
+      <div class="question" data-correct="0">
+        <p class="q-text">3. What does turning on two-factor authentication (2FA) do?</p>
+        <div class="options">
+          <label><input type="radio" name="cp1-q3" value="0">Adds a second proof it's really you, like a one-time code</label>
+          <label><input type="radio" name="cp1-q3" value="1">Makes your password easier to remember</label>
+          <label><input type="radio" name="cp1-q3" value="2">Automatically shares your password with trusted friends</label>
+          <label><input type="radio" name="cp1-q3" value="3">Slows down hackers by making the site load slower</label>
+        </div>
+        <div class="feedback">Even if someone steals your password, 2FA means they still can't get in without the second code — usually sent to your phone.</div>
+      </div>
+
+      <div class="question" data-correct="1">
+        <p class="q-text">4. A classmate asks to borrow your login just this once to check a grade. Best move?</p>
+        <div class="options">
+          <label><input type="radio" name="cp1-q4" value="0">Share it, it's just one time</label>
+          <label><input type="radio" name="cp1-q4" value="1">Say no — accounts are one-person-only</label>
+          <label><input type="radio" name="cp1-q4" value="2">Give them a hint about the password instead</label>
+          <label><input type="radio" name="cp1-q4" value="3">Let them use it if a teacher is in the room</label>
+        </div>
+        <div class="feedback">Anyone who has your password can act as you — check messages, change settings, or get you blamed for something you didn't do.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-amber check-btn">Check Answers</button>
+        <button class="btn btn-primary continue-btn" disabled>Continue →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-2" data-cp="2">
+    <div class="card">
+      <span class="eyebrow">Checkpoint 2 of 5 · ~8 min</span>
+      <h2>Phishing &amp; Scams</h2>
+      <ul class="lesson-list">
+        <li>Phishing = fake messages designed to trick you into clicking a link or giving up information.</li>
+        <li>Red flags: urgent language, unexpected attachments, mismatched sender addresses, "you won a prize!"</li>
+        <li>Check where a link actually goes before clicking it.</li>
+        <li>Never enter your password after clicking a link from an email or text.</li>
+        <li>Report suspicious messages to a teacher or IT instead of replying.</li>
+      </ul>
+      <a class="video-card" href="https://www.youtube.com/watch?v=R12_y2BhKbE" target="_blank" rel="noopener">
+        <img src="https://img.youtube.com/vi/R12_y2BhKbE/hqdefault.jpg" alt="Recognizing phishing and scams video thumbnail" loading="lazy">
+        <span class="play-badge"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span>
+        <span class="yt-tag">▶ YouTube</span>
+      </a>
+      <p class="video-caption">Watch: <a href="https://www.youtube.com/watch?v=R12_y2BhKbE" target="_blank" rel="noopener">Teach students to recognize phishing and scams</a> <span class="mono">(~2:30)</span> — spotting the warning signs before you click.</p>
+      <label class="watch-confirm" data-cp="2">
+        <input type="checkbox" class="watch-checkbox" disabled>
+        <span>I watched the video above</span>
+        <span class="wc-hint">Click the video first</span>
+      </label>
+    </div>
+    <div class="card quiz" data-quiz="2">
+      <div class="quiz-heading"><h3>Quick Check</h3><span class="mono" style="font-size:.75rem;color:var(--ink-soft);">4 questions</span></div>
+
+      <div class="question" data-correct="1">
+        <p class="q-text">1. An email says: "URGENT: your account will be deleted in 1 hour — click here now!" This is a classic sign of:</p>
+        <div class="options">
+          <label><input type="radio" name="cp2-q1" value="0">A software update</label>
+          <label><input type="radio" name="cp2-q1" value="1">Phishing</label>
+          <label><input type="radio" name="cp2-q1" value="2">A school announcement</label>
+          <label><input type="radio" name="cp2-q1" value="3">A password reset you requested</label>
+        </div>
+        <div class="feedback">Manufactured urgency is one of the biggest phishing tells — it's designed to make you click before you think.</div>
+      </div>
+
+      <div class="question" data-correct="1">
+        <p class="q-text">2. True or False: If a message looks like it's from a friend's account, it's always safe to click their links.</p>
+        <div class="options">
+          <label><input type="radio" name="cp2-q2" value="0">True</label>
+          <label><input type="radio" name="cp2-q2" value="1">False</label>
+        </div>
+        <div class="feedback">Friends' accounts get hacked too. A strange link from a real contact can still be dangerous.</div>
+      </div>
+
+      <div class="question" data-correct="1">
+        <p class="q-text">3. What's the safest first step when you get a suspicious link?</p>
+        <div class="options">
+          <label><input type="radio" name="cp2-q3" value="0">Click it quickly to see what it is</label>
+          <label><input type="radio" name="cp2-q3" value="1">Don't click — verify with the sender another way, or report it</label>
+          <label><input type="radio" name="cp2-q3" value="2">Forward it to five friends to warn them</label>
+          <label><input type="radio" name="cp2-q3" value="3">Reply asking if it's real</label>
+        </div>
+        <div class="feedback">Verifying outside the message (a call, a different app) or reporting to a teacher/IT keeps you safe without giving attackers anything.</div>
+      </div>
+
+      <div class="question" data-correct="1">
+        <p class="q-text">4. Which detail is a red flag in a "You won a prize!" email?</p>
+        <div class="options">
+          <label><input type="radio" name="cp2-q4" value="0">It has a school logo</label>
+          <label><input type="radio" name="cp2-q4" value="1">It asks you to enter your password to claim the prize</label>
+          <label><input type="radio" name="cp2-q4" value="2">It's addressed to you by name</label>
+          <label><input type="radio" name="cp2-q4" value="3">It was sent in the morning</label>
+        </div>
+        <div class="feedback">Real prizes and services never need your password. That request is the giveaway.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-amber check-btn">Check Answers</button>
+        <button class="btn btn-primary continue-btn" disabled>Continue →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-3" data-cp="3">
+    <div class="card">
+      <span class="eyebrow">Checkpoint 3 of 5 · ~8 min</span>
+      <h2>Privacy &amp; Sharing Online</h2>
+      <ul class="lesson-list">
+        <li>Think before you post — screenshots and shares can last long after you delete the original.</li>
+        <li>Don't share your address, full schedule, or real-time location publicly.</li>
+        <li>Check privacy settings on your apps regularly; defaults change.</li>
+        <li>"Friends only" can still reach more people than you expect.</li>
+        <li>Never post to embarrass or bully someone — it's permanent and it's serious.</li>
+      </ul>
+      <a class="video-card" href="https://www.youtube.com/watch?v=yZj5nmLYiW4" target="_blank" rel="noopener">
+        <img src="https://img.youtube.com/vi/yZj5nmLYiW4/hqdefault.jpg" alt="Private and Personal Information video thumbnail" loading="lazy">
+        <span class="play-badge"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span>
+        <span class="yt-tag">▶ YouTube</span>
+      </a>
+      <p class="video-caption">Watch: <a href="https://www.youtube.com/watch?v=yZj5nmLYiW4" target="_blank" rel="noopener">Private and Personal Information</a> <span class="mono">(~3:00)</span> (Common Sense Education) — what's safe to share online and what isn't.</p>
+      <label class="watch-confirm" data-cp="3">
+        <input type="checkbox" class="watch-checkbox" disabled>
+        <span>I watched the video above</span>
+        <span class="wc-hint">Click the video first</span>
+      </label>
+    </div>
+    <div class="card quiz" data-quiz="3">
+      <div class="quiz-heading"><h3>Quick Check</h3><span class="mono" style="font-size:.75rem;color:var(--ink-soft);">4 questions</span></div>
+
+      <div class="question" data-correct="2">
+        <p class="q-text">1. Which is safest to include on a public profile?</p>
+        <div class="options">
+          <label><input type="radio" name="cp3-q1" value="0">Your home address</label>
+          <label><input type="radio" name="cp3-q1" value="1">Your full class schedule</label>
+          <label><input type="radio" name="cp3-q1" value="2">A first name or nickname only</label>
+          <label><input type="radio" name="cp3-q1" value="3">Your location in real time</label>
+        </div>
+        <div class="feedback">The less identifying detail that's public, the harder it is for a stranger to find or track you.</div>
+      </div>
+
+      <div class="question" data-correct="1">
+        <p class="q-text">2. True or False: Once you delete a post, it's guaranteed gone everywhere.</p>
+        <div class="options">
+          <label><input type="radio" name="cp3-q2" value="0">True</label>
+          <label><input type="radio" name="cp3-q2" value="1">False</label>
+        </div>
+        <div class="feedback">Screenshots, shares, and cached copies can outlive the original post by years.</div>
+      </div>
+
+      <div class="question" data-correct="1">
+        <p class="q-text">3. Best move before posting a photo or story about someone else?</p>
+        <div class="options">
+          <label><input type="radio" name="cp3-q3" value="0">Post it — you can always delete it later</label>
+          <label><input type="radio" name="cp3-q3" value="1">Ask yourself if they'd be okay with it — or just ask them</label>
+          <label><input type="radio" name="cp3-q3" value="2">Blur their face and post anyway</label>
+          <label><input type="radio" name="cp3-q3" value="3">Only post it to close friends</label>
+        </div>
+        <div class="feedback">Consent matters online just like in person — a quick check-in avoids embarrassing or hurting someone.</div>
+      </div>
+
+      <div class="question" data-correct="1">
+        <p class="q-text">4. A stranger online asks what school you go to. You should:</p>
+        <div class="options">
+          <label><input type="radio" name="cp3-q4" value="0">Tell them — it's not a big secret</label>
+          <label><input type="radio" name="cp3-q4" value="1">Not share it, and tell a trusted adult</label>
+          <label><input type="radio" name="cp3-q4" value="2">Only tell them your grade, not the name</label>
+          <label><input type="radio" name="cp3-q4" value="3">Ask them the same question first</label>
+        </div>
+        <div class="feedback">Strangers don't need this information, and a trusted adult can help you handle it if it feels off.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-amber check-btn">Check Answers</button>
+        <button class="btn btn-primary continue-btn" disabled>Continue →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-4" data-cp="4">
+    <div class="card">
+      <span class="eyebrow">Checkpoint 4 of 5 · ~8 min</span>
+      <h2>Device &amp; Wi-Fi Safety</h2>
+      <ul class="lesson-list">
+        <li>Lock your device with a PIN, passcode, or biometric.</li>
+        <li>Keep apps and your OS updated — updates patch security holes.</li>
+        <li>Avoid logging into bank or school accounts on public Wi-Fi.</li>
+        <li>Only download apps from official app stores.</li>
+        <li>Always log out of shared or public computers when you're done.</li>
+      </ul>
+      <a class="video-card" href="https://www.youtube.com/watch?v=op5mnWLZod8" target="_blank" rel="noopener">
+        <img src="https://img.youtube.com/vi/op5mnWLZod8/hqdefault.jpg" alt="Public Wi-Fi Networks Security Tips video thumbnail" loading="lazy">
+        <span class="play-badge"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span>
+        <span class="yt-tag">▶ YouTube</span>
+      </a>
+      <p class="video-caption">Watch: <a href="https://www.youtube.com/watch?v=op5mnWLZod8" target="_blank" rel="noopener">Public Wi-Fi Networks - Security Tips</a> <span class="mono">(~1:30)</span> (Federal Trade Commission) — staying safe on networks you don't control.</p>
+      <label class="watch-confirm" data-cp="4">
+        <input type="checkbox" class="watch-checkbox" disabled>
+        <span>I watched the video above</span>
+        <span class="wc-hint">Click the video first</span>
+      </label>
+    </div>
+    <div class="card quiz" data-quiz="4">
+      <div class="quiz-heading"><h3>Quick Check</h3><span class="mono" style="font-size:.75rem;color:var(--ink-soft);">4 questions</span></div>
+
+      <div class="question" data-correct="1">
+        <p class="q-text">1. Why update your apps and operating system regularly?</p>
+        <div class="options">
+          <label><input type="radio" name="cp4-q1" value="0">Updates make icons look nicer</label>
+          <label><input type="radio" name="cp4-q1" value="1">Updates patch security holes hackers could use</label>
+          <label><input type="radio" name="cp4-q1" value="2">Updates are required by law</label>
+          <label><input type="radio" name="cp4-q1" value="3">Updates slow down old devices on purpose</label>
+        </div>
+        <div class="feedback">Most updates exist specifically to fix security weaknesses that have already been discovered.</div>
+      </div>
+
+      <div class="question" data-correct="1">
+        <p class="q-text">2. True or False: Public Wi-Fi at a coffee shop is just as secure as your home network.</p>
+        <div class="options">
+          <label><input type="radio" name="cp4-q2" value="0">True</label>
+          <label><input type="radio" name="cp4-q2" value="1">False</label>
+        </div>
+        <div class="feedback">Open public networks make it easier for others on the same network to intercept your traffic.</div>
+      </div>
+
+      <div class="question" data-correct="1">
+        <p class="q-text">3. Before walking away from a shared library computer, you should:</p>
+        <div class="options">
+          <label><input type="radio" name="cp4-q3" value="0">Just close the browser tab</label>
+          <label><input type="radio" name="cp4-q3" value="1">Log out of every account and close all windows</label>
+          <label><input type="radio" name="cp4-q3" value="2">Leave it — the next person will log out for you</label>
+          <label><input type="radio" name="cp4-q3" value="3">Lower the screen brightness</label>
+        </div>
+        <div class="feedback">Closing a tab doesn't log you out — the next person could open your email or accounts directly.</div>
+      </div>
+
+      <div class="question" data-correct="1">
+        <p class="q-text">4. What's the safest place to download a new app?</p>
+        <div class="options">
+          <label><input type="radio" name="cp4-q4" value="0">A link from a random text message</label>
+          <label><input type="radio" name="cp4-q4" value="1">The official App Store or Google Play</label>
+          <label><input type="radio" name="cp4-q4" value="2">A pop-up ad</label>
+          <label><input type="radio" name="cp4-q4" value="3">A file someone emailed you</label>
+        </div>
+        <div class="feedback">Official stores screen apps for malware; outside links and attachments are common ways devices get infected.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-amber check-btn">Check Answers</button>
+        <button class="btn btn-primary continue-btn" disabled>Continue →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-5" data-cp="5">
+    <div class="card">
+      <span class="eyebrow">Checkpoint 5 of 5 · ~10 min</span>
+      <h2>IT Ergonomics</h2>
+      <ul class="lesson-list">
+        <li>Top of your screen at or just below eye level, about arm's length away.</li>
+        <li>Feet flat on the floor, knees around 90°, back supported.</li>
+        <li>Elbows close to your body, wrists straight while typing — not bent up or down.</li>
+        <li>Follow the 20-20-20 rule: every 20 minutes, look at something 20 feet away for 20 seconds.</li>
+        <li>Get up and move every 30–60 minutes, even briefly.</li>
+      </ul>
+      <div class="posture-wrap">
+        <svg width="240" height="200" viewBox="0 0 240 200" fill="none">
+          <!-- desk -->
+          <line x1="30" y1="150" x2="210" y2="150" stroke="#5B6572" stroke-width="3" stroke-linecap="round"/>
+          <line x1="45" y1="150" x2="45" y2="185" stroke="#5B6572" stroke-width="3" stroke-linecap="round"/>
+          <line x1="190" y1="150" x2="190" y2="185" stroke="#5B6572" stroke-width="3" stroke-linecap="round"/>
+          <!-- monitor -->
+          <rect x="120" y="95" width="55" height="40" rx="3" stroke="#3E6C9E" stroke-width="2.5"/>
+          <line x1="147" y1="135" x2="147" y2="146" stroke="#3E6C9E" stroke-width="2.5"/>
+          <!-- eye level dashed line -->
+          <line x1="100" y1="105" x2="230" y2="105" stroke="#D98E3F" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <text x="196" y="100" font-family="IBM Plex Mono" font-size="8" fill="#8a5a1f">eye level</text>
+          <!-- chair -->
+          <path d="M55 150 L55 110" stroke="#7C3AED" stroke-width="3" stroke-linecap="round"/>
+          <!-- person: head, torso, arm, leg -->
+          <circle cx="72" cy="70" r="12" stroke="#1B2430" stroke-width="2.5"/>
+          <path d="M72 82 L72 120" stroke="#1B2430" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M72 95 L100 108 L120 108" stroke="#1B2430" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M72 120 L60 150" stroke="#1B2430" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M60 150 L60 178" stroke="#1B2430" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M72 120 L95 140" stroke="#1B2430" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M95 140 L95 178" stroke="#1B2430" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- 90 degree marks -->
+          <path d="M60 150 A10 10 0 0 1 72 150" stroke="#D98E3F" stroke-width="1.5" fill="none"/>
+          <path d="M72 120 A10 10 0 0 1 82 130" stroke="#D98E3F" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+      <a class="video-card" href="https://www.youtube.com/watch?v=bLBKUbnLYTs" target="_blank" rel="noopener">
+        <img src="https://img.youtube.com/vi/bLBKUbnLYTs/hqdefault.jpg" alt="Computer Ergonomics as Fast As Possible video thumbnail" loading="lazy">
+        <span class="play-badge"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span>
+        <span class="yt-tag">▶ YouTube</span>
+      </a>
+      <p class="video-caption">Watch: <a href="https://www.youtube.com/watch?v=bLBKUbnLYTs" target="_blank" rel="noopener">Computer Ergonomics as Fast As Possible</a> <span class="mono">(~5:00)</span> — quick fixes for a healthier desk setup.</p>
+      <label class="watch-confirm" data-cp="5">
+        <input type="checkbox" class="watch-checkbox" disabled>
+        <span>I watched the video above</span>
+        <span class="wc-hint">Click the video first</span>
+      </label>
+    </div>
+    <div class="card quiz" data-quiz="5">
+      <div class="quiz-heading"><h3>Quick Check</h3><span class="mono" style="font-size:.75rem;color:var(--ink-soft);">4 questions</span></div>
+
+      <div class="question" data-correct="1">
+        <p class="q-text">1. About how far should your screen be from your eyes?</p>
+        <div class="options">
+          <label><input type="radio" name="cp5-q1" value="0">A few inches</label>
+          <label><input type="radio" name="cp5-q1" value="1">An arm's length away</label>
+          <label><input type="radio" name="cp5-q1" value="2">As close as possible for focus</label>
+          <label><input type="radio" name="cp5-q1" value="3">At least 10 feet</label>
+        </div>
+        <div class="feedback">Roughly an arm's length reduces eye strain while keeping text easy to read.</div>
+      </div>
+
+      <div class="question" data-correct="1">
+        <p class="q-text">2. True or False: Wrists should be bent upward while typing for better speed.</p>
+        <div class="options">
+          <label><input type="radio" name="cp5-q2" value="0">True</label>
+          <label><input type="radio" name="cp5-q2" value="1">False</label>
+        </div>
+        <div class="feedback">Straight, neutral wrists reduce strain — bending them up or down over time can lead to pain and injury.</div>
+      </div>
+
+      <div class="question" data-correct="0">
+        <p class="q-text">3. What's the 20-20-20 rule for?</p>
+        <div class="options">
+          <label><input type="radio" name="cp5-q3" value="0">Reducing eye strain during long screen sessions</label>
+          <label><input type="radio" name="cp5-q3" value="1">Typing 20 words in 20 seconds</label>
+          <label><input type="radio" name="cp5-q3" value="2">Charging your device to 20%</label>
+          <label><input type="radio" name="cp5-q3" value="3">Taking a 20-minute nap</label>
+        </div>
+        <div class="feedback">Every 20 minutes, look at something 20 feet away for 20 seconds — it gives your eyes a break from close-up focus.</div>
+      </div>
+
+      <div class="question" data-correct="1">
+        <p class="q-text">4. What's the ideal knee angle while seated at a desk?</p>
+        <div class="options">
+          <label><input type="radio" name="cp5-q4" value="0">About 45 degrees</label>
+          <label><input type="radio" name="cp5-q4" value="1">About 90 degrees</label>
+          <label><input type="radio" name="cp5-q4" value="2">Fully straight, legs extended</label>
+          <label><input type="radio" name="cp5-q4" value="3">Crossed under the chair</label>
+        </div>
+        <div class="feedback">A roughly 90-degree knee angle with feet flat on the floor supports healthy circulation and posture.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-amber check-btn">Check Answers</button>
+        <button class="btn btn-primary continue-btn" disabled>See My Report →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 6: REPORT -->
+  <section class="screen" id="screen-6">
+    <div class="card">
+      <span class="eyebrow">Trail complete</span>
+      <h1 id="reportGreeting">Nice work!</h1>
+      <div class="score-hero">
+        <div class="score-ring" id="scoreRing" style="--pct:0;">
+          <div class="score-ring-inner mono" id="scorePct">0%</div>
+        </div>
+        <div>
+          <div class="mono" id="scoreFraction" style="font-size:1.1rem;">0 / 20 correct</div>
+          <span class="badge-tag" id="badgeTag">Trail Badge</span>
+        </div>
+      </div>
+      <table class="report-table" id="reportTable">
+        <thead><tr><th>Checkpoint</th><th>Video</th><th>Score</th><th>Status</th></tr></thead>
+        <tbody><!-- filled by JS --></tbody>
+      </table>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="downloadReport()">⬇ Download Report</button>
+        <button class="btn btn-ghost" onclick="restartTrail()">Restart Trail</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">ITC Safety Training · Basic cyber safety &amp; IT ergonomics for students · Generated locally in your browser — nothing you enter is sent anywhere.</footer>
+
+<script>
+  const totalScreens = 7; // 0=start,1-5=checkpoints,6=report
+  let current = 0;
+  const scores = {1:null,2:null,3:null,4:null,5:null};
+  const watched = {1:null,2:null,3:null,4:null,5:null};
+  const cpNames = {1:"Passwords & Account Security",2:"Phishing & Scams",3:"Privacy & Sharing Online",4:"Device & Wi-Fi Safety",5:"IT Ergonomics"};
+  let studentName = "";
+
+  function showScreen(n){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById('screen-'+n).classList.add('active');
+    current = n;
+    updateTrail();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function updateTrail(){
+    document.querySelectorAll('.node').forEach(node=>{
+      const idx = parseInt(node.dataset.node);
+      node.classList.remove('done','current');
+      if(idx < current) node.classList.add('done');
+      if(idx === current) node.classList.add('current');
+    });
+    const pct = (current/6)*100;
+    document.getElementById('trailFill').style.width = pct+'%';
+    const labels = ["Start","Checkpoint 1 of 5","Checkpoint 2 of 5","Checkpoint 3 of 5","Checkpoint 4 of 5","Checkpoint 5 of 5","Report ready"];
+    document.getElementById('progressLabel').textContent = labels[current] + " · ~55 min total";
+  }
+
+  function startTrail(){
+    const nameVal = document.getElementById('studentName').value.trim();
+    studentName = nameVal.length ? nameVal : "Student";
+    showScreen(1);
+  }
+
+  function restartTrail(){
+    for(let k in scores) scores[k]=null;
+    for(let k in watched) watched[k]=null;
+    document.querySelectorAll('.question').forEach(q=>{
+      q.querySelectorAll('input').forEach(i=>{i.checked=false; i.disabled=false;});
+      q.querySelectorAll('label').forEach(l=>l.classList.remove('correct','incorrect'));
+      q.querySelector('.feedback').classList.remove('show','correct','incorrect');
+    });
+    document.querySelectorAll('.check-btn').forEach(b=>b.disabled=false);
+    document.querySelectorAll('.continue-btn').forEach(b=>b.disabled=true);
+    document.querySelectorAll('.watch-confirm').forEach(box=>{
+      box.classList.remove('ready');
+      const input = box.querySelector('input');
+      input.checked = false;
+      input.disabled = true;
+      box.querySelector('.wc-hint').textContent = "Click the video first";
+    });
+    document.getElementById('studentName').value = "";
+    showScreen(0);
+  }
+
+  // Watch-confirmation: unlock the checkbox once roughly the video's runtime has passed.
+  // NOTE: These are estimated lengths (mm:ss converted to seconds) — check each video's
+  // actual runtime on YouTube and adjust the numbers below if needed.
+  const VIDEO_DURATIONS = {
+    1: 150,  // Strong Passwords            ~2:30
+    2: 150,  // Phishing & scams            ~2:30
+    3: 180,  // Private and Personal Info   ~3:00
+    4: 90,   // Public Wi-Fi Security Tips  ~1:30
+    5: 300   // Computer Ergonomics ASAP    ~5:00
+  };
+
+  document.querySelectorAll('.video-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      const cardBlock = card.closest('.card');
+      const confirmBox = cardBlock.querySelector('.watch-confirm');
+      if(!confirmBox) return;
+      const cpNum = confirmBox.dataset.cp;
+      const seconds = VIDEO_DURATIONS[cpNum] || 60;
+      const input = confirmBox.querySelector('input');
+      const hint = confirmBox.querySelector('.wc-hint');
+      if(input.disabled){
+        let remaining = seconds;
+        const formatTime = s => Math.floor(s/60)+":"+String(s%60).padStart(2,'0');
+        hint.textContent = "Unlocking in "+formatTime(remaining)+"…";
+        const tick = setInterval(()=>{
+          remaining--;
+          if(remaining <= 0){
+            clearInterval(tick);
+            input.disabled = false;
+            confirmBox.classList.add('ready');
+            hint.textContent = "";
+          } else {
+            hint.textContent = "Unlocking in "+formatTime(remaining)+"…";
+          }
+        },1000);
+      }
+    });
+  });
+
+  // Wire up check/continue buttons for each checkpoint
+  document.querySelectorAll('.quiz').forEach(quizCard=>{
+    const cp = quizCard.dataset.quiz;
+    const checkBtn = quizCard.querySelector('.check-btn');
+    const continueBtn = quizCard.querySelector('.continue-btn');
+    const questions = quizCard.querySelectorAll('.question');
+    const watchCheckbox = document.querySelector('.watch-confirm[data-cp="'+cp+'"] input');
+
+    checkBtn.addEventListener('click', ()=>{
+      if(watchCheckbox && !watchCheckbox.checked){
+        checkBtn.textContent = "Confirm you watched the video first";
+        setTimeout(()=>{checkBtn.textContent="Check Answers";}, 1800);
+        return;
+      }
+
+      let allAnswered = true;
+      let correctCount = 0;
+
+      questions.forEach(q=>{
+        const name = q.querySelector('input').name;
+        const selected = quizCard.querySelector('input[name="'+name+'"]:checked');
+        if(!selected){ allAnswered = false; return; }
+      });
+
+      if(!allAnswered){
+        checkBtn.textContent = "Answer all questions first";
+        setTimeout(()=>{checkBtn.textContent="Check Answers";}, 1600);
+        return;
+      }
+
+      questions.forEach(q=>{
+        const correctVal = q.dataset.correct;
+        const name = q.querySelector('input').name;
+        const selected = quizCard.querySelector('input[name="'+name+'"]:checked');
+        const isCorrect = selected.value === correctVal;
+        if(isCorrect) correctCount++;
+
+        q.querySelectorAll('label').forEach(label=>{
+          const input = label.querySelector('input');
+          if(input.value === correctVal) label.classList.add('correct');
+          else if(input === selected && !isCorrect) label.classList.add('incorrect');
+        });
+
+        const fb = q.querySelector('.feedback');
+        fb.classList.add('show', isCorrect ? 'correct':'incorrect');
+        fb.textContent = (isCorrect ? "✓ Correct — " : "✗ Not quite — ") + fb.textContent;
+
+        q.querySelectorAll('input').forEach(i=>i.disabled=true);
+      });
+
+      scores[cp] = correctCount;
+      checkBtn.disabled = true;
+      continueBtn.disabled = false;
+    });
+
+    continueBtn.addEventListener('click', ()=>{
+      watched[cp] = watchCheckbox ? watchCheckbox.checked : false;
+      const next = parseInt(cp) + 1;
+      if(next <= 5){ showScreen(next); }
+      else{ buildReport(); showScreen(6); }
+    });
+  });
+
+  function buildReport(){
+    let totalCorrect = 0;
+    const tbody = document.querySelector('#reportTable tbody');
+    tbody.innerHTML = "";
+    for(let cp=1; cp<=5; cp++){
+      const s = scores[cp] ?? 0;
+      totalCorrect += s;
+      const status = s>=3 ? '<span class="status-pill good">Confident</span>' : '<span class="status-pill review">Review recommended</span>';
+      const videoStatus = watched[cp] ? '<span class="status-pill good">✓ Watched</span>' : '<span class="status-pill review">Not confirmed</span>';
+      tbody.innerHTML += `<tr><td>${cpNames[cp]}</td><td>${videoStatus}</td><td class="mono">${s} / 4</td><td>${status}</td></tr>`;
+    }
+    const pct = Math.round((totalCorrect/20)*100);
+    document.getElementById('reportGreeting').textContent = `Nice work, ${studentName}!`;
+    document.getElementById('scorePct').textContent = pct+'%';
+    document.getElementById('scoreRing').style.setProperty('--pct', pct);
+    document.getElementById('scoreFraction').textContent = totalCorrect+' / 20 correct';
+    let badge = pct>=90 ? "Trail Master" : pct>=70 ? "Trail Ready" : "Keep Practicing";
+    document.getElementById('badgeTag').textContent = badge;
+  }
+
+  function downloadReport(){
+    let totalCorrect = 0;
+    let rows = "";
+    for(let cp=1; cp<=5; cp++){
+      const s = scores[cp] ?? 0;
+      totalCorrect += s;
+      const status = s>=3 ? "Confident" : "Review recommended";
+      const videoStatus = watched[cp] ? "Watched" : "Not confirmed";
+      rows += `<tr><td style="padding:10px 8px;border-bottom:1px solid #D9DED8;">${cpNames[cp]}</td><td style="padding:10px 8px;border-bottom:1px solid #D9DED8;">${videoStatus}</td><td style="padding:10px 8px;border-bottom:1px solid #D9DED8;font-family:'IBM Plex Mono',monospace;">${s} / 4</td><td style="padding:10px 8px;border-bottom:1px solid #D9DED8;">${status}</td></tr>`;
+    }
+    const pct = Math.round((totalCorrect/20)*100);
+    const badge = pct>=90 ? "Trail Master" : pct>=70 ? "Trail Ready" : "Keep Practicing";
+    const dateStr = new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>ITC Safety Training Report — ${studentName}</title>
+    <style>
+      body{font-family:Georgia,serif;background:#F1F3EE;color:#1B2430;padding:40px;}
+      .sheet{max-width:640px;margin:0 auto;background:#fff;border:1px solid #D9DED8;border-radius:14px;padding:36px;}
+      h1{font-family:Arial,sans-serif;margin:0 0 4px;}
+      .meta{color:#5B6572;font-size:.9rem;margin-bottom:24px;}
+      table{width:100%;border-collapse:collapse;margin-top:10px;}
+      th{text-align:left;font-family:Arial,sans-serif;font-size:.75rem;text-transform:uppercase;color:#5B6572;padding:8px;}
+      .badge{display:inline-block;background:rgba(124,58,237,.14);color:#5B21B6;padding:4px 12px;border-radius:999px;font-family:Arial,sans-serif;font-size:.8rem;font-weight:bold;margin-top:6px;}
+      .big{font-size:2.2rem;font-family:Arial,sans-serif;font-weight:bold;}
+    </style></head>
+    <body>
+      <div class="sheet">
+        <h1>ITC Safety Training — Completion Report</h1>
+        <div class="meta">${studentName} · ${dateStr}</div>
+        <div class="big">${pct}%</div>
+        <div>${totalCorrect} / 20 correct overall</div>
+        <div class="badge">${badge}</div>
+        <table>
+          <thead><tr><th>Checkpoint</th><th>Video</th><th>Score</th><th>Status</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <p style="margin-top:26px;color:#5B6572;font-size:.85rem;">Topics marked "Review recommended" are worth a second look before your next device use. This report was generated locally and is not stored or sent anywhere.</p>
+      </div>
+    </body></html>`;
+
+    const blob = new Blob([html], {type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `itc-safety-training-report-${studentName.replace(/\s+/g,'-').toLowerCase()}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+</script>
+
+</body>
+</html>
