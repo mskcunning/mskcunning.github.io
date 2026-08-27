@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Outside Jobs Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F3F1EA; --paper:#FFFFFF; --ink:#1C2321; --steel:#2B4162; --steel-dark:#17233A;
+    --orange:#E4572E; --yellow:#F5B700; --green:#3A6B35; --gray:#7A8C8F; --line:#D8D3C4;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;line-height:1.5;}
+  h1,h2,h3,.disp{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.02em;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+
+  header.top{background:var(--steel-dark);color:#fff;padding:64px 0 56px;position:relative;overflow:hidden;}
+  header.top:before{content:"";position:absolute;inset:0;background:
+     repeating-linear-gradient(135deg, rgba(245,183,0,.08) 0 22px, transparent 22px 44px);}
+  header.top .wrap{position:relative;}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;
+    font-size:12px;letter-spacing:.14em;color:var(--yellow);text-transform:uppercase;margin-bottom:18px;}
+  .eyebrow .dot{width:7px;height:7px;background:var(--orange);border-radius:1px;transform:rotate(45deg);display:inline-block;}
+  h1{font-size:clamp(38px,6vw,64px);margin:0 0 18px;line-height:1.02;font-weight:700;}
+  header.top p{max-width:560px;color:#C9D2DE;font-size:16px;margin:0;}
+
+  main{padding:56px 0 80px;}
+  .board-title{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:28px;border-bottom:2px solid var(--ink);padding-bottom:12px;}
+  .board-title h2{font-size:22px;margin:0;}
+  .board-title span{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gray);}
+
+  .board{display:flex;flex-direction:column;gap:20px;}
+
+  .ticket{background:var(--paper);border:1.5px solid var(--ink);position:relative;padding:26px 28px 24px;
+    box-shadow:5px 5px 0 var(--line);}
+
+  .head-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+  .num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--orange);font-weight:600;letter-spacing:.08em;}
+  .ticket h3{font-size:22px;margin:8px 0 10px;}
+  .ticket p.desc{font-size:14.5px;color:#40484A;margin:0 0 16px;max-width:640px;}
+
+  .meta-row{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:16px;}
+  .meta-item{font-size:12.5px;}
+  .meta-item b{display:block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--gray);margin-bottom:3px;}
+
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+  .tag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;
+    padding:3px 8px;border:1px solid var(--gray);color:var(--steel);background:#F8F7F2;}
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .btn{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600;letter-spacing:.04em;
+    text-transform:uppercase;padding:11px 18px;text-decoration:none;border:1.5px solid var(--ink);color:var(--ink);cursor:pointer;background:transparent;}
+  .btn.primary{background:var(--ink);color:#fff;}
+  .btn.primary:hover{background:var(--orange);border-color:var(--orange);}
+  .btn.outline:hover{background:var(--ink);color:#fff;}
+  .spots{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--gray);}
+
+  details{margin-top:14px;}
+  summary{cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--gray);letter-spacing:.06em;text-transform:uppercase;}
+  details ul{margin:10px 0 0;padding-left:18px;font-size:13.5px;color:#40484A;}
+  details li{margin-bottom:5px;}
+
+  footer{border-top:1.5px solid var(--ink);padding:32px 0 48px;}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center;}
+  footer p{font-size:13.5px;color:var(--gray);margin:0;}
+  footer .btn{padding:9px 14px;}
+
+  /* modal */
+  .modal-bg{position:fixed;inset:0;background:rgba(23,35,58,.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:20;}
+  .modal-bg.show{display:flex;}
+  .modal{background:#fff;border:1.5px solid var(--ink);max-width:480px;width:100%;padding:28px;box-shadow:6px 6px 0 var(--orange);max-height:90vh;overflow-y:auto;}
+  .modal h2{font-size:20px;margin-bottom:4px;}
+  .modal .jobline{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--orange);margin-bottom:18px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--gray);margin-bottom:5px;}
+  .field input, .field select, .field textarea{width:100%;font-family:'IBM Plex Sans',sans-serif;font-size:14px;padding:9px 10px;border:1.5px solid var(--ink);}
+  .field textarea{resize:vertical;min-height:60px;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .checks{display:flex;flex-wrap:wrap;gap:10px;}
+  .checks label{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;text-transform:none;letter-spacing:0;color:var(--ink);}
+  .checks input{width:auto;}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
+
+  /* admin */
+  .admin{margin-top:56px;}
+  .admin-toggle{background:none;border:none;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gray);
+    letter-spacing:.05em;text-transform:uppercase;cursor:pointer;padding:0;}
+  .admin-toggle:hover{color:var(--orange);}
+  .admin-panel{display:none;margin-top:18px;}
+  .admin-panel.show{display:block;}
+  .admin-toolbar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
+  .admin-toolbar select{font-family:'IBM Plex Sans',sans-serif;font-size:13.5px;padding:8px 10px;border:1.5px solid var(--ink);}
+  .admin-toolbar .count{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gray);}
+  table{width:100%;border-collapse:collapse;background:var(--paper);border:1.5px solid var(--ink);}
+  thead th{background:var(--ink);color:#fff;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:10.5px;
+    letter-spacing:.05em;text-transform:uppercase;padding:10px 12px;white-space:nowrap;}
+  tbody td{padding:10px 12px;border-top:1px solid var(--line);font-size:13px;vertical-align:top;}
+  .empty-row{padding:30px;text-align:center;color:var(--gray);font-family:'IBM Plex Mono',monospace;font-size:12.5px;}
+  select.statusSel{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:4px 6px;border:1.5px solid var(--ink);text-transform:uppercase;}
+  .delbtn{background:none;border:none;color:var(--gray);cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;}
+  .delbtn:hover{color:var(--orange);}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot"></span> Career &amp; Technical Programs</div>
+    <h1>Outside Jobs<br>Board</h1>
+    <p>Paid, project-based positions run alongside your shop classes. Read what each job involves, then sign up below — a staff sponsor will follow up with you.</p>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="board-title">
+      <h2>Open Positions</h2>
+      <span class="mono">3 LISTED</span>
+    </div>
+
+    <div class="board">
+
+      <div class="ticket" id="job-pantry">
+        <div class="head-row">
+          <div>
+            <div class="num">JOB #01</div>
+            <h3>Food Pantry Database &amp; Network</h3>
+          </div>
+        </div>
+        <p class="desc">Build the veteran food pantry an inventory database from scratch, then keep its network running and secure — this is a build-it project, not just upkeep of something that already exists.</p>
+        <div class="meta-row">
+          <div class="meta-item"><b>Hours</b>3–4 hrs / week</div>
+          <div class="meta-item"><b>Open to</b>Grades 11–12</div>
+          <div class="meta-item"><b>Shift</b>Flexible, some remote</div>
+        </div>
+        <div class="tags"><span class="tag">Build</span><span class="tag">IT / Network</span><span class="tag">Community</span></div>
+        <div class="actions">
+          <button class="btn primary signup-btn" data-job="Food Pantry Database & Network">Sign Up →</button>
+          <span class="spots" id="spots-pantry"></span>
+        </div>
+        <details>
+          <summary>Full job details</summary>
+          <ul>
+            <li>Design and build a database to track pantry inventory and visitor requests</li>
+            <li>Set up and maintain the network the pantry runs on</li>
+            <li>Manage user accounts, access permissions, and regular backups</li>
+            <li>Monitor for and respond to network or security issues</li>
+          </ul>
+        </details>
+      </div>
+
+      <div class="ticket" id="job-print">
+        <div class="head-row">
+          <div>
+            <div class="num">JOB #02</div>
+            <h3>Copy/Print Center Website</h3>
+          </div>
+        </div>
+        <p class="desc">Build a website for the school's copy/print center where staff can submit work-order tickets with dropdowns for the type of request, and track jobs through to pickup.</p>
+        <div class="meta-row">
+          <div class="meta-item"><b>Hours</b>4–5 hrs / week</div>
+          <div class="meta-item"><b>Open to</b>Grades 9–12</div>
+          <div class="meta-item"><b>Shift</b>After school, flexible</div>
+        </div>
+        <div class="tags"><span class="tag">Build</span><span class="tag">Web</span></div>
+        <div class="actions">
+          <button class="btn primary signup-btn" data-job="Copy/Print Center Website">Sign Up →</button>
+          <span class="spots" id="spots-print"></span>
+        </div>
+        <details>
+          <summary>Full job details</summary>
+          <ul>
+            <li>Design a ticket submission form with dropdowns for request type, quantity, and priority</li>
+            <li>Build a queue view so print center staff can track and update job status</li>
+            <li>Test the site with real staff requests before launch</li>
+            <li>Keep the site running and fix issues as they come up</li>
+          </ul>
+        </details>
+      </div>
+
+      <div class="ticket" id="job-sds">
+        <div class="head-row">
+          <div>
+            <div class="num">JOB #03</div>
+            <h3>SDS Database</h3>
+          </div>
+        </div>
+        <p class="desc">Build a database to hold every shop's Safety Data Sheets — sortable by shop and searchable by anyone on staff in seconds.</p>
+        <div class="meta-row">
+          <div class="meta-item"><b>Hours</b>2–3 hrs / week</div>
+          <div class="meta-item"><b>Open to</b>Grades 10–12</div>
+          <div class="meta-item"><b>Shift</b>After school, flexible</div>
+        </div>
+        <div class="tags"><span class="tag">Build</span><span class="tag">Shop Safety</span></div>
+        <div class="actions">
+          <button class="btn primary signup-btn" data-job="SDS Database">Sign Up →</button>
+          <span class="spots" id="spots-sds"></span>
+        </div>
+        <details>
+          <summary>Full job details</summary>
+          <ul>
+            <li>Design a database structure that sorts sheets by shop</li>
+            <li>Build a search feature covering product, manufacturer, and hazard class</li>
+            <li>Collect and enter existing SDS sheets from every shop</li>
+            <li>No experience required — training provided</li>
+          </ul>
+        </details>
+      </div>
+
+    </div>
+
+    <div class="admin">
+      <button class="admin-toggle" id="adminToggle">Staff sign-in — view sign-ups ▾</button>
+      <div class="admin-panel" id="adminPanel">
+        <div class="admin-toolbar">
+          <select id="jobFilter">
+            <option value="">All jobs</option>
+            <option>Food Pantry Database &amp; Network</option>
+            <option>Copy/Print Center Website</option>
+            <option>SDS Database</option>
+          </select>
+          <select id="statusFilter">
+            <option value="">All statuses</option>
+            <option>New</option>
+            <option>Contacted</option>
+            <option>Placed</option>
+          </select>
+          <span class="count" id="rosterCount"></span>
+        </div>
+        <table>
+          <thead><tr><th>Student</th><th>Grade</th><th>Contact</th><th>Job</th><th>Availability</th><th>Why interested</th><th>Status</th><th></th></tr></thead>
+          <tbody id="rosterBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Questions about any position? Contact the Career &amp; Technical Education office.</p>
+    <a class="btn" href="mailto:cte-office@yourschool.edu">Contact CTE Office</a>
+  </div>
+</footer>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <h2>Sign Up</h2>
+    <div class="jobline" id="modalJobLine"></div>
+    <div class="field"><label>Your Name</label><input type="text" id="sName" placeholder="First and last name"></div>
+    <div class="row2">
+      <div class="field"><label>Grade</label>
+        <select id="sGrade"><option>9</option><option>10</option><option>11</option><option>12</option></select>
+      </div>
+      <div class="field"><label>Email or Phone</label><input type="text" id="sContact" placeholder="How we reach you"></div>
+    </div>
+    <div class="field">
+      <label>Availability</label>
+      <div class="checks">
+        <label><input type="checkbox" value="Mon"> Mon</label>
+        <label><input type="checkbox" value="Tue"> Tue</label>
+        <label><input type="checkbox" value="Wed"> Wed</label>
+        <label><input type="checkbox" value="Thu"> Thu</label>
+        <label><input type="checkbox" value="Fri"> Fri</label>
+      </div>
+    </div>
+    <div class="field"><label>Why are you interested? (optional)</label><textarea id="sWhy" placeholder="A sentence or two is plenty"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn outline" id="cancelBtn">Cancel</button>
+      <button class="btn primary" id="saveBtn">Submit Sign-Up</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'job_signups_v1';
+const JOB_IDS = {
+  'Food Pantry Database & Network':'pantry',
+  'Copy/Print Center Website':'print',
+  'SDS Database':'sds'
+};
+
+function load(){
+  try{ const r = localStorage.getItem(STORAGE_KEY); if(r) return JSON.parse(r); }catch(e){}
+  return [];
+}
+function save(d){ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+let signups = load();
+
+function updateSpots(){
+  Object.entries(JOB_IDS).forEach(([job,id])=>{
+    const n = signups.filter(s=>s.job===job).length;
+    const el = document.getElementById('spots-'+id);
+    if(el) el.textContent = n===0 ? 'No sign-ups yet — be the first' : `${n} student${n===1?'':'s'} signed up`;
+  });
+}
+
+const modalBg = document.getElementById('modalBg');
+let currentJob = '';
+
+document.querySelectorAll('.signup-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    currentJob = btn.dataset.job;
+    document.getElementById('modalJobLine').textContent = 'Applying for: ' + currentJob;
+    modalBg.classList.add('show');
+  });
+});
+document.getElementById('cancelBtn').addEventListener('click', ()=> modalBg.classList.remove('show'));
+
+document.getElementById('saveBtn').addEventListener('click', ()=>{
+  const name = document.getElementById('sName').value.trim();
+  const grade = document.getElementById('sGrade').value;
+  const contact = document.getElementById('sContact').value.trim();
+  const availability = Array.from(document.querySelectorAll('.checks input:checked')).map(c=>c.value).join(', ');
+  const why = document.getElementById('sWhy').value.trim();
+
+  if(!name || !contact){ alert('Please enter your name and a way to reach you.'); return; }
+
+  signups.push({name, grade, contact, job: currentJob, availability, why, status:'New'});
+  save(signups);
+
+  document.getElementById('sName').value='';
+  document.getElementById('sContact').value='';
+  document.getElementById('sWhy').value='';
+  document.querySelectorAll('.checks input').forEach(c=>c.checked=false);
+  document.getElementById('sGrade').selectedIndex=0;
+
+  modalBg.classList.remove('show');
+  updateSpots();
+  renderRoster();
+  alert('Thanks, ' + name + '! You\'re signed up for ' + currentJob + '. A staff sponsor will follow up with you.');
+});
+
+document.getElementById('adminToggle').addEventListener('click', ()=>{
+  document.getElementById('adminPanel').classList.toggle('show');
+  renderRoster();
+});
+document.getElementById('jobFilter').addEventListener('change', renderRoster);
+document.getElementById('statusFilter').addEventListener('change', renderRoster);
+
+function renderRoster(){
+  const jobF = document.getElementById('jobFilter').value;
+  const statusF = document.getElementById('statusFilter').value;
+  let rows = signups.filter((s,i)=>{ s._i=i; return (!jobF || s.job===jobF) && (!statusF || s.status===statusF); });
+
+  const tbody = document.getElementById('rosterBody');
+  if(rows.length===0){
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-row">No sign-ups yet for this filter.</div></td></tr>`;
+  } else {
+    tbody.innerHTML = rows.map(s=>`
+      <tr>
+        <td><strong>${escapeHtml(s.name)}</strong></td>
+        <td>${escapeHtml(s.grade)}</td>
+        <td>${escapeHtml(s.contact)}</td>
+        <td>${escapeHtml(s.job)}</td>
+        <td>${escapeHtml(s.availability)||'—'}</td>
+        <td>${escapeHtml(s.why)||'—'}</td>
+        <td>
+          <select class="statusSel" data-i="${s._i}">
+            ${['New','Contacted','Placed'].map(st=>`<option ${st===s.status?'selected':''}>${st}</option>`).join('')}
+          </select>
+        </td>
+        <td><button class="delbtn" data-i="${s._i}" title="Remove">✕</button></td>
+      </tr>`).join('');
+  }
+  document.getElementById('rosterCount').textContent = `${rows.length} of ${signups.length} sign-ups`;
+
+  document.querySelectorAll('.statusSel').forEach(sel=>{
+    sel.addEventListener('change', ()=>{
+      signups[sel.dataset.i].status = sel.value;
+      save(signups);
+    });
+  });
+  document.querySelectorAll('.delbtn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(confirm('Remove this sign-up?')){
+        signups.splice(parseInt(btn.dataset.i),1);
+        save(signups);
+        updateSpots();
+        renderRoster();
+      }
+    });
+  });
+}
+
+updateSpots();
+</script>
+</body>
+</html>
