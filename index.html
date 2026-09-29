@@ -1,394 +1,1647 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Outside Jobs Board</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kali Purple, your way</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700;800&family=Atkinson+Hyperlegible+Mono:wght@400;600&family=Lexend:wght@400;700&family=Andika:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#F3F1EA; --paper:#FFFFFF; --ink:#1C2321; --steel:#2B4162; --steel-dark:#17233A;
-    --orange:#E4572E; --yellow:#F5B700; --green:#3A6B35; --gray:#7A8C8F; --line:#D8D3C4;
+:root{
+  --paper:#F8F6FC; --panel:#FFFFFF; --ink:#211736; --muted:#5B5170; --line:#D9D0E7;
+  --purple:#5A2D82; --purple-soft:#EEE7F6; --blue:#1C579F; --blue-soft:#E3ECF8;
+  --red:#A5312A; --red-soft:#F8E6E4; --hl:#FFF1A8; --hl-ink:#211736;
+  --scale:1; --lh:1.6; --ls:0; --ws:0;
+  --body:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Verdana,system-ui,sans-serif;
+  --mono:"Atkinson Hyperlegible Mono",ui-monospace,Consolas,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);font-size:calc(100% * var(--scale))}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]):not([data-theme="contrast"]):not([data-theme="tint"]){
+    --paper:#16111E; --panel:#1F1829; --ink:#EEE8F7; --muted:#B3A8C6; --line:#3A3049;
+    --purple:#C9A8F0; --purple-soft:#2B2139; --blue:#8FB9F0; --blue-soft:#1C2940;
+    --red:#F19A91; --red-soft:#3A1F22; --hl:#5B4A12; --hl-ink:#FFF6CC; color-scheme:dark;
   }
-  *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;line-height:1.5;}
-  h1,h2,h3,.disp{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.02em;}
-  .mono{font-family:'IBM Plex Mono',monospace;}
-  a{color:inherit;}
-  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+}
+:root[data-theme="dark"]{
+  --paper:#16111E; --panel:#1F1829; --ink:#EEE8F7; --muted:#B3A8C6; --line:#3A3049;
+  --purple:#C9A8F0; --purple-soft:#2B2139; --blue:#8FB9F0; --blue-soft:#1C2940;
+  --red:#F19A91; --red-soft:#3A1F22; --hl:#5B4A12; --hl-ink:#FFF6CC; color-scheme:dark;
+}
+:root[data-theme="contrast"]{
+  --paper:#000; --panel:#000; --ink:#FFF; --muted:#FFF; --line:#FFF;
+  --purple:#FFE600; --purple-soft:#000; --blue:#7FDBFF; --blue-soft:#000;
+  --red:#FF8F8F; --red-soft:#000; --hl:#FFE600; --hl-ink:#000; color-scheme:dark;
+}
+:root[data-theme="tint"]{
+  --paper:#F6EFD6; --panel:#FBF6E4; --ink:#2A2418; --muted:#5E5440; --line:#DCCFA6;
+  --purple:#5A2D82; --purple-soft:#EDE3C8; --blue:#1C579F; --blue-soft:#E6E2CC;
+  --red:#A5312A; --red-soft:#F1DDCB; --hl:#CDE8C4; --hl-ink:#2A2418;
+}
+:root[data-font="lexend"]{--body:"Lexend",Verdana,sans-serif}
+:root[data-font="andika"]{--body:"Andika",Verdana,sans-serif}
+:root[data-font="serif"]{--body:Georgia,"Times New Roman",serif}
 
-  header.top{background:var(--steel-dark);color:#fff;padding:64px 0 56px;position:relative;overflow:hidden;}
-  header.top:before{content:"";position:absolute;inset:0;background:
-     repeating-linear-gradient(135deg, rgba(245,183,0,.08) 0 22px, transparent 22px 44px);}
-  header.top .wrap{position:relative;}
-  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;
-    font-size:12px;letter-spacing:.14em;color:var(--yellow);text-transform:uppercase;margin-bottom:18px;}
-  .eyebrow .dot{width:7px;height:7px;background:var(--orange);border-radius:1px;transform:rotate(45deg);display:inline-block;}
-  h1{font-size:clamp(38px,6vw,64px);margin:0 0 18px;line-height:1.02;font-weight:700;}
-  header.top p{max-width:560px;color:#C9D2DE;font-size:16px;margin:0;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+  font-size:1.125rem;line-height:var(--lh);letter-spacing:var(--ls);word-spacing:var(--ws);
+  padding-bottom:6.5rem}
+a{color:var(--purple)}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
+.wrap{max-width:62rem;margin:0 auto;padding:0 1.25rem}
+.read{max-width:42rem}
 
-  main{padding:56px 0 80px;}
-  .board-title{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:28px;border-bottom:2px solid var(--ink);padding-bottom:12px;}
-  .board-title h2{font-size:22px;margin:0;}
-  .board-title span{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gray);}
+/* Header */
+header.top{padding:2.5rem 0 1.25rem}
+.brand{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+h1{font-size:clamp(2.2rem,6vw,3.6rem);line-height:1.02;margin:0;font-weight:800;letter-spacing:-.02em}
+h1 .sw{display:inline-block;width:.62em;height:.62em;border-radius:50%;
+  background:linear-gradient(90deg,var(--red) 0 50%,var(--blue) 50% 100%);
+  vertical-align:.04em;margin-right:.18em;box-shadow:inset 0 0 0 .09em var(--purple)}
+.lede{max-width:40rem;color:var(--muted);margin:.8rem 0 0}
+.btn{border:2px solid var(--purple);background:transparent;color:var(--purple);
+  border-radius:.5rem;padding:.5rem .95rem;cursor:pointer;font-weight:700;line-height:1.2}
+.btn.solid{background:var(--purple);color:var(--paper)}
+.btn:hover{background:var(--purple-soft)}
+.btn.solid:hover{filter:brightness(1.1);background:var(--purple)}
 
-  .board{display:flex;flex-direction:column;gap:20px;}
+/* Modes */
+nav.modes{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);
+  border-bottom:2px solid var(--line);margin-top:1.25rem}
+.modes ul{list-style:none;margin:0;padding:0;display:flex;gap:.25rem;overflow-x:auto;scrollbar-width:thin}
+.modes button{border:0;background:none;padding:.8rem .9rem .7rem;cursor:pointer;white-space:nowrap;
+  border-bottom:4px solid transparent;margin-bottom:-2px;color:var(--muted);font-weight:700}
+.modes button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--purple)}
+.hdr-actions{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center}
+.langsw{display:flex;border:2px solid var(--purple);border-radius:.5rem;overflow:hidden}
+.langsw button{border:0;background:transparent;padding:.45rem .8rem;cursor:pointer;font-weight:700;color:var(--purple);line-height:1.2}
+.langsw button+button{border-left:2px solid var(--purple)}
+.langsw button[aria-pressed="true"]{background:var(--purple);color:var(--paper)}
+.agenda{list-style:none;padding:0;margin:0;counter-reset:ag;max-width:48rem}
+.agenda>li{counter-increment:ag;display:grid;grid-template-columns:7.5rem 1fr;gap:1rem;padding:1.1rem 0;border-top:2px solid var(--line)}
+.agenda>li:first-child{border-top:0}
+.ag-time{font-weight:700;color:var(--purple);font-size:.95rem;line-height:1.35}
+.ag-time::before{content:counter(ag);display:grid;place-items:center;width:2.2rem;height:2.2rem;border-radius:50%;background:var(--purple);color:var(--paper);font-weight:800;margin-bottom:.4rem;font-size:1.1rem}
+.ag-body h3{margin:.1rem 0 .3rem}.ag-body p{margin:0 0 .7rem}
+.ag-act{display:flex;flex-wrap:wrap;gap:.45rem}
+a.btn{display:inline-block;text-decoration:none}
+.exit{margin:.3rem 0 0;padding-left:1.4rem}.exit-h{font-size:1.1rem;margin-top:1rem}
+.downloads{max-width:44rem;border:2px solid var(--line);border-radius:.5rem;padding:.4rem 1.1rem 1.1rem;margin:1rem 0 1.5rem;background:var(--panel)}
+.downloads h3{margin-top:.6rem}
+.dls{list-style:none;padding:0;margin:.5rem 0 1rem}
+.dls li{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px solid var(--line)}
+.dls .btn.dl{font-size:.9rem;padding:.35rem .7rem}
+@media (max-width:640px){.agenda>li{grid-template-columns:1fr;gap:.3rem}}
+.modes .ic{display:inline-block;margin-right:.35rem}
 
-  .ticket{background:var(--paper);border:1.5px solid var(--ink);position:relative;padding:26px 28px 24px;
-    box-shadow:5px 5px 0 var(--line);}
+main{padding-top:1.5rem}
+[role="tabpanel"][hidden]{display:none}
+h2{font-size:1.9rem;line-height:1.15;margin:.2rem 0 .5rem}
+h3{font-size:1.3rem;margin:2rem 0 .4rem;line-height:1.25}
+.panel-intro{color:var(--muted);max-width:42rem;margin-top:0}
+.listenbar{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin:1rem 0 1.5rem}
 
-  .head-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
-  .num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--orange);font-weight:600;letter-spacing:.08em;}
-  .ticket h3{font-size:22px;margin:8px 0 10px;}
-  .ticket p.desc{font-size:14.5px;color:#40484A;margin:0 0 16px;max-width:640px;}
+/* Readable blocks and highlight */
+.readable p,.readable li,.readable h3,.readable .line,.readable figcaption{border-radius:.35rem;transition:background .15s}
+tr.reading td{background:var(--hl);color:var(--hl-ink)}
+.reading{background:var(--hl)!important;color:var(--hl-ink)!important;box-shadow:-.5rem 0 0 var(--hl),.5rem 0 0 var(--hl)}
+body.tapmode .readable p,body.tapmode .readable li,body.tapmode .readable .line{cursor:pointer}
+body.tapmode .readable p:hover,body.tapmode .readable li:hover,body.tapmode .readable .line:hover{outline:1px dashed var(--purple);outline-offset:3px}
 
-  .meta-row{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:16px;}
-  .meta-item{font-size:12.5px;}
-  .meta-item b{display:block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--gray);margin-bottom:3px;}
+.team{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.75rem;padding:0;list-style:none}
+.team li{padding:.9rem 1rem;border-left:6px solid var(--c);background:var(--s)}
+.team .r{--c:var(--red);--s:var(--red-soft)} .team .b{--c:var(--blue);--s:var(--blue-soft)} .team .p{--c:var(--purple);--s:var(--purple-soft)}
+.team b{display:block;font-size:1.1rem}
 
-  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
-  .tag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;
-    padding:3px 8px;border:1px solid var(--gray);color:var(--steel);background:#F8F7F2;}
+.tablewrap{overflow-x:auto;margin:1rem 0}
+table{border-collapse:collapse;width:100%;min-width:32rem}
+th,td{text-align:left;padding:.6rem .7rem;border-bottom:1px solid var(--line);vertical-align:top}
+th{border-bottom:2px solid var(--ink)}
 
-  .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
-  .btn{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600;letter-spacing:.04em;
-    text-transform:uppercase;padding:11px 18px;text-decoration:none;border:1.5px solid var(--ink);color:var(--ink);cursor:pointer;background:transparent;}
-  .btn.primary{background:var(--ink);color:#fff;}
-  .btn.primary:hover{background:var(--orange);border-color:var(--orange);}
-  .btn.outline:hover{background:var(--ink);color:#fff;}
-  .spots{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--gray);}
+.cmd{display:flex;align-items:stretch;gap:0;margin:.5rem 0;border:1px solid var(--line);border-radius:.4rem;overflow:hidden;background:var(--panel)}
+.cmd code{flex:1;padding:.6rem .8rem;font-family:var(--mono);font-size:.95rem;overflow-x:auto;white-space:pre}
+.cmd button{border:0;border-left:1px solid var(--line);background:var(--purple-soft);padding:0 .9rem;cursor:pointer;font-weight:700;font-size:.9rem}
+code.i{font-family:var(--mono);font-size:.92em;background:var(--purple-soft);padding:.05em .3em;border-radius:.25rem}
+.note{border-left:4px solid var(--purple);padding:.4rem 1rem;background:var(--purple-soft);margin:1.25rem 0}
 
-  details{margin-top:14px;}
-  summary{cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--gray);letter-spacing:.06em;text-transform:uppercase;}
-  details ul{margin:10px 0 0;padding-left:18px;font-size:13.5px;color:#40484A;}
-  details li{margin-bottom:5px;}
+/* Podcast */
+.episodes{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.episodes button{border:2px solid var(--line);background:var(--panel);border-radius:.5rem;padding:.55rem .9rem;cursor:pointer;text-align:left;line-height:1.3}
+.episodes button[aria-pressed="true"]{border-color:var(--purple);background:var(--purple-soft)}
+.episodes small{display:block;color:var(--muted);font-size:.85rem}
+.transcript{max-width:44rem}
+.line{display:grid;grid-template-columns:4.5rem 1fr;gap:.75rem;padding:.55rem .5rem;margin:0}
+.line .who{font-weight:800}
+.line[data-speaker="nia"] .who{color:var(--blue)}
+.line[data-speaker="theo"] .who{color:var(--red)}
+.hosts{display:flex;gap:1.5rem;flex-wrap:wrap;color:var(--muted);font-size:.95rem;margin:.25rem 0 1rem}
+.hosts b{color:var(--ink)}
 
-  footer{border-top:1.5px solid var(--ink);padding:32px 0 48px;}
-  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center;}
-  footer p{font-size:13.5px;color:var(--gray);margin:0;}
-  footer .btn{padding:9px 14px;}
+/* Video */
+.stage-wrap{max-width:48rem}
+.stage{position:relative;aspect-ratio:16/9;background:var(--panel);border:2px solid var(--ink);border-radius:.6rem;overflow:hidden}
+.stage svg{position:absolute;inset:0;width:100%;height:100%}
+.scene{display:none}.scene.on{display:block}
+.caption{min-height:4.5em;margin:.6rem 0;padding:.7rem 1rem;background:var(--ink);color:var(--paper);border-radius:.4rem;font-size:1.1rem}
+.caption[hidden]{display:none}
+.vctrl{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.progress{display:flex;gap:4px;margin:.6rem 0}
+.progress button{flex:1;height:.6rem;border:0;border-radius:3px;background:var(--line);cursor:pointer;padding:0}
+.progress button.done{background:var(--purple)}
+.progress button.cur{background:var(--blue)}
+.scene .pop{opacity:0}
+.scene.on .pop{animation:pop .6s ease-out both;animation-delay:var(--d,0s)}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.scene.on .pkt{animation:travel 2.4s linear infinite;animation-delay:var(--d,0s)}
+@keyframes travel{0%{transform:translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateX(300px);opacity:0}}
+.scene.on .blink{animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.25}}
+.scene.on .grow{transform-box:fill-box;transform-origin:bottom;animation:grow .8s ease-out both;animation-delay:var(--d,0s)}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+svg text{font-family:var(--body)}
+.sv-ink{fill:var(--ink)} .sv-muted{fill:var(--muted)} .sv-p{fill:var(--purple)} .sv-b{fill:var(--blue)} .sv-r{fill:var(--red)}
+.sv-ps{fill:var(--purple-soft)} .sv-bs{fill:var(--blue-soft)} .sv-rs{fill:var(--red-soft)} .sv-paper{fill:var(--paper)}
+.st-ink{stroke:var(--ink)} .st-p{stroke:var(--purple)} .st-b{stroke:var(--blue)} .st-r{stroke:var(--red)} .st-line{stroke:var(--line)}
 
-  /* modal */
-  .modal-bg{position:fixed;inset:0;background:rgba(23,35,58,.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:20;}
-  .modal-bg.show{display:flex;}
-  .modal{background:#fff;border:1.5px solid var(--ink);max-width:480px;width:100%;padding:28px;box-shadow:6px 6px 0 var(--orange);max-height:90vh;overflow-y:auto;}
-  .modal h2{font-size:20px;margin-bottom:4px;}
-  .modal .jobline{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--orange);margin-bottom:18px;}
-  .field{margin-bottom:14px;}
-  .field label{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--gray);margin-bottom:5px;}
-  .field input, .field select, .field textarea{width:100%;font-family:'IBM Plex Sans',sans-serif;font-size:14px;padding:9px 10px;border:1.5px solid var(--ink);}
-  .field textarea{resize:vertical;min-height:60px;}
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .checks{display:flex;flex-wrap:wrap;gap:10px;}
-  .checks label{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;text-transform:none;letter-spacing:0;color:var(--ink);}
-  .checks input{width:auto;}
-  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
+/* See it */
+.nist{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem;margin:1rem 0}
+.nist button{border:2px solid var(--purple);background:var(--panel);padding:.8rem .3rem;border-radius:.4rem;cursor:pointer;font-weight:800;font-size:1rem}
+.nist button[aria-pressed="true"]{background:var(--purple);color:var(--paper)}
+.nist-out{min-height:7rem;padding:1rem;border:2px solid var(--line);border-radius:.4rem}
+.rule{font-family:var(--mono);font-size:1.05rem;line-height:2.4;padding:1rem;background:var(--panel);border:1px solid var(--line);border-radius:.4rem;white-space:normal}
+.rule button{white-space:nowrap}
+.rule button{font-family:var(--mono);border:0;border-bottom:4px solid var(--c);background:var(--s);padding:.1rem .35rem;cursor:pointer;margin:0 .1rem;border-radius:.2rem .2rem 0 0}
+.rule button[aria-pressed="true"]{background:var(--c);color:var(--paper)}
+.rule-out{margin-top:.75rem;min-height:3.5rem}
+.flow{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.5rem;counter-reset:s}
+.flow li{counter-increment:s;flex:1 1 9rem;padding:.8rem;border:2px solid var(--ink);border-radius:.4rem;position:relative}
+.flow li::before{content:counter(s);display:inline-grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--purple);color:var(--paper);font-weight:800;margin-right:.4rem;font-size:.9rem}
+.scen{border:1px solid var(--line);border-radius:.4rem;padding:.9rem 1rem;margin:.75rem 0;background:var(--panel)}
+.scen .opts{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem}
+.scen .opts button{border:2px solid var(--line);background:none;border-radius:999px;padding:.3rem .8rem;cursor:pointer}
+.scen .opts button.right{border-color:var(--blue);background:var(--blue-soft)}
+.scen .opts button.wrong{border-color:var(--red);background:var(--red-soft)}
+.scen .fb{margin:.5rem 0 0;min-height:1.5em;font-weight:700}
 
-  /* admin */
-  .admin{margin-top:56px;}
-  .admin-toggle{background:none;border:none;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gray);
-    letter-spacing:.05em;text-transform:uppercase;cursor:pointer;padding:0;}
-  .admin-toggle:hover{color:var(--orange);}
-  .admin-panel{display:none;margin-top:18px;}
-  .admin-panel.show{display:block;}
-  .admin-toolbar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
-  .admin-toolbar select{font-family:'IBM Plex Sans',sans-serif;font-size:13.5px;padding:8px 10px;border:1.5px solid var(--ink);}
-  .admin-toolbar .count{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gray);}
-  table{width:100%;border-collapse:collapse;background:var(--paper);border:1.5px solid var(--ink);}
-  thead th{background:var(--ink);color:#fff;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:10.5px;
-    letter-spacing:.05em;text-transform:uppercase;padding:10px 12px;white-space:nowrap;}
-  tbody td{padding:10px 12px;border-top:1px solid var(--line);font-size:13px;vertical-align:top;}
-  .empty-row{padding:30px;text-align:center;color:var(--gray);font-family:'IBM Plex Mono',monospace;font-size:12.5px;}
-  select.statusSel{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:4px 6px;border:1.5px solid var(--ink);text-transform:uppercase;}
-  .delbtn{background:none;border:none;color:var(--gray);cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;}
-  .delbtn:hover{color:var(--orange);}
+/* Perspectives */
+.voices{display:grid;gap:1.25rem;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr))}
+.voice{padding:1.1rem 1.2rem;border-top:5px solid var(--c,var(--purple));background:var(--panel)}
+.voice h3{margin:0 0 .15rem}
+.voice .role{color:var(--muted);margin:0 0 .6rem;font-size:.95rem}
+.voice .q{font-style:italic}
+
+/* Practice + words */
+.check{list-style:none;padding:0}
+.check li{padding:.5rem 0;border-bottom:1px solid var(--line)}
+.check label{display:flex;gap:.7rem;align-items:flex-start;cursor:pointer}
+.check input{width:1.3rem;height:1.3rem;margin-top:.25rem;accent-color:var(--purple);flex:none}
+.quizlet{max-width:56rem;border:2px solid var(--line);border-radius:.5rem;overflow:hidden;background:#fff}
+.quizlet iframe{display:block}
+.gloss{list-style:none;padding:0;columns:2 22rem;column-gap:2rem}
+.gloss li{break-inside:avoid;padding:.5rem .4rem;margin:0 0 .3rem}
+.gloss b{color:var(--purple)}
+#gfilter{width:100%;max-width:24rem;padding:.55rem .8rem;border:2px solid var(--line);border-radius:.4rem;background:var(--panel)}
+
+/* Settings drawer */
+.drawer{position:fixed;inset:0;z-index:60;display:none}
+.drawer.open{display:block}
+.drawer .scrim{position:absolute;inset:0;background:rgba(0,0,0,.45)}
+.drawer .sheet{position:absolute;top:0;right:0;height:100%;width:min(26rem,100%);background:var(--panel);
+  padding:calc(1.25rem + env(safe-area-inset-top,0px)) 1.25rem calc(1.25rem + env(safe-area-inset-bottom,0px));overflow-y:auto;border-left:2px solid var(--ink)}
+.sheet h2{font-size:1.5rem}
+.field{margin:1.1rem 0}
+.field>label,.field>span{display:block;font-weight:700;margin-bottom:.35rem}
+.field select,.field input[type=range]{width:100%}
+.field select{padding:.45rem;border:2px solid var(--line);border-radius:.4rem;background:var(--paper)}
+.seg{display:flex;flex-wrap:wrap;gap:.35rem}
+.seg button{border:2px solid var(--line);background:var(--paper);padding:.35rem .7rem;border-radius:.4rem;cursor:pointer}
+.seg button[aria-pressed="true"]{border-color:var(--purple);background:var(--purple-soft);font-weight:700}
+.toggle{display:flex;gap:.6rem;align-items:center;font-weight:400!important;cursor:pointer}
+.toggle input{width:1.25rem;height:1.25rem;accent-color:var(--purple)}
+
+/* Dock */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--ink);color:var(--paper);
+  padding:.55rem 1rem calc(.55rem + env(safe-area-inset-bottom,0px))}
+.dock .in{max-width:62rem;margin:0 auto;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.dock .now{flex:1 1 12rem;min-width:0;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dock button,.dock select{background:transparent;border:2px solid var(--paper);color:var(--paper);border-radius:.4rem;padding:.3rem .6rem;cursor:pointer;min-width:2.6rem;font-weight:700}
+.dock select option{color:#000}
+.dock button[aria-pressed="true"]{background:var(--paper);color:var(--ink)}
+.dock button:disabled{opacity:.4;cursor:default}
+
+.ruler{position:fixed;left:0;right:0;height:calc(2.2em * var(--lh));pointer-events:none;z-index:30;display:none;
+  box-shadow:0 0 0 100vmax rgba(0,0,0,.38);border-top:2px solid var(--purple);border-bottom:2px solid var(--purple)}
+body.ruler-on .ruler{display:block}
+
+.small{font-size:.9rem;color:var(--muted)}
+footer{padding:3rem 0 1rem;color:var(--muted);font-size:.9rem}
+@media (max-width:640px){
+  .nist{grid-template-columns:1fr 1fr}
+  .line{grid-template-columns:1fr;gap:0}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .scene .pop{opacity:1}
+}
+@media print{nav.modes,.dock,.listenbar,.btn,.ruler{display:none!important}[role=tabpanel][hidden]{display:block}}
 </style>
 </head>
 <body>
+<div class="ruler" id="ruler" aria-hidden="true"></div>
 
+<div class="wrap">
 <header class="top">
-  <div class="wrap">
-    <h1>Outside Jobs<br>Board</h1>
-   
+  <div class="brand">
+    <h1><span class="sw" aria-hidden="true"></span><span data-i18n="title">Kali Purple, your way</span></h1>
+    <div class="hdr-actions"><div class="langsw" role="group" aria-label="Language" data-i18n-attr="aria-label:langLabel"><button data-lang="en" lang="en">English</button><button data-lang="es" lang="es">Español</button><button data-lang="pt" lang="pt">Português</button></div><button class="btn solid" id="openSettings" aria-haspopup="dialog" data-i18n="settingsBtn">Text and sound settings</button></div>
   </div>
+  <p class="lede" data-i18n="lede">The same lesson, seven ways in. Read it, listen to it as a podcast, watch it, explore it visually, hear it from different people's point of view, practice the commands, or practice vocabulary. Every tab can be read aloud as many times as you like.</p>
 </header>
 
+<nav class="modes" aria-label="Ways to learn" data-i18n-attr="aria-label:navLabel">
+  <ul role="tablist">
+    <li><button role="tab" id="t-today" aria-controls="p-today" aria-selected="true"><span class="ic" aria-hidden="true">📅</span><span data-i18n="tab.today">Today</span></button></li>
+    <li><button role="tab" id="t-read" aria-controls="p-read" aria-selected="false" tabindex="-1"><span class="ic" aria-hidden="true">📖</span><span data-i18n="tab.read">Read</span></button></li>
+    <li><button role="tab" id="t-listen" aria-controls="p-listen" aria-selected="false" tabindex="-1"><span class="ic" aria-hidden="true">🎧</span><span data-i18n="tab.listen">Podcast</span></button></li>
+    <li><button role="tab" id="t-watch" aria-controls="p-watch" aria-selected="false" tabindex="-1"><span class="ic" aria-hidden="true">🎬</span><span data-i18n="tab.watch">Video</span></button></li>
+    <li><button role="tab" id="t-see" aria-controls="p-see" aria-selected="false" tabindex="-1"><span class="ic" aria-hidden="true">🧭</span><span data-i18n="tab.see">See it</span></button></li>
+    <li><button role="tab" id="t-voices" aria-controls="p-voices" aria-selected="false" tabindex="-1"><span class="ic" aria-hidden="true">🗣️</span><span data-i18n="tab.voices">Perspectives</span></button></li>
+    <li><button role="tab" id="t-practice" aria-controls="p-practice" aria-selected="false" tabindex="-1"><span class="ic" aria-hidden="true">⌨️</span><span data-i18n="tab.practice">Practice</span></button></li>
+    <li><button role="tab" id="t-words" aria-controls="p-words" aria-selected="false" tabindex="-1"><span class="ic" aria-hidden="true">🔤</span><span data-i18n="tab.words">Words</span></button></li>
+    <li><button role="tab" id="t-teach" aria-controls="p-teach" aria-selected="false" tabindex="-1"><span class="ic" aria-hidden="true">🧑‍🏫</span><span data-i18n="tab.teach">For instructors</span></button></li>
+  </ul>
+</nav>
+
 <main>
-  <div class="wrap">
-    <div class="board-title">
-      <h2>Open Jobs</h2>
-      <span class="mono">3 LISTED</span>
-    </div>
+<!-- READ -->
+<section role="tabpanel" id="p-today" aria-labelledby="t-today">
+  <h2 data-i18n="today.h2">Today's lesson</h2>
+  <p class="panel-intro" data-i18n="today.intro">Work through these activities in order.</p>
+  <div class="listenbar"><button class="btn solid listen" data-target="agenda" data-lk="lb.today">▶ Listen to the plan</button></div>
+  <ol class="readable agenda" id="agenda"></ol>
+</section>
 
-    <div class="board">
+<section role="tabpanel" id="p-read" aria-labelledby="t-read" data-title="Read: the lesson" hidden>
+  <h2 data-i18n="read.h2">Read the lesson</h2>
+  <p class="panel-intro" data-i18n="read.intro">Short chunks in plain language. Press Listen to hear the whole page, or turn on "Tap a paragraph to hear it" in settings.</p>
+  <div class="listenbar"><button class="btn solid listen" data-target="read-body" data-lk="lb.page">▶ Listen to this page</button></div>
+  <div class="readable read" id="read-body">
+    <h3>What you will be able to do</h3>
+    <ul>
+      <li>Explain what Kali Purple is and how it differs from standard Kali Linux.</li>
+      <li>Match Kali Purple tools to the five NIST Cybersecurity Framework functions.</li>
+      <li>Install Kali Purple in a virtual machine and update it.</li>
+      <li>Use four defensive tools: Wireshark, Suricata, Greenbone, and CyberChef.</li>
+    </ul>
 
-      <div class="ticket" id="job-pantry">
-        <div class="head-row">
-          <div>
-            <div class="num">JOB #01</div>
-            <h3>Food Pantry Database &amp; Network</h3>
-          </div>
-        </div>
-        <p class="desc">Build the veteran food pantry an inventory database from scratch, then keep its network running and secure — this is a build-it project, not just upkeep of something that already exists.</p>
-        <div class="meta-row">
-          <div class="meta-item"><b>Hours</b>3–4 hrs / week</div>
-          <div class="meta-item"><b>Open to</b>Grades 11–12</div>
-          <div class="meta-item"><b>Shift</b>Flexible, some remote</div>
-        </div>
-        <div class="tags"><span class="tag">Build</span><span class="tag">IT / Network</span><span class="tag">Community</span></div>
-        <div class="actions">
-          <button class="btn primary signup-btn" data-job="Food Pantry Database & Network">Sign Up →</button>
-          <span class="spots" id="spots-pantry"></span>
-        </div>
-        <details>
-          <summary>Full job details</summary>
-          <ul>
-            <li>Design and build a database to track pantry inventory and visitor requests</li>
-            <li>Set up and maintain the network the pantry runs on</li>
-            <li>Manage user accounts, access permissions, and regular backups</li>
-            <li>Monitor for and respond to network or security issues</li>
-          </ul>
-        </details>
-      </div>
+    <h3>Red, blue, and purple teams</h3>
+    <ul class="team">
+      <li class="r"><b>Red team</b> Attacks systems to find weaknesses. This is what classic Kali Linux is famous for.</li>
+      <li class="b"><b>Blue team</b> Watches, detects, and responds to attacks. This is Kali Purple's focus.</li>
+      <li class="p"><b>Purple team</b> Red and blue working together: attack, then check whether the defenses caught it.</li>
+    </ul>
 
-      <div class="ticket" id="job-print">
-        <div class="head-row">
-          <div>
-            <div class="num">JOB #02</div>
-            <h3>Copy/Print Center Website</h3>
-          </div>
-        </div>
-        <p class="desc">Build a website for the school's copy/print center where staff can submit work-order tickets with dropdowns for the type of request, and track jobs through to pickup.</p>
-        <div class="meta-row">
-          <div class="meta-item"><b>Hours</b>4–5 hrs / week</div>
-          <div class="meta-item"><b>Open to</b>Grades 9–12</div>
-          <div class="meta-item"><b>Shift</b>After school, flexible</div>
-        </div>
-        <div class="tags"><span class="tag">Build</span><span class="tag">Web</span></div>
-        <div class="actions">
-          <button class="btn primary signup-btn" data-job="Copy/Print Center Website">Sign Up →</button>
-          <span class="spots" id="spots-print"></span>
-        </div>
-        <details>
-          <summary>Full job details</summary>
-          <ul>
-            <li>Design a ticket submission form with dropdowns for request type, quantity, and priority</li>
-            <li>Build a queue view so print center staff can track and update job status</li>
-            <li>Test the site with real staff requests before launch</li>
-            <li>Keep the site running and fix issues as they come up</li>
-          </ul>
-        </details>
-      </div>
+    <h3>So what is Kali Purple?</h3>
+    <p>Kali Purple is the defensive, blue-team edition of Kali Linux. It is the same Debian-based system, plus a collection of tools for monitoring, detecting, and responding to attacks.</p>
+    <p>It arrived with Kali 2023.1, for the project's tenth anniversary. Kali calls it a "SOC in a box": a Security Operations Center you can run in a lab.</p>
+    <p>It is not a separate operating system. It is regular Kali with a purple theme and extra defensive packages. You can install it from its own installer, or add it to Kali you already have.</p>
+    <p>It adds very few brand-new tools. Its value is gathering well-known free defensive tools in one place and sorting them by purpose.</p>
+    <p>It still includes the normal attack tools, so one machine can play both sides of a purple-team exercise.</p>
 
-      <div class="ticket" id="job-sds">
-        <div class="head-row">
-          <div>
-            <div class="num">JOB #03</div>
-            <h3>SDS Database</h3>
-          </div>
-        </div>
-        <p class="desc">Build a database to hold every shop's Safety Data Sheets — sortable by shop and searchable by anyone on staff in seconds.</p>
-        <div class="meta-row">
-          <div class="meta-item"><b>Hours</b>2–3 hrs / week</div>
-          <div class="meta-item"><b>Open to</b>Grades 10–12</div>
-          <div class="meta-item"><b>Shift</b>After school, flexible</div>
-        </div>
-        <div class="tags"><span class="tag">Build</span><span class="tag">Shop Safety</span></div>
-        <div class="actions">
-          <button class="btn primary signup-btn" data-job="SDS Database">Sign Up →</button>
-          <span class="spots" id="spots-sds"></span>
-        </div>
-        <details>
-          <summary>Full job details</summary>
-          <ul>
-            <li>Design a database structure that sorts sheets by shop</li>
-            <li>Build a search feature covering product, manufacturer, and hazard class</li>
-            <li>Collect and enter existing SDS sheets from every shop</li>
-            <li>No experience required — training provided</li>
-          </ul>
-        </details>
-      </div>
+    <h3>The five NIST functions</h3>
+    <p>Kali Purple's Applications menu is organized by five functions from the NIST Cybersecurity Framework. Each function answers a question.</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Function</th><th>Question it answers</th><th>Example tools</th></tr></thead>
+      <tbody>
+        <tr><td>Identify</td><td>What do we have, and where are the weaknesses?</td><td>Greenbone vulnerability scanner</td></tr>
+        <tr><td>Protect</td><td>How do we prevent attacks?</td><td>Firewall and hardening tools, Suricata in prevention mode</td></tr>
+        <tr><td>Detect</td><td>How do we notice an attack?</td><td>Suricata, Zeek, Arkime, Malcolm, Elastic Security, Wireshark</td></tr>
+        <tr><td>Respond</td><td>What do we do once we notice?</td><td>TheHive, Cortex, CyberChef</td></tr>
+        <tr><td>Recover</td><td>How do we get back to normal?</td><td>Backup and forensic tools; mostly process, not software</td></tr>
+      </tbody>
+    </table></div>
+    <p>NIST CSF 2.0, released in 2024, added a sixth function called Govern. Kali Purple does not have its own menu for it.</p>
 
-    </div>
+    <h3>Installing it safely</h3>
+    <p>You install Kali Purple into a virtual machine, a computer running inside your computer. That keeps the lab safe and easy to reset.</p>
+    <ol class="flow">
+      <li>Download the Purple installer from kali.org/get-kali, before class.</li>
+      <li>Verify the file's SHA256 hash matches the one on the download page.</li>
+      <li>Create the VM: 2 to 4 CPU cores, 8 GB RAM, 80 GB disk, host-only network.</li>
+      <li>Run the graphical install and keep the Kali Purple tools selected.</li>
+      <li>Log in and update the system, then reboot.</li>
+    </ol>
+    <p>Why check the hash? If someone tampered with the download, the hash will not match. That protects you from a supply-chain attack.</p>
 
-    <div class="admin">
-      <button class="admin-toggle" id="adminToggle">Staff sign-in — view sign-ups ▾</button>
-      <div class="admin-panel" id="adminPanel">
-        <div class="admin-toolbar">
-          <select id="jobFilter">
-            <option value="">All jobs</option>
-            <option>Food Pantry Database &amp; Network</option>
-            <option>Copy/Print Center Website</option>
-            <option>SDS Database</option>
-          </select>
-          <select id="statusFilter">
-            <option value="">All statuses</option>
-            <option>New</option>
-            <option>Contacted</option>
-            <option>Placed</option>
-          </select>
-          <span class="count" id="rosterCount"></span>
-        </div>
-        <table>
-          <thead><tr><th>Student</th><th>Grade</th><th>Contact</th><th>Job</th><th>Availability</th><th>Why interested</th><th>Status</th><th></th></tr></thead>
-          <tbody id="rosterBody"></tbody>
-        </table>
-      </div>
+    <h3>The four tools you will use</h3>
+    <p><b>Wireshark</b> captures network traffic so you can see every packet. Display filters like <code class="i">icmp</code> or <code class="i">dns</code> show only what you care about. Detect.</p>
+    <p><b>Suricata</b> is an intrusion detection system. You write a rule describing suspicious traffic, and Suricata writes an alert when it sees a match. Detect and Protect.</p>
+    <p><b>Greenbone</b>, also called OpenVAS, scans a computer for known weaknesses and ranks them by severity. Identify.</p>
+    <p><b>CyberChef</b> decodes and converts data found during an investigation, like turning Base64 text back into readable words. Respond.</p>
+    <p>Heavier tools such as Zeek, Arkime, Elastic Security, and TheHive need more memory and setup. You will get a short tour of them and use them in a later lesson.</p>
+
+    <h3>The purple-team lab</h3>
+    <p>You work in pairs. The red partner runs an Nmap scan against the Kali Purple machine. The blue partner uses Suricata and Wireshark to prove the scan was seen, then writes a short incident note. Then you swap.</p>
+    <div class="note"><p>Scan and capture only on the isolated lab network. Scanning systems you do not own or have permission to test can be illegal.</p></div>
+  </div>
+</section>
+
+<!-- PODCAST -->
+<section role="tabpanel" id="p-listen" aria-labelledby="t-listen" data-title="Podcast" hidden>
+  <h2 data-i18n="listen.h2">The Purple Hour podcast</h2>
+  <p class="panel-intro" data-i18n="listen.intro">Four short episodes read aloud by two voices. Replay any line, loop an episode, or slow it down. Choose the two voices in settings.</p>
+  <p class="hosts"><span><b style="color:var(--blue)">Nia</b>, <span data-i18n="host.nia">a SOC analyst</span></span><span><b style="color:var(--red)">Theo</b>, <span data-i18n="host.theo">a student new to cybersecurity</span></span></p>
+  <div class="episodes" id="episodes"></div>
+  <div class="listenbar"><button class="btn solid listen" data-target="transcript" data-lk="lb.ep">▶ Play episode</button><span class="small" data-i18n="listen.hint">The transcript below highlights each line as it plays.</span></div>
+  <div class="readable transcript" id="transcript"></div>
+</section>
+
+<!-- VIDEO -->
+<section role="tabpanel" id="p-watch" aria-labelledby="t-watch" data-title="Video" hidden>
+  <h2 data-i18n="watch.h2">Watch: Kali Purple in ten scenes</h2>
+  <p class="panel-intro" data-i18n="watch.intro">An animated, narrated explainer with captions. Pause, replay a scene, or jump to any scene with the bars below the picture.</p>
+  <div class="stage-wrap">
+    <div class="stage" id="stage" role="img" aria-live="off"></div>
+    <div class="caption" id="vcaption" aria-live="polite"></div>
+    <div class="progress" id="vprog" aria-label="Scenes" data-i18n-attr="aria-label:v.scenes"></div>
+    <div class="vctrl">
+      <button class="btn" id="vprev" data-i18n="v.back" data-i18n-attr="aria-label:v.prevA">⏮ Back</button>
+      <button class="btn solid" id="vplay">▶ Play</button>
+      <button class="btn" id="vnext" data-i18n="v.next" data-i18n-attr="aria-label:v.nextA">Next ⏭</button>
+      <button class="btn" id="vrep" data-i18n="v.rep">↻ Replay scene</button>
+      <label class="toggle"><input type="checkbox" id="vcap" checked> <span data-i18n="v.cap">Captions</span></label>
+      <label class="toggle"><input type="checkbox" id="vauto" checked> <span data-i18n="v.auto">Go to next scene automatically</span></label>
     </div>
   </div>
+</section>
+
+<!-- SEE -->
+<section role="tabpanel" id="p-see" aria-labelledby="t-see" data-title="See it" hidden>
+  <h2 data-i18n="see.h2">See how it fits together</h2>
+  <p class="panel-intro" data-i18n="see.intro">Explore the ideas by clicking. Each explanation can be read aloud.</p>
+  <div class="listenbar"><button class="btn solid listen" data-target="see-body" data-lk="lb.page">▶ Listen to this page</button></div>
+  <div class="readable read" id="see-body">
+    <h3 data-i18n="see.nistH">The NIST map: pick a function</h3>
+    <div class="nist" id="nist" role="group" aria-label="NIST functions" data-i18n-attr="aria-label:see.nistGroup"></div>
+    <div class="nist-out" id="nistOut" aria-live="polite"><p>Pick a function to see its question and the Kali Purple tools that belong to it.</p></div>
+
+    <h3 data-i18n="see.ruleH">Anatomy of a Suricata rule</h3>
+    <p data-i18n="see.ruleP">Click each part of the rule to find out what it does.</p>
+    <div class="rule" id="rule"></div>
+    <div class="rule-out" id="ruleOut" aria-live="polite"><p>Pick a part of the rule.</p></div>
+    <p data-i18n="see.ruleNote">Before the options come four parts in order: action, protocol, source, and destination, with an arrow for direction between source and destination.</p>
+
+    <h3 data-i18n="see.checkH">Check yourself: which function?</h3>
+    <p data-i18n="see.checkP">For each situation, choose the NIST function it belongs to.</p>
+    <div id="scens"></div>
+  </div>
+</section>
+
+<!-- PERSPECTIVES -->
+<section role="tabpanel" id="p-voices" aria-labelledby="t-voices" data-title="Perspectives" hidden>
+  <h2 data-i18n="voices.h2">Different people, different views</h2>
+  <p class="panel-intro" data-i18n="voices.intro">How Kali Purple looks from six seats. These are composite voices written for this lesson, not quotes from real people. Which view is closest to yours?</p>
+  <div class="listenbar"><button class="btn solid listen" data-target="voices" data-lk="lb.voices">▶ Listen to all six</button></div>
+  <div class="readable voices" id="voices">
+  </div>
+</section>
+
+<!-- PRACTICE -->
+<section role="tabpanel" id="p-practice" aria-labelledby="t-practice" data-title="Practice" hidden>
+  <h2 data-i18n="practice.h2">Practice: commands and checklist</h2>
+  <p class="panel-intro" data-i18n="practice.intro">Every command from the lab, with a copy button and a spoken version. Tick steps off as you go; your ticks are saved on this device.</p>
+  <div class="downloads" id="downloads"></div>
+  <div class="listenbar"><button class="btn solid listen" data-target="practice-body" data-lk="lb.steps">▶ Read the steps aloud</button></div>
+  <div class="readable read" id="practice-body">
+    <h3 data-i18n="pr.bandit">Warm-up: OverTheWire Bandit</h3>
+    <ul class="check">
+      <li><label><input type="checkbox" data-k="b0"> <span data-i18n="pr.b0"></span></label>
+        <div class="cmd"><code>ssh bandit0@bandit.labs.overthewire.org -p 2220</code><button class="copy">Copy</button></div></li>
+      <li><label><input type="checkbox" data-k="b1"> <span data-i18n="pr.b1"></span></label></li>
+      <li><label><input type="checkbox" data-k="b2"> <span data-i18n="pr.b2"></span></label></li>
+      <li><label><input type="checkbox" data-k="b3"> <span data-i18n="pr.b3"></span></label></li>
+      <li><label><input type="checkbox" data-k="b4"> <span data-i18n="pr.b4"></span></label></li>
+      <li><label><input type="checkbox" data-k="b5"> <span data-i18n="pr.b5"></span></label></li>
+      <li><label><input type="checkbox" data-k="b6"> <span data-i18n="pr.b6"></span></label></li>
+      <li><label><input type="checkbox" data-k="b7"> <span data-i18n="pr.b7"></span></label></li>
+      <li><label><input type="checkbox" data-k="b8"> <span data-i18n="pr.b8"></span></label></li>
+    </ul>
+    <h3 data-i18n="pr.install">Install and update</h3>
+    <ul class="check">
+      <li><label><input type="checkbox" data-k="c1"> <span data-i18n="pr.c1">Verify the ISO hash, then compare it with the SHA256 on the download page.</span></label>
+        <div class="cmd"><code>sha256sum kali-linux-*-installer-purple-amd64.iso</code><button class="copy">Copy</button></div></li>
+      <li><label><input type="checkbox" data-k="c2"> <span data-i18n="pr.c2">After first login, update everything and reboot.</span></label>
+        <div class="cmd"><code>sudo apt update
+sudo apt full-upgrade -y
+sudo reboot</code><button class="copy">Copy</button></div></li>
+    </ul>
+    <h3 data-i18n="pr.ws">Beginner activity</h3>
+    <ul class="check">
+      <li><label><input type="checkbox" data-k="w1"> <span data-i18n="pr.w1"></span></label></li>
+      <li><label><input type="checkbox" data-k="w2"> <span data-i18n="pr.w2"></span></label></li>
+      <li><label><input type="checkbox" data-k="w3"> <span data-i18n="pr.w3"></span></label></li>
+      <li><label><input type="checkbox" data-k="w4"> <span data-i18n="pr.w4"></span></label></li>
+      <li><label><input type="checkbox" data-k="w5"> <span data-i18n="pr.w5"></span></label></li>
+      <li><label><input type="checkbox" data-k="w6"> <span data-i18n="pr.w6"></span></label></li>
+    </ul>
+    <h3>Wireshark</h3>
+    <ul class="check">
+      <li><label><input type="checkbox" data-k="c3"> <span data-i18n="pr.c3">Let your user capture without root, then log out and back in.</span></label>
+        <div class="cmd"><code>sudo usermod -aG wireshark $USER</code><button class="copy">Copy</button></div></li>
+      <li><label><input type="checkbox" data-k="c4"> <span data-i18n="pr.c4">Try the display filters: icmp, dns, tcp port 80, and one host's address. Save your capture as lab1.pcap.</span></label>
+        <div class="cmd"><code>ip.addr == 192.168.56.101</code><button class="copy">Copy</button></div></li>
+    </ul>
+    <h3>Suricata</h3>
+    <ul class="check">
+      <li><label><input type="checkbox" data-k="c5"> <span data-i18n="pr.c5">Install Suricata and download the free community rules.</span></label>
+        <div class="cmd"><code>sudo apt install suricata -y
+sudo suricata-update</code><button class="copy">Copy</button></div></li>
+      <li><label><input type="checkbox" data-k="c6"> <span data-i18n="pr.c6">Write your first rule, which alerts on any ping to the lab network.</span></label>
+        <div class="cmd"><code>echo 'alert icmp any any -> $HOME_NET any (msg:"LAB ICMP ping detected"; sid:1000001; rev:1;)' | sudo tee /etc/suricata/rules/local.rules</code><button class="copy">Copy</button></div></li>
+      <li><label><input type="checkbox" data-k="c7"> <span data-i18n="pr.c7">Test the configuration, then run Suricata on the lab interface.</span></label>
+        <div class="cmd"><code>sudo suricata -T -c /etc/suricata/suricata.yaml -v
+sudo suricata -c /etc/suricata/suricata.yaml -i eth0</code><button class="copy">Copy</button></div></li>
+      <li><label><input type="checkbox" data-k="c8"> <span data-i18n="pr.c8">In a second terminal, watch alerts appear while your partner pings you.</span></label>
+        <div class="cmd"><code>sudo tail -f /var/log/suricata/fast.log</code><button class="copy">Copy</button></div></li>
+    </ul>
+    <h3>Greenbone</h3>
+    <ul class="check">
+      <li><label><input type="checkbox" data-k="c9"> <span data-i18n="pr.c9">Start Greenbone, then browse to 127.0.0.1 port 9392 and log in as admin.</span></label>
+        <div class="cmd"><code>sudo gvm-start</code><button class="copy">Copy</button></div></li>
+      <li><label><input type="checkbox" data-k="c10"> <span data-i18n="pr.c10">Run the Task Wizard on the target, sort the report by severity, and read one High result.</span></label></li>
+    </ul>
+    <h3>CyberChef</h3>
+    <ul class="check">
+      <li><label><input type="checkbox" data-k="c11"> <span data-i18n="pr.c11">Decode this string with the From Base64 operation. Then try Magic and Defang URL.</span></label>
+        <div class="cmd"><code>U3VzcGljaW91cyBQb3dlclNoZWxs</code><button class="copy">Copy</button></div></li>
+    </ul>
+    <h3 data-i18n="pr.lab">Purple-team lab</h3>
+    <ul class="check">
+      <li><label><input type="checkbox" data-k="c12"> <span data-i18n="pr.c12">Red partner scans the Kali machine, on the lab network only.</span></label>
+        <div class="cmd"><code>nmap -sV &lt;kali-ip&gt;</code><button class="copy">Copy</button></div></li>
+      <li><label><input type="checkbox" data-k="c13"> <span data-i18n="pr.c13">Blue partner finds the scan in fast.log and in Wireshark with this filter.</span></label>
+        <div class="cmd"><code>tcp.flags.syn == 1 &amp;&amp; tcp.flags.ack == 0</code><button class="copy">Copy</button></div></li>
+      <li><label><input type="checkbox" data-k="c14"> <span data-i18n="pr.c14">Write the incident note: time, source IP, what was scanned, which tool caught it, and the NIST function for each step. Then swap roles.</span></label></li>
+    </ul>
+    <p><button class="btn" id="resetChecks" data-i18n="pr.reset">Clear my ticks</button></p>
+  </div>
+</section>
+
+<!-- WORDS -->
+<section role="tabpanel" id="p-words" aria-labelledby="t-words" hidden>
+  <h2 data-i18n="words.h2">Words to know</h2>
+  <p class="panel-intro" data-i18n="words.intro">Practice this week's vocabulary with the Quizlet Match game.</p>
+  <div class="quizlet"><iframe src="https://quizlet.com/1214512383/match/embed?i=5vhc33&amp;x=1jj1" height="500" width="100%" style="border:0" title="Quizlet: Week 1 Kali Basics and Lab Setup" data-i18n-attr="title:words.frame" loading="lazy" allowfullscreen></iframe></div>
+  <p class="small"><a href="https://quizlet.com/1214512383/week-1-kali-basics-and-lab-setup-flash-cards/" target="_blank" rel="noopener" data-i18n="words.open">Open the full set on Quizlet</a></p>
+</section>
+
+<!-- TEACH -->
+<section role="tabpanel" id="p-teach" aria-labelledby="t-teach" data-title="For instructors" hidden>
+  <h2 data-i18n="teach.h2">For instructors</h2>
+  <div class="listenbar"><button class="btn solid listen" data-target="teach-body" data-lk="lb.page">▶ Listen to this page</button></div>
+  <div class="readable read" id="teach-body">
+  </div>
+</section>
 </main>
 
-<footer>
-  <div class="wrap">
-    <p>Questions about any position? Contact the Career &amp; Technical Education office.</p>
-    <a class="btn" href="mailto:cte-office@yourschool.edu">Contact CTE Office</a>
-  </div>
-</footer>
+<footer data-i18n="footer">Based on the lesson plan "Introduction to Kali Linux Purple." Scan only systems you have permission to test.</footer>
+</div>
 
-<div class="modal-bg" id="modalBg">
-  <div class="modal">
-    <h2>Sign Up</h2>
-    <div class="jobline" id="modalJobLine"></div>
-    <div class="field"><label>Your Name</label><input type="text" id="sName" placeholder="First and last name"></div>
-    <div class="row2">
-      <div class="field"><label>Grade</label>
-        <select id="sGrade"><option>9</option><option>10</option><option>11</option><option>12</option></select>
-      </div>
-      <div class="field"><label>Email or Phone</label><input type="text" id="sContact" placeholder="How we reach you"></div>
+<!-- Settings drawer -->
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="setTitle">
+  <div class="scrim" data-close></div>
+  <div class="sheet">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem">
+      <h2 id="setTitle" style="margin:0" data-i18n="s.title">Text and sound</h2>
+      <button class="btn" data-close data-i18n="s.done">Done</button>
     </div>
-    <div class="field">
-      <label>Availability</label>
-      <div class="checks">
-        <label><input type="checkbox" value="Mon"> Mon</label>
-        <label><input type="checkbox" value="Tue"> Tue</label>
-        <label><input type="checkbox" value="Wed"> Wed</label>
-        <label><input type="checkbox" value="Thu"> Thu</label>
-        <label><input type="checkbox" value="Fri"> Fri</label>
-      </div>
-    </div>
-    <div class="field"><label>Why are you interested? (optional)</label><textarea id="sWhy" placeholder="A sentence or two is plenty"></textarea></div>
-    <div class="modal-actions">
-      <button class="btn outline" id="cancelBtn">Cancel</button>
-      <button class="btn primary" id="saveBtn">Submit Sign-Up</button>
-    </div>
+    <div class="field"><label for="sSize"><span data-i18n="s.size">Text size</span>: <span id="sizeVal">100%</span></label><input type="range" id="sSize" min="0.9" max="2" step="0.1" value="1"></div>
+    <div class="field"><label for="sLh" data-i18n="s.lh">Line spacing</label><input type="range" id="sLh" min="1.4" max="2.4" step="0.1" value="1.6"></div>
+    <div class="field"><span data-i18n="s.font">Font</span><div class="seg" data-set="font">
+      <button data-v="atkinson">Atkinson</button><button data-v="lexend" style="font-family:Lexend">Lexend</button><button data-v="andika" style="font-family:Andika">Andika</button><button data-v="serif" style="font-family:Georgia,serif">Serif</button></div></div>
+    <div class="field"><span data-i18n="s.colors">Page colors</span><div class="seg" data-set="theme">
+      <button data-v="auto" data-i18n="th.auto">Match device</button><button data-v="light" data-i18n="th.light">Light</button><button data-v="dark" data-i18n="th.dark">Dark</button><button data-v="contrast" data-i18n="th.contrast">High contrast</button><button data-v="tint" data-i18n="th.tint">Tinted</button></div></div>
+    <div class="field"><label class="toggle"><input type="checkbox" id="sSpace"> <span data-i18n="s.space">Extra letter and word spacing</span></label></div>
+    <div class="field"><label class="toggle"><input type="checkbox" id="sRuler"> <span data-i18n="s.ruler">Reading ruler that follows the pointer</span></label></div>
+    <div class="field"><label class="toggle"><input type="checkbox" id="sTap"> <span data-i18n="s.tap">Tap a paragraph to hear it</span></label></div>
+    <hr style="border:0;border-top:1px solid var(--line)">
+    <div class="field"><label for="sVoiceA" data-i18n="s.voiceA">Main reading voice (also Nia)</label><select id="sVoiceA"></select></div>
+    <div class="field"><label for="sVoiceB" data-i18n="s.voiceB">Second podcast voice (Theo)</label><select id="sVoiceB"></select></div>
+    <div class="field"><label for="sRate"><span data-i18n="s.rate">Speaking speed</span>: <span id="rateVal">1×</span></label><input type="range" id="sRate" min="0.5" max="2" step="0.1" value="1"></div>
+    <p><button class="btn" id="testVoice" data-i18n="s.test">Test voices</button></p>
+    <p class="small" id="voiceNote"></p>
+    <p><button class="btn" id="resetSettings" data-i18n="s.reset">Reset all settings</button></p>
+  </div>
+</div>
+
+<!-- Player dock -->
+<div class="dock" role="region" aria-label="Read-aloud player" data-i18n-attr="aria-label:d.region">
+  <div class="in">
+    <div class="now" id="dNow" aria-live="polite">Read-aloud is ready. Press Listen on any tab.</div>
+    <button id="dPrev" data-i18n-attr="aria-label:d.prev;title:d.prev">⏮</button>
+    <button id="dPlay" aria-label="Play">▶</button>
+    <button id="dNext" data-i18n-attr="aria-label:d.next;title:d.next">⏭</button>
+    <button id="dRep" data-i18n-attr="aria-label:d.rep;title:d.rep">↻</button>
+    <button id="dLoop" aria-pressed="false" data-i18n="d.loop" data-i18n-attr="title:d.loopT">Loop</button>
+    <button id="dStop" data-i18n-attr="aria-label:d.stop;title:d.stop">■</button>
+    <select id="dRate" aria-label="Speed" data-i18n-attr="aria-label:d.speed"><option value="0.6">0.6×</option><option value="0.8">0.8×</option><option value="1" selected>1×</option><option value="1.2">1.2×</option><option value="1.5">1.5×</option><option value="1.8">1.8×</option></select>
   </div>
 </div>
 
 <script>
-const STORAGE_KEY = 'job_signups_v1';
-const JOB_IDS = {
-  'Food Pantry Database & Network':'pantry',
-  'Copy/Print Center Website':'print',
-  'SDS Database':'sds'
+(function(){
+"use strict";
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const store={get(k,d){try{const v=localStorage.getItem("kp:"+k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem("kp:"+k,JSON.stringify(v))}catch(e){}}};
+
+const EPISODES_EN=[
+ {t:"1. Red, blue, purple",d:"What Kali Purple is",lines:[
+  ["nia","Welcome to The Purple Hour. I'm Nia. I work in a Security Operations Center, watching networks for attacks."],
+  ["theo","And I'm Theo. I'm just starting out, so I'll be asking the questions everyone's thinking. First one: isn't Kali Linux for hacking?"],
+  ["nia","That's its reputation. Regular Kali is packed with tools for attacking systems. That's the red team side: people who attack on purpose, with permission, to find weaknesses."],
+  ["theo","So who's on the other side?"],
+  ["nia","The blue team. They monitor, detect, and respond to attacks. And when red and blue work together, attacking and then checking whether the defenses noticed, that's called purple teaming."],
+  ["theo","Which is where Kali Purple comes in."],
+  ["nia","Exactly. Kali Purple came out with Kali 2023.1. It's the defensive edition. Kali calls it a SOC in a box, a whole Security Operations Center you can run in a lab."],
+  ["theo","Is it a totally different operating system?"],
+  ["nia","No, and that's a common mix-up. It's the same Kali, with a purple theme and extra defensive packages. It even keeps the attack tools, so one machine can play both sides."],
+  ["theo","Does it invent new tools?"],
+  ["nia","Very few. Its value is gathering well-known free tools in one place and sorting them into five groups from the NIST Cybersecurity Framework: Identify, Protect, Detect, Respond, and Recover."],
+  ["theo","Quick test for me. Finding which server has an old, unpatched web server?"],
+  ["nia","That's Identify. You're finding weaknesses before anyone uses them. An alert about a port scan at 2 a.m. is Detect. And tracking who's investigating a phishing email is Respond."],
+  ["theo","Got it. Next episode, we install it."]
+ ]},
+ {t:"2. Installing safely",d:"VMs, hashes, updates",lines:[
+  ["theo","Okay Nia, I want Kali Purple on my laptop. Do I just wipe my computer?"],
+  ["nia","Please don't. We install it in a virtual machine, a computer that runs inside your computer. If you break it, you just reset it."],
+  ["theo","What does the virtual machine need?"],
+  ["nia","Two CPU cores at least, four is better. About 8 gigabytes of memory, because the defensive tools are hungry. An 80 gigabyte disk. And a host-only network, so your lab traffic stays inside your machine."],
+  ["theo","Then I download the installer?"],
+  ["nia","From kali.org, under Installer Images, and pick the Purple one, not the standard one. It's big, so download it before class."],
+  ["theo","The lesson says to check the hash. Why bother?"],
+  ["nia","A hash is like a fingerprint for a file. The download page lists the correct SHA256 fingerprint. If yours doesn't match, the file may have been tampered with. That's a real attack called a supply-chain attack."],
+  ["theo","Security starts before you even install. Nice. What about the installer itself?"],
+  ["nia","Choose graphical install, set your language and keyboard, create a user with a strong password, and use the whole virtual disk. The key step is software selection: keep the Kali Purple tools checked. That's what makes it Purple."],
+  ["theo","And after it boots?"],
+  ["nia","Open a terminal and run sudo apt update, then sudo apt full-upgrade, then reboot. Look at the Applications menu. It's grouped into Identify, Protect, Detect, Respond, and Recover."],
+  ["theo","What if something goes wrong?"],
+  ["nia","If the VM won't boot, turn on virtualization in your computer's BIOS. If the screen is tiny, install the guest additions. If updates fail, switch the network to NAT just while updating, then switch back."]
+ ]},
+ {t:"3. Four tools",d:"Wireshark, Suricata, Greenbone, CyberChef",lines:[
+  ["theo","Time for tools. Where do we start?"],
+  ["nia","Wireshark. It captures network traffic so you can see every single packet. It's overwhelming at first, so you use display filters."],
+  ["theo","Like what?"],
+  ["nia","Type icmp to see only pings. Type dns to see name lookups. Or filter on one IP address to follow one machine. Then Statistics, Conversations shows who talked to whom."],
+  ["theo","Wireshark lets me look. What catches things for me?"],
+  ["nia","Suricata. It's an intrusion detection system. You write rules that describe suspicious traffic, and it writes an alert whenever traffic matches."],
+  ["theo","What does a rule look like?"],
+  ["nia","Ours says: alert, icmp, any source, arrow, our home network. Then options in parentheses: a message, like LAB ICMP ping detected, and an ID number called the sid. Your partner pings you, and the alert shows up in fast dot log."],
+  ["theo","That's satisfying. What's Greenbone?"],
+  ["nia","Greenbone, also called OpenVAS, is a vulnerability scanner. You point it at a target, like our deliberately weak Metasploitable machine, and it reports known problems ranked by severity."],
+  ["theo","So the scanner tells me what to fix?"],
+  ["nia","It tells you what might be wrong. An analyst still has to confirm the problem and decide what matters most. That judgment is the real skill."],
+  ["theo","And the last one, CyberChef?"],
+  ["nia","It decodes data you find during an investigation. We give you a strange string found in a suspicious script. Run From Base64 and it turns into the words Suspicious PowerShell."]
+ ]},
+ {t:"4. The purple-team lab",d:"Attack, detect, write it up",lines:[
+  ["theo","Final episode. How do we put it all together?"],
+  ["nia","A mini purple-team exercise in pairs. One of you is red, one is blue."],
+  ["theo","I'll be red. What do I do?"],
+  ["nia","On the lab network only, with permission, you run an Nmap scan against your partner's Kali Purple machine."],
+  ["theo","And blue?"],
+  ["nia","Blue already has Suricata running and Wireshark capturing. They find the scan in the alert log, and in Wireshark with a filter that shows connection attempts, SYN packets without an ACK."],
+  ["theo","Then blue wins?"],
+  ["nia","Then blue writes an incident note: what time, the source IP, what was scanned, which tool caught it, and which NIST function each step belongs to. Then you swap."],
+  ["theo","Honestly, launching the scan sounds way easier than proving you caught it."],
+  ["nia","That's the whole point, and it's why SOC analysts are in demand. Anyone can press a button to attack. Showing clear evidence of what happened is the skill employers look for."],
+  ["theo","Any last warning?"],
+  ["nia","The big one: only scan systems you own or have permission to test. Outside the lab, the same scan can be illegal. Thanks for listening to The Purple Hour."]
+ ]}
+];
+const GLOSS_EN=[
+ ["Blue team","People who defend a network: monitoring, detecting, and responding to attacks."],
+ ["Red team","People who attack systems, with permission, to find weaknesses."],
+ ["Purple team","Red and blue working together to test whether defenses catch attacks."],
+ ["SOC","Security Operations Center. The team and place that watches for attacks around the clock."],
+ ["SIEM","Security Information and Event Management. Collects logs from many tools into one dashboard. Elastic Security is one."],
+ ["IDS","Intrusion Detection System. Watches traffic and alerts on suspicious activity. Suricata is one."],
+ ["IPS","Intrusion Prevention System. Like an IDS, but it can also block the traffic."],
+ ["NIST CSF","A framework from the U.S. National Institute of Standards and Technology that sorts security work into functions like Identify and Detect."],
+ ["Metapackage","One package that installs a whole group of related tools at once."],
+ ["ISO","A single file that holds an entire installer disc."],
+ ["SHA256 hash","A fingerprint of a file. If even one bit changes, the fingerprint changes."],
+ ["Supply-chain attack","Tampering with software before it reaches you, like a fake installer."],
+ ["Virtual machine","A computer that runs as a program inside your real computer."],
+ ["Host-only network","A virtual network that only connects your VMs and your own computer."],
+ ["NAT","A network setting that lets a VM reach the internet through your computer."],
+ ["Packet","A small chunk of data traveling across a network."],
+ ["Display filter","A Wireshark search that shows only the packets you want."],
+ ["pcap","A saved file of captured network traffic."],
+ ["Rule (Suricata)","A line describing traffic to watch for and what to do when it appears."],
+ ["sid","Signature ID. The unique number for a Suricata rule."],
+ ["Vulnerability","A weakness that an attacker could use."],
+ ["CVSS","A 0 to 10 score for how severe a vulnerability is."],
+ ["Base64","A way of writing data using only letters, digits, and a few symbols. Often used to hide text in scripts."],
+ ["Defang","Changing a dangerous link so it can't be clicked, like writing hxxp instead of http."],
+ ["Nmap","A tool that scans a network to find computers and open ports."],
+ ["Metasploitable","A deliberately vulnerable practice machine used as a lab target."],
+ ["Incident note","A short written record of what happened, when, and how it was detected."]
+];
+const LOCALE={en:"en-US",es:"es-MX",pt:"pt-BR"};
+const I18N={
+en:{
+ title:"Kali Purple, your way",settingsBtn:"Text and sound settings",
+ lede:"The same lesson, seven ways in. Read it, listen to it as a podcast, watch it, explore it visually, hear it from different people's point of view, practice the commands, or practice vocabulary. Every tab can be read aloud as many times as you like.",
+ navLabel:"Ways to learn",langLabel:"Language",
+ "tab.read":"Read","tab.listen":"Podcast","tab.watch":"Video","tab.see":"See it","tab.voices":"Perspectives","tab.practice":"Practice","tab.words":"Words","tab.teach":"For instructors",
+ "pt.read":"the lesson","pt.listen":"the podcast","pt.watch":"the video","pt.see":"See it","pt.voices":"Perspectives","pt.practice":"Practice","pt.words":"Words","pt.teach":"For instructors",
+ "read.h2":"Read the lesson","read.intro":"Short chunks in plain language. Press Listen to hear the whole page, or turn on \"Tap a paragraph to hear it\" in settings.",
+ "listen.h2":"The Purple Hour podcast","listen.intro":"Four short episodes read aloud by two voices. Replay any line, loop an episode, or slow it down. Choose the two voices in settings.",
+ "host.nia":"a SOC analyst","host.theo":"a student new to cybersecurity","listen.hint":"The transcript below highlights each line as it plays.",
+ "watch.h2":"Watch: Kali Purple in ten scenes","watch.intro":"An animated, narrated explainer with captions. Pause, replay a scene, or jump to any scene with the bars below the picture.",
+ "v.back":"⏮ Back","v.prevA":"Previous scene","v.next":"Next ⏭","v.nextA":"Next scene","v.rep":"↻ Replay scene","v.cap":"Captions","v.auto":"Go to next scene automatically","v.scenes":"Scenes","v.play":"▶ Play","v.pause":"⏸ Pause","v.again":"▶ Play again","v.scene":"Scene {i} of {n}.",
+ "see.h2":"See how it fits together","see.intro":"Explore the ideas by clicking. Each explanation can be read aloud.",
+ "see.nistH":"The NIST map: pick a function","see.nistPh":"Pick a function to see its question and the Kali Purple tools that belong to it.","see.nistGroup":"NIST functions","see.tools":"Tools:",
+ "see.ruleH":"Anatomy of a Suricata rule","see.ruleP":"Click each part of the rule to find out what it does.","see.rulePh":"Pick a part of the rule.",
+ "see.ruleNote":"Before the options come four parts in order: action, protocol, source, and destination, with an arrow for direction between source and destination.",
+ "see.checkH":"Check yourself: which function?","see.checkP":"For each situation, choose the NIST function it belongs to.",
+ fbYes:"Yes.",fbNo:"Not quite. Think about which question this situation answers, and try again.",
+ "voices.h2":"Different people, different views","voices.intro":"How Kali Purple looks from six seats. These are composite voices written for this lesson, not quotes from real people. Which view is closest to yours?",
+ "practice.h2":"Practice: commands and checklist","practice.intro":"Every command from the lab, with a copy button and a spoken version. Tick steps off as you go; your ticks are saved on this device.",
+ "pr.install":"Install and update","pr.lab":"Purple-team lab","pr.reset":"Clear my ticks",
+ "pr.c1":"Verify the ISO hash, then compare it with the SHA256 on the download page.",
+ "pr.c2":"After first login, update everything and reboot.",
+ "pr.c3":"Let your user capture without root, then log out and back in.",
+ "pr.c4":"Try the display filters: icmp, dns, tcp port 80, and one host's address. Save your capture as lab1.pcap.",
+ "pr.c5":"Install Suricata and download the free community rules.",
+ "pr.c6":"Write your first rule, which alerts on any ping to the lab network.",
+ "pr.c7":"Test the configuration, then run Suricata on the lab interface.",
+ "pr.c8":"In a second terminal, watch alerts appear while your partner pings you.",
+ "pr.c9":"Start Greenbone, then browse to 127.0.0.1 port 9392 and log in as admin.",
+ "pr.c10":"Run the Task Wizard on the target, sort the report by severity, and read one High result.",
+ "pr.c11":"Decode this string with the From Base64 operation. Then try Magic and Defang URL.",
+ "pr.c12":"Red partner scans the Kali machine, on the lab network only.",
+ "pr.c13":"Blue partner finds the scan in fast.log and in Wireshark with this filter.",
+ "pr.c14":"Write the incident note: time, source IP, what was scanned, which tool caught it, and the NIST function for each step. Then swap roles.",
+ copy:"Copy",copied:"Copied",ctrlc:"Press Ctrl+C",
+ "words.h2":"Words to know","words.intro":"Plain definitions. Type to filter, or listen to the whole list.","words.filter":"Filter words","words.ph":"Try: hash",
+ "teach.h2":"For instructors",
+ footer:"Based on the lesson plan \"Introduction to Kali Linux Purple.\" Scan only systems you have permission to test.",
+ "lb.page":"▶ Listen to this page","lb.ep":"▶ Play episode","lb.voices":"▶ Listen to all six","lb.steps":"▶ Read the steps aloud","lb.words":"▶ Listen to the words","lb.pause":"⏸ Pause",
+ "s.title":"Text and sound","s.done":"Done","s.size":"Text size","s.lh":"Line spacing","s.font":"Font","s.colors":"Page colors",
+ "th.auto":"Match device","th.light":"Light","th.dark":"Dark","th.contrast":"High contrast","th.tint":"Tinted",
+ "s.space":"Extra letter and word spacing","s.ruler":"Reading ruler that follows the pointer","s.tap":"Tap a paragraph to hear it",
+ "s.voiceA":"Main reading voice (also Nia)","s.voiceB":"Second podcast voice (Theo)","s.rate":"Speaking speed","s.test":"Test voices","s.reset":"Reset all settings",
+ "s.oneVoice":"Your device has only one English voice, so Theo will use the same voice at a different pitch.",
+ "s.noLangVoice":"No English voice is installed on this device, so read-aloud will use the device's default voice.",
+ "s.defaultVoice":"Device default voice","s.noSupport":"This browser does not support read-aloud. Try Chrome, Edge, or Safari.",
+ test1:"This is Nia, the main reading voice.",test2:"And this is Theo, the second podcast voice.",
+ "d.region":"Read-aloud player","d.ready":"Read-aloud is ready. Press Listen on any tab.","d.nosupport":"Read-aloud is not available in this browser.",
+ "d.reading":"Reading {t} · line {i} of {n}","d.paused":"Paused: {t} · line {i} of {n}","d.finished":"Finished: {t}. Press ▶ to hear it again.",
+ "d.prev":"Previous line","d.play":"Play","d.pauseA":"Pause","d.next":"Next line","d.rep":"Repeat this line","d.loop":"Loop","d.loopT":"Loop the whole section","d.stop":"Stop","d.speed":"Speed"
+},
+es:{
+ title:"Kali Purple, a tu manera",settingsBtn:"Ajustes de texto y sonido",
+ lede:"La misma lección, siete formas de entrar. Léela, escúchala como pódcast, mírala, explórala visualmente, escúchala desde el punto de vista de distintas personas, practica los comandos o practica el vocabulario. Cada pestaña se puede leer en voz alta todas las veces que quieras.",
+ navLabel:"Formas de aprender",langLabel:"Idioma",
+ "tab.read":"Leer","tab.listen":"Pódcast","tab.watch":"Video","tab.see":"Visualizar","tab.voices":"Perspectivas","tab.practice":"Práctica","tab.words":"Vocabulario","tab.teach":"Para docentes",
+ "pt.read":"la lección","pt.listen":"el pódcast","pt.watch":"el video","pt.see":"Visualizar","pt.voices":"Perspectivas","pt.practice":"Práctica","pt.words":"Vocabulario","pt.teach":"Para docentes",
+ "read.h2":"Lee la lección","read.intro":"Fragmentos cortos en lenguaje sencillo. Presiona Escuchar para oír toda la página, o activa \"Toca un párrafo para escucharlo\" en los ajustes.",
+ "listen.h2":"El pódcast La Hora Morada","listen.intro":"Cuatro episodios cortos leídos por dos voces. Repite cualquier línea, pon un episodio en bucle o hazlo más lento. Elige las dos voces en los ajustes.",
+ "host.nia":"analista de SOC","host.theo":"estudiante que empieza en ciberseguridad","listen.hint":"La transcripción de abajo resalta cada línea mientras suena.",
+ "watch.h2":"Mira: Kali Purple en diez escenas","watch.intro":"Una explicación animada y narrada, con subtítulos. Pausa, repite una escena o salta a cualquier escena con las barras debajo de la imagen.",
+ "v.back":"⏮ Atrás","v.prevA":"Escena anterior","v.next":"Siguiente ⏭","v.nextA":"Escena siguiente","v.rep":"↻ Repetir escena","v.cap":"Subtítulos","v.auto":"Pasar a la siguiente escena automáticamente","v.scenes":"Escenas","v.play":"▶ Reproducir","v.pause":"⏸ Pausa","v.again":"▶ Ver de nuevo","v.scene":"Escena {i} de {n}.",
+ "see.h2":"Mira cómo encaja todo","see.intro":"Explora las ideas haciendo clic. Cada explicación se puede leer en voz alta.",
+ "see.nistH":"El mapa del NIST: elige una función","see.nistPh":"Elige una función para ver su pregunta y las herramientas de Kali Purple que le corresponden.","see.nistGroup":"Funciones del NIST","see.tools":"Herramientas:",
+ "see.ruleH":"Anatomía de una regla de Suricata","see.ruleP":"Haz clic en cada parte de la regla para descubrir qué hace.","see.rulePh":"Elige una parte de la regla.",
+ "see.ruleNote":"Antes de las opciones van cuatro partes en orden: acción, protocolo, origen y destino, con una flecha de dirección entre el origen y el destino.",
+ "see.checkH":"Ponte a prueba: ¿qué función es?","see.checkP":"Para cada situación, elige la función del NIST a la que pertenece.",
+ fbYes:"Sí.",fbNo:"Todavía no. Piensa qué pregunta responde esta situación e inténtalo de nuevo.",
+ "voices.h2":"Distintas personas, distintas miradas","voices.intro":"Cómo se ve Kali Purple desde seis lugares. Son voces compuestas escritas para esta lección, no citas de personas reales. ¿Cuál se parece más a la tuya?",
+ "practice.h2":"Práctica: comandos y lista de pasos","practice.intro":"Todos los comandos del laboratorio, con botón para copiar y versión hablada. Marca los pasos a medida que avanzas; tus marcas se guardan en este dispositivo.",
+ "pr.install":"Instalar y actualizar","pr.lab":"Laboratorio de equipo morado","pr.reset":"Borrar mis marcas",
+ "pr.c1":"Verifica el hash de la ISO y compáralo con el SHA256 de la página de descarga.",
+ "pr.c2":"Después del primer inicio de sesión, actualiza todo y reinicia.",
+ "pr.c3":"Permite que tu usuario capture sin ser root; luego cierra sesión y vuelve a entrar.",
+ "pr.c4":"Prueba los filtros de visualización: icmp, dns, puerto tcp 80 y la dirección de un equipo. Guarda tu captura como lab1.pcap.",
+ "pr.c5":"Instala Suricata y descarga las reglas gratuitas de la comunidad.",
+ "pr.c6":"Escribe tu primera regla, que alerta sobre cualquier ping a la red del laboratorio.",
+ "pr.c7":"Prueba la configuración y luego ejecuta Suricata en la interfaz del laboratorio.",
+ "pr.c8":"En una segunda terminal, observa cómo aparecen las alertas mientras tu compañero te hace ping.",
+ "pr.c9":"Inicia Greenbone, abre 127.0.0.1 en el puerto 9392 en el navegador e inicia sesión como admin.",
+ "pr.c10":"Ejecuta el Task Wizard sobre el objetivo, ordena el informe por gravedad y lee un resultado High (alto).",
+ "pr.c11":"Decodifica esta cadena con la operación From Base64. Luego prueba Magic y Defang URL.",
+ "pr.c12":"La persona del equipo rojo escanea la máquina Kali, solo en la red del laboratorio.",
+ "pr.c13":"La persona del equipo azul encuentra el escaneo en fast.log y en Wireshark con este filtro.",
+ "pr.c14":"Escribe la nota de incidente: hora, IP de origen, qué se escaneó, qué herramienta lo detectó y la función del NIST de cada paso. Luego intercambien roles.",
+ copy:"Copiar",copied:"Copiado",ctrlc:"Presiona Ctrl+C",
+ "words.h2":"Palabras clave","words.intro":"Definiciones sencillas. Escribe para filtrar o escucha toda la lista.","words.filter":"Filtrar palabras","words.ph":"Prueba: hash",
+ "teach.h2":"Para docentes",
+ footer:"Basado en el plan de clase \"Introduction to Kali Linux Purple\". Escanea solo sistemas que tengas permiso para probar.",
+ "lb.page":"▶ Escuchar esta página","lb.ep":"▶ Reproducir episodio","lb.voices":"▶ Escuchar las seis","lb.steps":"▶ Leer los pasos en voz alta","lb.words":"▶ Escuchar las palabras","lb.pause":"⏸ Pausa",
+ "s.title":"Texto y sonido","s.done":"Listo","s.size":"Tamaño del texto","s.lh":"Interlineado","s.font":"Fuente","s.colors":"Colores de la página",
+ "th.auto":"Como el dispositivo","th.light":"Claro","th.dark":"Oscuro","th.contrast":"Alto contraste","th.tint":"Tono cálido",
+ "s.space":"Más espacio entre letras y palabras","s.ruler":"Regla de lectura que sigue al puntero","s.tap":"Toca un párrafo para escucharlo",
+ "s.voiceA":"Voz principal de lectura (también Nia)","s.voiceB":"Segunda voz del pódcast (Theo)","s.rate":"Velocidad de lectura","s.test":"Probar voces","s.reset":"Restablecer todos los ajustes",
+ "s.oneVoice":"Tu dispositivo tiene una sola voz en español, así que Theo usará la misma voz con otro tono.",
+ "s.noLangVoice":"No hay una voz en español instalada en este dispositivo, así que se usará la voz predeterminada. Puedes agregar voces en español en la configuración de idioma o de voz de tu sistema.",
+ "s.defaultVoice":"Voz predeterminada del dispositivo","s.noSupport":"Este navegador no admite la lectura en voz alta. Prueba Chrome, Edge o Safari.",
+ test1:"Hola, soy Nia, la voz principal de lectura.",test2:"Y yo soy Theo, la segunda voz del pódcast.",
+ "d.region":"Reproductor de lectura en voz alta","d.ready":"La lectura en voz alta está lista. Presiona Escuchar en cualquier pestaña.","d.nosupport":"La lectura en voz alta no está disponible en este navegador.",
+ "d.reading":"Leyendo {t} · línea {i} de {n}","d.paused":"En pausa: {t} · línea {i} de {n}","d.finished":"Terminado: {t}. Presiona ▶ para escucharlo de nuevo.",
+ "d.prev":"Línea anterior","d.play":"Reproducir","d.pauseA":"Pausa","d.next":"Línea siguiente","d.rep":"Repetir esta línea","d.loop":"Bucle","d.loopT":"Repetir toda la sección","d.stop":"Detener","d.speed":"Velocidad"
+},
+pt:{
+ title:"Kali Purple, do seu jeito",settingsBtn:"Ajustes de texto e som",
+ lede:"A mesma aula, sete formas de acesso. Leia, ouça como podcast, assista, explore visualmente, ouça pelo ponto de vista de pessoas diferentes, pratique os comandos ou pratique o vocabulário. Cada aba pode ser lida em voz alta quantas vezes você quiser.",
+ navLabel:"Formas de aprender",langLabel:"Idioma",
+ "tab.read":"Ler","tab.listen":"Podcast","tab.watch":"Vídeo","tab.see":"Visualizar","tab.voices":"Perspectivas","tab.practice":"Prática","tab.words":"Vocabulário","tab.teach":"Para professores",
+ "pt.read":"a aula","pt.listen":"o podcast","pt.watch":"o vídeo","pt.see":"Visualizar","pt.voices":"Perspectivas","pt.practice":"Prática","pt.words":"Vocabulário","pt.teach":"Para professores",
+ "read.h2":"Leia a aula","read.intro":"Trechos curtos em linguagem simples. Aperte Ouvir para escutar a página inteira, ou ative \"Toque em um parágrafo para ouvir\" nos ajustes.",
+ "listen.h2":"O podcast A Hora Roxa","listen.intro":"Quatro episódios curtos lidos por duas vozes. Repita qualquer fala, coloque um episódio em loop ou deixe mais devagar. Escolha as duas vozes nos ajustes.",
+ "host.nia":"analista de SOC","host.theo":"estudante começando em cibersegurança","listen.hint":"A transcrição abaixo destaca cada fala enquanto ela toca.",
+ "watch.h2":"Assista: Kali Purple em dez cenas","watch.intro":"Uma explicação animada e narrada, com legendas. Pause, repita uma cena ou pule para qualquer cena pelas barras abaixo da imagem.",
+ "v.back":"⏮ Voltar","v.prevA":"Cena anterior","v.next":"Próxima ⏭","v.nextA":"Próxima cena","v.rep":"↻ Repetir cena","v.cap":"Legendas","v.auto":"Ir para a próxima cena automaticamente","v.scenes":"Cenas","v.play":"▶ Reproduzir","v.pause":"⏸ Pausar","v.again":"▶ Assistir de novo","v.scene":"Cena {i} de {n}.",
+ "see.h2":"Veja como tudo se encaixa","see.intro":"Explore as ideias clicando. Cada explicação pode ser lida em voz alta.",
+ "see.nistH":"O mapa do NIST: escolha uma função","see.nistPh":"Escolha uma função para ver a pergunta dela e as ferramentas do Kali Purple que pertencem a ela.","see.nistGroup":"Funções do NIST","see.tools":"Ferramentas:",
+ "see.ruleH":"Anatomia de uma regra do Suricata","see.ruleP":"Clique em cada parte da regra para descobrir o que ela faz.","see.rulePh":"Escolha uma parte da regra.",
+ "see.ruleNote":"Antes das opções vêm quatro partes, nesta ordem: ação, protocolo, origem e destino, com uma seta indicando a direção entre origem e destino.",
+ "see.checkH":"Teste-se: qual é a função?","see.checkP":"Para cada situação, escolha a função do NIST a que ela pertence.",
+ fbYes:"Isso mesmo.",fbNo:"Ainda não. Pense em qual pergunta essa situação responde e tente de novo.",
+ "voices.h2":"Pessoas diferentes, olhares diferentes","voices.intro":"Como o Kali Purple é visto de seis lugares diferentes. São vozes compostas escritas para esta aula, não citações de pessoas reais. Qual se parece mais com a sua?",
+ "practice.h2":"Prática: comandos e checklist","practice.intro":"Todos os comandos do laboratório, com botão de copiar e versão falada. Marque os passos conforme avança; suas marcações ficam salvas neste dispositivo.",
+ "pr.install":"Instalar e atualizar","pr.lab":"Laboratório de time roxo","pr.reset":"Limpar minhas marcações",
+ "pr.c1":"Confira o hash da ISO e compare com o SHA256 da página de download.",
+ "pr.c2":"Depois do primeiro login, atualize tudo e reinicie.",
+ "pr.c3":"Permita que seu usuário capture sem ser root; depois saia e entre de novo.",
+ "pr.c4":"Teste os filtros de exibição: icmp, dns, porta tcp 80 e o endereço de um computador. Salve sua captura como lab1.pcap.",
+ "pr.c5":"Instale o Suricata e baixe as regras gratuitas da comunidade.",
+ "pr.c6":"Escreva sua primeira regra, que alerta sobre qualquer ping para a rede do laboratório.",
+ "pr.c7":"Teste a configuração e depois rode o Suricata na interface do laboratório.",
+ "pr.c8":"Em um segundo terminal, veja os alertas aparecerem enquanto seu colega faz ping em você.",
+ "pr.c9":"Inicie o Greenbone, acesse 127.0.0.1 na porta 9392 pelo navegador e entre como admin.",
+ "pr.c10":"Rode o Task Wizard no alvo, ordene o relatório por gravidade e leia um resultado High (alto).",
+ "pr.c11":"Decodifique este texto com a operação From Base64. Depois teste Magic e Defang URL.",
+ "pr.c12":"O colega do time vermelho faz a varredura na máquina Kali, só na rede do laboratório.",
+ "pr.c13":"O colega do time azul encontra a varredura no fast.log e no Wireshark com este filtro.",
+ "pr.c14":"Escreva a nota de incidente: horário, IP de origem, o que foi varrido, qual ferramenta detectou e a função do NIST de cada passo. Depois troquem de papel.",
+ copy:"Copiar",copied:"Copiado",ctrlc:"Aperte Ctrl+C",
+ "words.h2":"Palavras-chave","words.intro":"Definições simples. Digite para filtrar ou ouça a lista inteira.","words.filter":"Filtrar palavras","words.ph":"Tente: hash",
+ "teach.h2":"Para professores",
+ footer:"Baseado no plano de aula \"Introduction to Kali Linux Purple\". Só faça varreduras em sistemas que você tem permissão para testar.",
+ "lb.page":"▶ Ouvir esta página","lb.ep":"▶ Tocar episódio","lb.voices":"▶ Ouvir as seis","lb.steps":"▶ Ler os passos em voz alta","lb.words":"▶ Ouvir as palavras","lb.pause":"⏸ Pausar",
+ "s.title":"Texto e som","s.done":"Pronto","s.size":"Tamanho do texto","s.lh":"Espaçamento entre linhas","s.font":"Fonte","s.colors":"Cores da página",
+ "th.auto":"Igual ao dispositivo","th.light":"Claro","th.dark":"Escuro","th.contrast":"Alto contraste","th.tint":"Tom quente",
+ "s.space":"Mais espaço entre letras e palavras","s.ruler":"Régua de leitura que segue o ponteiro","s.tap":"Toque em um parágrafo para ouvir",
+ "s.voiceA":"Voz principal de leitura (também Nia)","s.voiceB":"Segunda voz do podcast (Theo)","s.rate":"Velocidade da fala","s.test":"Testar vozes","s.reset":"Redefinir todos os ajustes",
+ "s.oneVoice":"Seu dispositivo tem só uma voz em português, então o Theo vai usar a mesma voz com outro tom.",
+ "s.noLangVoice":"Não há voz em português instalada neste dispositivo, então será usada a voz padrão. Você pode adicionar vozes em português nas configurações de idioma ou de voz do sistema.",
+ "s.defaultVoice":"Voz padrão do dispositivo","s.noSupport":"Este navegador não oferece leitura em voz alta. Tente Chrome, Edge ou Safari.",
+ test1:"Oi, eu sou a Nia, a voz principal de leitura.",test2:"E eu sou o Theo, a segunda voz do podcast.",
+ "d.region":"Player de leitura em voz alta","d.ready":"A leitura em voz alta está pronta. Aperte Ouvir em qualquer aba.","d.nosupport":"A leitura em voz alta não está disponível neste navegador.",
+ "d.reading":"Lendo {t} · fala {i} de {n}","d.paused":"Pausado: {t} · fala {i} de {n}","d.finished":"Terminou: {t}. Aperte ▶ para ouvir de novo.",
+ "d.prev":"Fala anterior","d.play":"Reproduzir","d.pauseA":"Pausar","d.next":"Próxima fala","d.rep":"Repetir esta fala","d.loop":"Loop","d.loopT":"Repetir a seção inteira","d.stop":"Parar","d.speed":"Velocidade"
+}};
+
+const READ_HTML={
+es:`<h3>Lo que podrás hacer</h3>
+<ul>
+<li>Explicar qué es Kali Purple y en qué se diferencia de Kali Linux estándar.</li>
+<li>Relacionar las herramientas de Kali Purple con las cinco funciones del Marco de Ciberseguridad del NIST.</li>
+<li>Instalar Kali Purple en una máquina virtual y actualizarlo.</li>
+<li>Usar cuatro herramientas defensivas: Wireshark, Suricata, Greenbone y CyberChef.</li>
+</ul>
+<h3>Equipos rojo, azul y morado</h3>
+<ul class="team">
+<li class="r"><b>Equipo rojo</b> Ataca sistemas para encontrar debilidades. Por esto es famoso el Kali Linux clásico.</li>
+<li class="b"><b>Equipo azul</b> Vigila, detecta y responde a los ataques. Es el enfoque de Kali Purple.</li>
+<li class="p"><b>Equipo morado</b> Rojo y azul trabajando juntos: atacar y luego comprobar si las defensas lo detectaron.</li>
+</ul>
+<h3>Entonces, ¿qué es Kali Purple?</h3>
+<p>Kali Purple es la edición defensiva, de equipo azul, de Kali Linux. Es el mismo sistema basado en Debian, más una colección de herramientas para vigilar, detectar y responder a ataques.</p>
+<p>Llegó con Kali 2023.1, por el décimo aniversario del proyecto. Kali lo llama un "SOC en una caja": un Centro de Operaciones de Seguridad que puedes ejecutar en un laboratorio.</p>
+<p>No es un sistema operativo aparte. Es Kali normal con un tema morado y paquetes defensivos adicionales. Puedes instalarlo con su propio instalador o agregarlo a un Kali que ya tengas.</p>
+<p>Agrega muy pocas herramientas nuevas. Su valor está en reunir herramientas defensivas gratuitas y conocidas en un solo lugar y ordenarlas por propósito.</p>
+<p>Sigue incluyendo las herramientas de ataque normales, así que una sola máquina puede jugar ambos lados de un ejercicio de equipo morado.</p>
+<h3>Las cinco funciones del NIST</h3>
+<p>El menú de Aplicaciones de Kali Purple está organizado según cinco funciones del Marco de Ciberseguridad del NIST. Cada función responde una pregunta.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Función</th><th>Pregunta que responde</th><th>Herramientas de ejemplo</th></tr></thead>
+<tbody>
+<tr><td>Identificar</td><td>¿Qué tenemos y dónde están las debilidades?</td><td>Escáner de vulnerabilidades Greenbone</td></tr>
+<tr><td>Proteger</td><td>¿Cómo prevenimos los ataques?</td><td>Herramientas de firewall y de endurecimiento (hardening), Suricata en modo de prevención</td></tr>
+<tr><td>Detectar</td><td>¿Cómo notamos un ataque?</td><td>Suricata, Zeek, Arkime, Malcolm, Elastic Security, Wireshark</td></tr>
+<tr><td>Responder</td><td>¿Qué hacemos cuando lo notamos?</td><td>TheHive, Cortex, CyberChef</td></tr>
+<tr><td>Recuperar</td><td>¿Cómo volvemos a la normalidad?</td><td>Herramientas de respaldo y forenses; es sobre todo proceso, no software</td></tr>
+</tbody></table></div>
+<p>NIST CSF 2.0, publicado en 2024, agregó una sexta función llamada Gobernar (Govern). Kali Purple no tiene un menú propio para ella.</p>
+<h3>Instalarlo de forma segura</h3>
+<p>Instalas Kali Purple en una máquina virtual, una computadora que funciona dentro de tu computadora. Así el laboratorio es seguro y fácil de reiniciar.</p>
+<ol class="flow">
+<li>Descarga el instalador Purple desde kali.org/get-kali, antes de la clase.</li>
+<li>Verifica que el hash SHA256 del archivo coincida con el de la página de descarga.</li>
+<li>Crea la VM: de 2 a 4 núcleos de CPU, 8 GB de RAM, disco de 80 GB y red solo-anfitrión (host-only).</li>
+<li>Ejecuta la instalación gráfica y deja seleccionadas las herramientas de Kali Purple.</li>
+<li>Inicia sesión, actualiza el sistema y reinicia.</li>
+</ol>
+<p>¿Por qué revisar el hash? Si alguien alteró la descarga, el hash no coincidirá. Eso te protege de un ataque a la cadena de suministro.</p>
+<h3>Las cuatro herramientas que usarás</h3>
+<p><b>Wireshark</b> captura el tráfico de red para que puedas ver cada paquete. Filtros de visualización como <code class="i">icmp</code> o <code class="i">dns</code> muestran solo lo que te interesa. Detectar.</p>
+<p><b>Suricata</b> es un sistema de detección de intrusiones. Escribes una regla que describe tráfico sospechoso, y Suricata genera una alerta cuando encuentra una coincidencia. Detectar y Proteger.</p>
+<p><b>Greenbone</b>, también llamado OpenVAS, escanea una computadora en busca de debilidades conocidas y las ordena por gravedad. Identificar.</p>
+<p><b>CyberChef</b> decodifica y convierte datos encontrados durante una investigación, como convertir texto en Base64 en palabras legibles. Responder.</p>
+<p>Herramientas más pesadas como Zeek, Arkime, Elastic Security y TheHive necesitan más memoria y configuración. Harás un recorrido corto por ellas y las usarás en una lección posterior.</p>
+<h3>El laboratorio de equipo morado</h3>
+<p>Trabajan en parejas. La persona del equipo rojo ejecuta un escaneo con Nmap contra la máquina Kali Purple. La del equipo azul usa Suricata y Wireshark para demostrar que el escaneo fue detectado y luego escribe una nota de incidente breve. Después intercambian roles.</p>
+<div class="note"><p>Escanea y captura solo en la red aislada del laboratorio. Escanear sistemas que no son tuyos o que no tienes permiso para probar puede ser ilegal.</p></div>`,
+pt:`<h3>O que você vai conseguir fazer</h3>
+<ul>
+<li>Explicar o que é o Kali Purple e como ele se diferencia do Kali Linux padrão.</li>
+<li>Relacionar as ferramentas do Kali Purple às cinco funções do Framework de Cibersegurança do NIST.</li>
+<li>Instalar o Kali Purple em uma máquina virtual e atualizá-lo.</li>
+<li>Usar quatro ferramentas defensivas: Wireshark, Suricata, Greenbone e CyberChef.</li>
+</ul>
+<h3>Times vermelho, azul e roxo</h3>
+<ul class="team">
+<li class="r"><b>Time vermelho</b> Ataca sistemas para encontrar fraquezas. É por isso que o Kali Linux clássico é famoso.</li>
+<li class="b"><b>Time azul</b> Monitora, detecta e responde a ataques. É o foco do Kali Purple.</li>
+<li class="p"><b>Time roxo</b> Vermelho e azul trabalhando juntos: atacar e depois verificar se as defesas perceberam.</li>
+</ul>
+<h3>Então, o que é o Kali Purple?</h3>
+<p>O Kali Purple é a edição defensiva, de time azul, do Kali Linux. É o mesmo sistema baseado em Debian, com uma coleção de ferramentas para monitorar, detectar e responder a ataques.</p>
+<p>Ele chegou com o Kali 2023.1, no aniversário de dez anos do projeto. O Kali chama de "SOC in a box", ou SOC em uma caixa: um Centro de Operações de Segurança que você roda em um laboratório.</p>
+<p>Não é um sistema operacional separado. É o Kali comum com um tema roxo e pacotes defensivos extras. Você pode instalar pelo instalador próprio ou adicionar a um Kali que já tenha.</p>
+<p>Ele traz pouquíssimas ferramentas novas. O valor dele está em reunir ferramentas defensivas gratuitas e conhecidas em um só lugar e organizá-las por finalidade.</p>
+<p>Ele continua com as ferramentas de ataque normais, então uma única máquina pode jogar dos dois lados de um exercício de time roxo.</p>
+<h3>As cinco funções do NIST</h3>
+<p>O menu de Aplicativos do Kali Purple é organizado pelas cinco funções do Framework de Cibersegurança do NIST. Cada função responde a uma pergunta.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Função</th><th>Pergunta que responde</th><th>Ferramentas de exemplo</th></tr></thead>
+<tbody>
+<tr><td>Identificar</td><td>O que temos e onde estão as fraquezas?</td><td>Scanner de vulnerabilidades Greenbone</td></tr>
+<tr><td>Proteger</td><td>Como evitamos ataques?</td><td>Ferramentas de firewall e de hardening, Suricata no modo de prevenção</td></tr>
+<tr><td>Detectar</td><td>Como percebemos um ataque?</td><td>Suricata, Zeek, Arkime, Malcolm, Elastic Security, Wireshark</td></tr>
+<tr><td>Responder</td><td>O que fazemos quando percebemos?</td><td>TheHive, Cortex, CyberChef</td></tr>
+<tr><td>Recuperar</td><td>Como voltamos ao normal?</td><td>Ferramentas de backup e forenses; é mais processo do que software</td></tr>
+</tbody></table></div>
+<p>O NIST CSF 2.0, lançado em 2024, adicionou uma sexta função chamada Governar (Govern). O Kali Purple não tem um menu próprio para ela.</p>
+<h3>Instalando com segurança</h3>
+<p>Você instala o Kali Purple em uma máquina virtual, um computador que roda dentro do seu computador. Assim o laboratório fica seguro e fácil de restaurar.</p>
+<ol class="flow">
+<li>Baixe o instalador Purple em kali.org/get-kali, antes da aula.</li>
+<li>Confira se o hash SHA256 do arquivo bate com o da página de download.</li>
+<li>Crie a VM: de 2 a 4 núcleos de CPU, 8 GB de RAM, disco de 80 GB e rede host-only.</li>
+<li>Faça a instalação gráfica e deixe marcadas as ferramentas do Kali Purple.</li>
+<li>Entre no sistema, atualize tudo e reinicie.</li>
+</ol>
+<p>Por que conferir o hash? Se alguém adulterou o download, o hash não vai bater. Isso protege você de um ataque à cadeia de suprimentos.</p>
+<h3>As quatro ferramentas que você vai usar</h3>
+<p>O <b>Wireshark</b> captura o tráfego de rede para você ver cada pacote. Filtros de exibição como <code class="i">icmp</code> ou <code class="i">dns</code> mostram só o que interessa. Detectar.</p>
+<p>O <b>Suricata</b> é um sistema de detecção de intrusão. Você escreve uma regra que descreve tráfego suspeito, e o Suricata gera um alerta quando encontra uma correspondência. Detectar e Proteger.</p>
+<p>O <b>Greenbone</b>, também chamado de OpenVAS, varre um computador em busca de fraquezas conhecidas e as ordena por gravidade. Identificar.</p>
+<p>O <b>CyberChef</b> decodifica e converte dados encontrados durante uma investigação, como transformar texto em Base64 em palavras legíveis. Responder.</p>
+<p>Ferramentas mais pesadas, como Zeek, Arkime, Elastic Security e TheHive, precisam de mais memória e configuração. Você vai conhecê-las rapidamente e usá-las em uma aula futura.</p>
+<h3>O laboratório de time roxo</h3>
+<p>Vocês trabalham em duplas. Quem está no time vermelho roda uma varredura com Nmap contra a máquina Kali Purple. Quem está no time azul usa o Suricata e o Wireshark para provar que a varredura foi detectada e depois escreve uma nota de incidente curta. Em seguida, vocês trocam.</p>
+<div class="note"><p>Faça varreduras e capturas só na rede isolada do laboratório. Varrer sistemas que não são seus ou que você não tem permissão para testar pode ser crime.</p></div>`
 };
 
-function load(){
-  try{ const r = localStorage.getItem(STORAGE_KEY); if(r) return JSON.parse(r); }catch(e){}
-  return [];
+const TEACH_HTML={
+en:`<p>This page gives students several ways to perceive and understand the same content, in line with the Universal Design for Learning principle of multiple means of representation.</p>
+<h3>What each tab offers</h3>
+<ul>
+<li><b>Settings</b> let students enlarge text, change spacing, switch to a readability font, choose a dark, high-contrast, or tinted page, and use a reading ruler.</li>
+<li><b>Language</b>: the whole page, including the podcast and video narration, switches between English, Spanish, and Portuguese. Tool names, commands, and menu names stay in English because that is what students will see on screen.</li>
+<li><b>Read aloud</b> works on every tab, with speed control, a replay button for the current line, and looping, so students can listen as many times as they need.</li>
+<li><b>Podcast</b> retells the lesson as a conversation between an expert and a beginner, which models the questions a new learner might have.</li>
+<li><b>Video</b> pairs animation, narration, and captions, and lets students step through at their own pace.</li>
+<li><b>See it</b> turns the NIST table and Suricata rule syntax into things students can click and explore, plus a self-check.</li>
+<li><b>Perspectives</b> shows the topic through six viewpoints, including a skeptical one and a legal and ethical one.</li>
+<li><b>Practice</b> supports the hands-on lab, and <b>Words</b> has the Week 1 Quizlet Match game for vocabulary.</li>
+</ul>
+<h3>Turning this into audio and video files</h3>
+<p>For a downloadable podcast, paste an episode transcript into any two-voice text-to-speech tool, or upload your lesson plan to an AI notebook tool that makes audio overviews.</p>
+<p>For a real video file, screen-record the Video tab with narration and captions on. For the install steps, a screen recording of your own demo with auto-captions is usually the most useful video students can rewatch.</p>
+<p>Read-aloud uses the voices built into each student's device, so voices and quality differ. For Spanish or Portuguese, the device needs a voice for that language installed; most phones and computers can add one in their language or speech settings.</p>`,
+es:`<p>Esta página ofrece a los estudiantes varias formas de percibir y comprender el mismo contenido, en línea con el principio de múltiples formas de representación del Diseño Universal para el Aprendizaje (DUA).</p>
+<h3>Qué ofrece cada pestaña</h3>
+<ul>
+<li><b>Ajustes</b>: permiten agrandar el texto, cambiar el espaciado, usar una fuente de lectura fácil, elegir una página oscura, de alto contraste o de tono cálido, y usar una regla de lectura.</li>
+<li><b>Idioma</b>: toda la página, incluidos el pódcast y la narración del video, cambia entre inglés, español y portugués. Los nombres de herramientas, comandos y menús quedan en inglés porque es lo que los estudiantes verán en pantalla.</li>
+<li><b>Lectura en voz alta</b>: funciona en todas las pestañas, con control de velocidad, botón para repetir la línea actual y bucle, para escuchar las veces que haga falta.</li>
+<li><b>Pódcast</b>: cuenta la lección como una conversación entre una experta y un principiante, y modela las preguntas que podría tener alguien que empieza.</li>
+<li><b>Video</b>: combina animación, narración y subtítulos, y permite avanzar al propio ritmo.</li>
+<li><b>Visualizar</b>: convierte la tabla del NIST y la sintaxis de las reglas de Suricata en elementos para hacer clic y explorar, con una autoevaluación.</li>
+<li><b>Perspectivas</b>: muestra el tema desde seis puntos de vista, incluidos uno escéptico y uno ético y legal.</li>
+<li><b>Práctica</b>: apoya el laboratorio práctico. <b>Vocabulario</b>: tiene el juego Match de Quizlet de la semana 1.</li>
+</ul>
+<h3>Cómo convertir esto en archivos de audio y video</h3>
+<p>Para un pódcast descargable, pega la transcripción de un episodio en cualquier herramienta de texto a voz con dos voces, o sube tu plan de clase a una herramienta de IA tipo cuaderno que genere resúmenes en audio.</p>
+<p>Para un archivo de video real, graba la pantalla de la pestaña Video con la narración y los subtítulos activados. Para los pasos de instalación, una grabación de tu propia demostración con subtítulos automáticos suele ser el video más útil para que los estudiantes lo repitan.</p>
+<p>La lectura en voz alta usa las voces del dispositivo de cada estudiante, así que las voces y la calidad varían. Para español, el dispositivo necesita tener instalada una voz en español; la mayoría de los teléfonos y computadoras pueden agregarla en la configuración de idioma o de voz.</p>`,
+pt:`<p>Esta página oferece aos estudantes várias formas de perceber e compreender o mesmo conteúdo, de acordo com o princípio de múltiplos meios de representação do Desenho Universal para a Aprendizagem (DUA).</p>
+<h3>O que cada aba oferece</h3>
+<ul>
+<li><b>Ajustes</b>: permitem aumentar o texto, mudar o espaçamento, usar uma fonte de fácil leitura, escolher página escura, de alto contraste ou em tom quente, e usar uma régua de leitura.</li>
+<li><b>Idioma</b>: a página inteira, incluindo o podcast e a narração do vídeo, alterna entre inglês, espanhol e português. Nomes de ferramentas, comandos e menus ficam em inglês porque é o que os estudantes vão ver na tela.</li>
+<li><b>Leitura em voz alta</b>: funciona em todas as abas, com controle de velocidade, botão para repetir a fala atual e loop, para ouvir quantas vezes for preciso.</li>
+<li><b>Podcast</b>: reconta a aula como uma conversa entre uma especialista e um iniciante, mostrando as perguntas que alguém começando pode ter.</li>
+<li><b>Vídeo</b>: junta animação, narração e legendas, e deixa o estudante avançar no próprio ritmo.</li>
+<li><b>Visualizar</b>: transforma a tabela do NIST e a sintaxe das regras do Suricata em algo para clicar e explorar, com uma autoavaliação.</li>
+<li><b>Perspectivas</b>: mostra o tema por seis pontos de vista, incluindo um cético e um ético e legal.</li>
+<li><b>Prática</b>: apoia o laboratório prático. <b>Vocabulário</b>: tem o jogo Match do Quizlet da semana 1.</li>
+</ul>
+<h3>Como transformar isto em arquivos de áudio e vídeo</h3>
+<p>Para um podcast para baixar, cole a transcrição de um episódio em qualquer ferramenta de texto para fala com duas vozes, ou envie seu plano de aula para uma ferramenta de IA do tipo caderno que gere resumos em áudio.</p>
+<p>Para um arquivo de vídeo de verdade, grave a tela da aba Vídeo com a narração e as legendas ligadas. Para os passos de instalação, uma gravação da sua própria demonstração com legendas automáticas costuma ser o vídeo mais útil para os estudantes reverem.</p>
+<p>A leitura em voz alta usa as vozes do dispositivo de cada estudante, então as vozes e a qualidade variam. Para português, o dispositivo precisa ter uma voz em português instalada; a maioria dos celulares e computadores permite adicionar uma nas configurações de idioma ou de voz.</p>`
+};
+
+const DATA={
+en:{
+ episodes:EPISODES_EN,
+ narr:["Kali Linux is famous for attacking. Kali Purple is the edition built for defending.",
+  "The red team attacks to find weaknesses. The blue team detects and responds. When they work together, it is purple teaming.",
+  "Kali calls it a SOC in a box: well-known free defensive tools, gathered in one place, on top of the same Kali system.",
+  "The Applications menu follows the five NIST Cybersecurity Framework functions: Identify, Protect, Detect, Respond, and Recover.",
+  "To install: download the Purple installer, verify its SHA256 hash, create a virtual machine, then install and update.",
+  "Wireshark captures every packet on the network. A display filter like icmp shows only the pings.",
+  "Suricata watches traffic and checks it against rules. A rule has an action, protocol, source, direction, destination, then options. When traffic matches, it writes an alert.",
+  "Greenbone scans a host for known vulnerabilities and ranks them by severity. An analyst then confirms and decides what to fix first.",
+  "CyberChef decodes evidence. Run From Base64 on the strange string, and it reads Suspicious PowerShell.",
+  "In the lab, red scans with Nmap, blue proves Suricata and Wireshark caught it, writes an incident note, then you swap. Only ever on the lab network."],
+ L:{title:"Kali Purple: built to defend",red:"Red",blue:"Blue",purple:"Purple",tagline:"attack, then check what the defense caught",soc:"SOC in a box",nist:"NIST Cybersecurity Framework",
+  govern:"CSF 2.0 adds Govern, which has no Kali Purple menu",steps:["Download|ISO","Check|SHA256","Create|VM","Install +|update"],nomatch:"No match? Don't install. The file may be tampered with.",
+  target:"Target",filter:"filter: icmp",dots:"red dots = pings that match the filter",alert:"ALERT: LAB ICMP ping",log:"written to /var/log/suricata/fast.log",
+  report:"Scan report, sorted by severity",sev:["High","High","Medium","Low","Low"],caught:"Caught: Nmap scan from target VM"},
+ nist:[["Identify","What do we have, and where are the weaknesses?","Greenbone (GVM/OpenVAS) vulnerability scanner.","Example: finding the server with an unpatched web server."],
+  ["Protect","How do we prevent attacks?","Firewall and hardening tools, and Suricata running in prevention (IPS) mode.","Example: blocking traffic that matches a known attack."],
+  ["Detect","How do we notice an attack?","Suricata, Zeek, Arkime, Malcolm, Elastic Security, and Wireshark.","Example: an alert fires for a port scan at 2 a.m."],
+  ["Respond","What do we do once we notice?","TheHive for case management, Cortex, and CyberChef.","Example: tracking who is investigating a phishing email."],
+  ["Recover","How do we get back to normal?","Backup and forensic tools, though this is mostly process, not software.","Example: restoring a server from a clean backup."]],
+ rule:["Action. What Suricata does on a match. Here it writes an alert.","Protocol. Which kind of traffic to check. ICMP is what ping uses.","Source. Any address, any port. The traffic can come from anywhere.",
+  "Direction. The arrow means from the source toward the destination.","Destination. Our lab network, set in suricata.yaml, on any port.","Option: the message that appears in the alert log.",
+  "Option: the signature ID, a unique number. Local rules use one million and up.","Option: the revision number. Raise it each time you edit the rule."],
+ scens:[["Which of our servers has an unpatched web server?",0,"Finding weaknesses is Identify. You would use Greenbone."],
+  ["An alert fired for a port scan at 2 a.m.",2,"Noticing an attack is Detect. Suricata raised the alert."],
+  ["We need to track who is investigating the phishing email.",3,"Handling an incident is Respond. TheHive tracks the case."],
+  ["We restored the web server from last night's clean backup.",4,"Getting back to normal is Recover."]],
+ voices:[["The night-shift analyst","Works in a Security Operations Center","My job is mostly the Detect and Respond columns. An alert fires at 2 a.m., and I have to decide fast: is this a real attack or noise? Practicing with Suricata and Wireshark in a lab is exactly how you build that instinct.","blue"],
+  ["The penetration tester","Paid to break into systems, with permission","I use regular Kali every day. What I like about Purple is that it makes me ask the next question: did anyone notice me? An attack that goes unseen is the finding the client needs to hear about most.","red"],
+  ["The small-clinic IT manager","One person, no security budget","We can't afford big commercial security products. Free tools like Greenbone help me find the unpatched machines before someone else does. The scan is the easy part. Deciding what to fix first is the real work.","purple"],
+  ["The ethics and law view","A reminder every lab needs","The same Nmap scan is a lesson in class and possibly a crime on someone else's network. Laws such as the U.S. Computer Fraud and Abuse Act, and similar laws in many other countries, make permission the line that matters. Defenders earn trust by respecting it.","ink"],
+  ["The hiring manager","Hires entry-level security staff","Lots of applicants say they know hacking tools. Far fewer can show me they detected an attack and wrote it up clearly. An incident note from a purple-team lab is a great thing to bring to an interview.","blue"],
+  ["The skeptic","A senior engineer with doubts","Kali Purple is still maturing, and some tools need a lot of extra setup. Many real teams run dedicated platforms such as Security Onion or a commercial SIEM instead. Purple is a great classroom, but don't assume it's how every workplace does it.","red"]],
+ gloss:GLOSS_EN
+},
+es:{
+ episodes:[
+ {t:"1. Rojo, azul, morado",d:"Qué es Kali Purple",lines:[
+  ["nia","Bienvenidos a La Hora Morada. Soy Nia. Trabajo en un Centro de Operaciones de Seguridad, vigilando redes para detectar ataques."],
+  ["theo","Y yo soy Theo. Estoy empezando, así que haré las preguntas que todos están pensando. La primera: ¿Kali Linux no es para hackear?"],
+  ["nia","Esa es su fama. Kali normal está lleno de herramientas para atacar sistemas. Ese es el lado del equipo rojo: personas que atacan a propósito, con permiso, para encontrar debilidades."],
+  ["theo","¿Y quién está del otro lado?"],
+  ["nia","El equipo azul. Vigilan, detectan y responden a los ataques. Y cuando rojo y azul trabajan juntos, atacando y luego comprobando si las defensas lo notaron, eso se llama trabajo de equipo morado."],
+  ["theo","Y ahí entra Kali Purple."],
+  ["nia","Exacto. Kali Purple salió con Kali 2023.1. Es la edición defensiva. Kali lo llama un SOC en una caja: todo un Centro de Operaciones de Seguridad que puedes ejecutar en un laboratorio."],
+  ["theo","¿Es un sistema operativo totalmente diferente?"],
+  ["nia","No, y es una confusión común. Es el mismo Kali, con un tema morado y paquetes defensivos adicionales. Incluso conserva las herramientas de ataque, así que una sola máquina puede jugar ambos lados."],
+  ["theo","¿Inventa herramientas nuevas?"],
+  ["nia","Muy pocas. Su valor está en reunir herramientas gratuitas y conocidas en un solo lugar y ordenarlas en cinco grupos del Marco de Ciberseguridad del NIST: Identificar, Proteger, Detectar, Responder y Recuperar."],
+  ["theo","Prueba rápida para mí. ¿Encontrar qué servidor tiene un servidor web viejo y sin parches?"],
+  ["nia","Eso es Identificar. Estás encontrando debilidades antes de que alguien las use. Una alerta por un escaneo de puertos a las 2 de la mañana es Detectar. Y llevar el control de quién investiga un correo de phishing es Responder."],
+  ["theo","Entendido. En el próximo episodio, lo instalamos."]]},
+ {t:"2. Instalar con seguridad",d:"VM, hashes, actualizaciones",lines:[
+  ["theo","Bueno, Nia, quiero Kali Purple en mi laptop. ¿Borro mi computadora y ya?"],
+  ["nia","Por favor, no. Lo instalamos en una máquina virtual, una computadora que funciona dentro de tu computadora. Si la rompes, simplemente la reinicias."],
+  ["theo","¿Qué necesita la máquina virtual?"],
+  ["nia","Al menos dos núcleos de CPU; cuatro es mejor. Unos 8 gigabytes de memoria, porque las herramientas defensivas consumen mucho. Un disco de 80 gigabytes. Y una red solo-anfitrión, para que el tráfico del laboratorio se quede dentro de tu máquina."],
+  ["theo","¿Y luego descargo el instalador?"],
+  ["nia","Desde kali.org, en Installer Images, y eliges el Purple, no el estándar. Es grande, así que descárgalo antes de la clase."],
+  ["theo","La lección dice que revise el hash. ¿Para qué?"],
+  ["nia","Un hash es como la huella digital de un archivo. La página de descarga muestra la huella SHA256 correcta. Si la tuya no coincide, el archivo pudo haber sido alterado. Es un ataque real, llamado ataque a la cadena de suministro."],
+  ["theo","La seguridad empieza antes de instalar. Genial. ¿Y el instalador?"],
+  ["nia","Elige la instalación gráfica, configura el idioma y el teclado, crea un usuario con una contraseña fuerte y usa todo el disco virtual. El paso clave es la selección de software: deja marcadas las herramientas de Kali Purple. Eso es lo que lo hace Purple."],
+  ["theo","¿Y cuando arranca?"],
+  ["nia","Abre una terminal y ejecuta sudo apt update, luego sudo apt full-upgrade, y reinicia. Mira el menú de Aplicaciones. Está agrupado en Identificar, Proteger, Detectar, Responder y Recuperar."],
+  ["theo","¿Y si algo sale mal?"],
+  ["nia","Si la VM no arranca, activa la virtualización en el BIOS de tu computadora. Si la pantalla se ve muy pequeña, instala las guest additions. Si fallan las actualizaciones, cambia la red a NAT solo mientras actualizas, y luego regrésala."]]},
+ {t:"3. Cuatro herramientas",d:"Wireshark, Suricata, Greenbone, CyberChef",lines:[
+  ["theo","Hora de las herramientas. ¿Por dónde empezamos?"],
+  ["nia","Por Wireshark. Captura el tráfico de red para que veas cada paquete. Al principio abruma, así que usas filtros de visualización."],
+  ["theo","¿Como cuáles?"],
+  ["nia","Escribe icmp para ver solo los pings. Escribe dns para ver las consultas de nombres. O filtra por una dirección IP para seguir a una máquina. Luego, Statistics y Conversations muestra quién habló con quién."],
+  ["theo","Wireshark me deja mirar. ¿Qué detecta cosas por mí?"],
+  ["nia","Suricata. Es un sistema de detección de intrusiones. Escribes reglas que describen tráfico sospechoso, y genera una alerta cada vez que el tráfico coincide."],
+  ["theo","¿Cómo se ve una regla?"],
+  ["nia","La nuestra dice: alert, icmp, cualquier origen, flecha, nuestra red local. Luego, opciones entre paréntesis: un mensaje, como LAB ICMP ping detected, y un número de identificación llamado sid. Tu compañero te hace ping y la alerta aparece en fast punto log."],
+  ["theo","Qué satisfactorio. ¿Y qué es Greenbone?"],
+  ["nia","Greenbone, también llamado OpenVAS, es un escáner de vulnerabilidades. Lo apuntas a un objetivo, como nuestra máquina Metasploitable, que es débil a propósito, y reporta problemas conocidos ordenados por gravedad."],
+  ["theo","¿Entonces el escáner me dice qué arreglar?"],
+  ["nia","Te dice qué podría estar mal. Un analista todavía tiene que confirmar el problema y decidir qué importa más. Ese criterio es la verdadera habilidad."],
+  ["theo","¿Y la última, CyberChef?"],
+  ["nia","Decodifica datos que encuentras durante una investigación. Te damos una cadena extraña encontrada en un script sospechoso. Aplicas From Base64 y se convierte en las palabras Suspicious PowerShell, que significa PowerShell sospechoso."]]},
+ {t:"4. El laboratorio de equipo morado",d:"Atacar, detectar, documentar",lines:[
+  ["theo","Último episodio. ¿Cómo juntamos todo?"],
+  ["nia","Con un mini ejercicio de equipo morado en parejas. Uno es rojo y el otro es azul."],
+  ["theo","Yo seré rojo. ¿Qué hago?"],
+  ["nia","Solo en la red del laboratorio y con permiso, ejecutas un escaneo con Nmap contra la máquina Kali Purple de tu compañero."],
+  ["theo","¿Y el azul?"],
+  ["nia","El azul ya tiene Suricata funcionando y Wireshark capturando. Encuentra el escaneo en el registro de alertas, y en Wireshark con un filtro que muestra intentos de conexión: paquetes SYN sin ACK."],
+  ["theo","¿Y entonces gana el azul?"],
+  ["nia","Entonces el azul escribe una nota de incidente: la hora, la IP de origen, qué se escaneó, qué herramienta lo detectó y a qué función del NIST pertenece cada paso. Después intercambian."],
+  ["theo","Sinceramente, lanzar el escaneo suena mucho más fácil que demostrar que lo detectaste."],
+  ["nia","Ese es justamente el punto, y por eso hay tanta demanda de analistas de SOC. Cualquiera puede presionar un botón para atacar. Mostrar evidencia clara de lo que pasó es la habilidad que buscan los empleadores."],
+  ["theo","¿Una última advertencia?"],
+  ["nia","La más importante: escanea solo sistemas que sean tuyos o que tengas permiso para probar. Fuera del laboratorio, el mismo escaneo puede ser ilegal. Gracias por escuchar La Hora Morada."]]}
+ ],
+ narr:["Kali Linux es famoso por atacar. Kali Purple es la edición creada para defender.",
+  "El equipo rojo ataca para encontrar debilidades. El equipo azul detecta y responde. Cuando trabajan juntos, es trabajo de equipo morado.",
+  "Kali lo llama un SOC en una caja: herramientas defensivas gratuitas y conocidas, reunidas en un solo lugar, sobre el mismo sistema Kali.",
+  "El menú de Aplicaciones sigue las cinco funciones del Marco de Ciberseguridad del NIST: Identificar, Proteger, Detectar, Responder y Recuperar.",
+  "Para instalar: descarga el instalador Purple, verifica su hash SHA256, crea una máquina virtual, y luego instala y actualiza.",
+  "Wireshark captura cada paquete de la red. Un filtro de visualización como icmp muestra solo los pings.",
+  "Suricata vigila el tráfico y lo compara con reglas. Una regla tiene acción, protocolo, origen, dirección, destino y luego opciones. Cuando el tráfico coincide, escribe una alerta.",
+  "Greenbone escanea un equipo en busca de vulnerabilidades conocidas y las ordena por gravedad. Luego, un analista confirma y decide qué arreglar primero.",
+  "CyberChef decodifica evidencia. Aplica From Base64 a la cadena extraña y se lee Suspicious PowerShell: PowerShell sospechoso.",
+  "En el laboratorio, el rojo escanea con Nmap, el azul demuestra que Suricata y Wireshark lo detectaron, escribe una nota de incidente, y luego intercambian. Siempre solo en la red del laboratorio."],
+ L:{title:"Kali Purple: hecho para defender",red:"Rojo",blue:"Azul",purple:"Morado",tagline:"atacar y luego ver qué detectó la defensa",soc:"SOC en una caja",nist:"Marco de Ciberseguridad del NIST",
+  govern:"CSF 2.0 agrega Gobernar, sin menú en Kali Purple",steps:["Descargar|ISO","Verificar|SHA256","Crear|VM","Instalar y|actualizar"],nomatch:"¿No coincide? No instales. El archivo puede estar alterado.",
+  target:"Objetivo",filter:"filtro: icmp",dots:"puntos rojos = pings que coinciden con el filtro",alert:"ALERTA: LAB ICMP ping",log:"escrito en /var/log/suricata/fast.log",
+  report:"Informe del escaneo, ordenado por gravedad",sev:["Alta","Alta","Media","Baja","Baja"],caught:"Detectado: escaneo Nmap desde la VM objetivo"},
+ nist:[["Identificar","¿Qué tenemos y dónde están las debilidades?","Escáner de vulnerabilidades Greenbone (GVM/OpenVAS).","Ejemplo: encontrar el servidor con un servidor web sin parches."],
+  ["Proteger","¿Cómo prevenimos los ataques?","Herramientas de firewall y de endurecimiento, y Suricata en modo de prevención (IPS).","Ejemplo: bloquear tráfico que coincide con un ataque conocido."],
+  ["Detectar","¿Cómo notamos un ataque?","Suricata, Zeek, Arkime, Malcolm, Elastic Security y Wireshark.","Ejemplo: se dispara una alerta por un escaneo de puertos a las 2 a. m."],
+  ["Responder","¿Qué hacemos cuando lo notamos?","TheHive para gestión de casos, Cortex y CyberChef.","Ejemplo: llevar el control de quién investiga un correo de phishing."],
+  ["Recuperar","¿Cómo volvemos a la normalidad?","Herramientas de respaldo y forenses, aunque es sobre todo proceso, no software.","Ejemplo: restaurar un servidor desde un respaldo limpio."]],
+ rule:["Acción. Lo que hace Suricata cuando hay coincidencia. Aquí escribe una alerta.","Protocolo. Qué tipo de tráfico revisar. ICMP es lo que usa ping.","Origen. Cualquier dirección, cualquier puerto. El tráfico puede venir de cualquier lugar.",
+  "Dirección. La flecha significa desde el origen hacia el destino.","Destino. Nuestra red de laboratorio, definida en suricata.yaml, en cualquier puerto.","Opción: el mensaje que aparece en el registro de alertas.",
+  "Opción: el ID de firma, un número único. Las reglas locales usan de un millón en adelante.","Opción: el número de revisión. Auméntalo cada vez que edites la regla."],
+ scens:[["¿Cuál de nuestros servidores tiene un servidor web sin parches?",0,"Encontrar debilidades es Identificar. Usarías Greenbone."],
+  ["Se disparó una alerta por un escaneo de puertos a las 2 a. m.",2,"Notar un ataque es Detectar. Suricata generó la alerta."],
+  ["Necesitamos llevar el control de quién investiga el correo de phishing.",3,"Manejar un incidente es Responder. TheHive lleva el caso."],
+  ["Restauramos el servidor web desde el respaldo limpio de anoche.",4,"Volver a la normalidad es Recuperar."]],
+ voices:[["El analista del turno de noche","Trabaja en un Centro de Operaciones de Seguridad","Mi trabajo está sobre todo en las columnas Detectar y Responder. Se dispara una alerta a las 2 a. m. y tengo que decidir rápido: ¿es un ataque real o ruido? Practicar con Suricata y Wireshark en un laboratorio es exactamente como se desarrolla ese instinto.","blue"],
+  ["La pentester","Le pagan por entrar a sistemas, con permiso","Uso Kali normal todos los días. Lo que me gusta de Purple es que me obliga a hacer la siguiente pregunta: ¿alguien me notó? Un ataque que pasa desapercibido es el hallazgo que el cliente más necesita escuchar.","red"],
+  ["El encargado de TI de una clínica pequeña","Una sola persona, sin presupuesto de seguridad","No podemos pagar grandes productos comerciales de seguridad. Herramientas gratuitas como Greenbone me ayudan a encontrar las máquinas sin parches antes que otra persona. El escaneo es la parte fácil. Decidir qué arreglar primero es el verdadero trabajo.","purple"],
+  ["La mirada ética y legal","Un recordatorio que todo laboratorio necesita","El mismo escaneo con Nmap es una lección en clase y posiblemente un delito en la red de otra persona. Leyes como la Computer Fraud and Abuse Act de EE. UU., y leyes similares en muchos otros países, hacen que el permiso sea el límite que importa. Los defensores se ganan la confianza respetándolo.","ink"],
+  ["La gerente de contratación","Contrata personal de seguridad de nivel inicial","Muchos candidatos dicen que conocen herramientas de hacking. Muchos menos pueden mostrarme que detectaron un ataque y lo documentaron con claridad. Una nota de incidente de un laboratorio de equipo morado es excelente para llevar a una entrevista.","blue"],
+  ["El escéptico","Un ingeniero sénior con dudas","Kali Purple todavía está madurando, y algunas herramientas necesitan mucha configuración extra. Muchos equipos reales usan plataformas dedicadas como Security Onion o un SIEM comercial. Purple es un gran salón de clases, pero no des por hecho que así trabaja todo lugar.","red"]],
+ gloss:[["Equipo azul (blue team)","Personas que defienden una red: vigilan, detectan y responden a ataques."],
+  ["Equipo rojo (red team)","Personas que atacan sistemas, con permiso, para encontrar debilidades."],
+  ["Equipo morado (purple team)","Rojo y azul trabajando juntos para comprobar si las defensas detectan los ataques."],
+  ["SOC","Centro de Operaciones de Seguridad. El equipo y el lugar que vigilan los ataques las 24 horas."],
+  ["SIEM","Gestión de Información y Eventos de Seguridad. Reúne los registros de muchas herramientas en un solo panel. Elastic Security es uno."],
+  ["IDS","Sistema de Detección de Intrusiones. Vigila el tráfico y alerta sobre actividad sospechosa. Suricata es uno."],
+  ["IPS","Sistema de Prevención de Intrusiones. Como un IDS, pero también puede bloquear el tráfico."],
+  ["NIST CSF","Un marco del Instituto Nacional de Estándares y Tecnología de EE. UU. que organiza el trabajo de seguridad en funciones como Identificar y Detectar."],
+  ["Metapaquete","Un solo paquete que instala todo un grupo de herramientas relacionadas a la vez."],
+  ["ISO","Un solo archivo que contiene un disco de instalación completo."],
+  ["Hash SHA256","La huella digital de un archivo. Si cambia un solo bit, la huella cambia."],
+  ["Ataque a la cadena de suministro","Alterar el software antes de que llegue a ti, como un instalador falso."],
+  ["Máquina virtual","Una computadora que funciona como un programa dentro de tu computadora real."],
+  ["Red solo-anfitrión (host-only)","Una red virtual que solo conecta tus VM y tu propia computadora."],
+  ["NAT","Una configuración de red que permite que una VM llegue a internet a través de tu computadora."],
+  ["Paquete (de red)","Un pequeño trozo de datos que viaja por una red."],
+  ["Filtro de visualización","Una búsqueda en Wireshark que muestra solo los paquetes que quieres."],
+  ["pcap","Un archivo guardado con tráfico de red capturado."],
+  ["Regla (Suricata)","Una línea que describe el tráfico que hay que vigilar y qué hacer cuando aparece."],
+  ["sid","ID de firma. El número único de una regla de Suricata."],
+  ["Vulnerabilidad","Una debilidad que un atacante podría aprovechar."],
+  ["CVSS","Una puntuación de 0 a 10 que indica qué tan grave es una vulnerabilidad."],
+  ["Base64","Una forma de escribir datos usando solo letras, dígitos y algunos símbolos. Se usa a menudo para ocultar texto en scripts."],
+  ["Defang (desactivar un enlace)","Cambiar un enlace peligroso para que no se pueda abrir, como escribir hxxp en lugar de http."],
+  ["Nmap","Una herramienta que escanea una red para encontrar equipos y puertos abiertos."],
+  ["Metasploitable","Una máquina de práctica vulnerable a propósito, que se usa como objetivo en el laboratorio."],
+  ["Nota de incidente","Un registro escrito breve de qué pasó, cuándo y cómo se detectó."]]
+},
+pt:{
+ episodes:[
+ {t:"1. Vermelho, azul, roxo",d:"O que é o Kali Purple",lines:[
+  ["nia","Bem-vindos ao A Hora Roxa. Eu sou a Nia. Trabalho em um Centro de Operações de Segurança, monitorando redes em busca de ataques."],
+  ["theo","E eu sou o Theo. Estou começando agora, então vou fazer as perguntas que todo mundo está pensando. A primeira: o Kali Linux não é para hackear?"],
+  ["nia","Essa é a fama dele. O Kali comum vem cheio de ferramentas para atacar sistemas. Esse é o lado do time vermelho: pessoas que atacam de propósito, com permissão, para encontrar fraquezas."],
+  ["theo","E quem está do outro lado?"],
+  ["nia","O time azul. Eles monitoram, detectam e respondem a ataques. E quando vermelho e azul trabalham juntos, atacando e depois verificando se as defesas perceberam, isso se chama time roxo."],
+  ["theo","E é aí que entra o Kali Purple."],
+  ["nia","Exatamente. O Kali Purple saiu com o Kali 2023.1. É a edição defensiva. O Kali chama de SOC em uma caixa: um Centro de Operações de Segurança inteiro que você roda em um laboratório."],
+  ["theo","É um sistema operacional totalmente diferente?"],
+  ["nia","Não, e essa é uma confusão comum. É o mesmo Kali, com um tema roxo e pacotes defensivos extras. Ele até mantém as ferramentas de ataque, então uma única máquina pode jogar dos dois lados."],
+  ["theo","Ele inventa ferramentas novas?"],
+  ["nia","Muito poucas. O valor dele está em reunir ferramentas gratuitas e conhecidas em um só lugar e organizá-las em cinco grupos do Framework de Cibersegurança do NIST: Identificar, Proteger, Detectar, Responder e Recuperar."],
+  ["theo","Teste rápido para mim. Descobrir qual servidor tem um servidor web antigo e desatualizado?"],
+  ["nia","Isso é Identificar. Você está encontrando fraquezas antes que alguém as use. Um alerta de varredura de portas às 2 da manhã é Detectar. E acompanhar quem está investigando um e-mail de phishing é Responder."],
+  ["theo","Entendi. No próximo episódio, a gente instala."]]},
+ {t:"2. Instalando com segurança",d:"VMs, hashes, atualizações",lines:[
+  ["theo","Beleza, Nia, quero o Kali Purple no meu notebook. É só formatar o computador?"],
+  ["nia","Por favor, não. A gente instala em uma máquina virtual, um computador que roda dentro do seu computador. Se quebrar, é só restaurar."],
+  ["theo","Do que a máquina virtual precisa?"],
+  ["nia","Pelo menos dois núcleos de CPU; quatro é melhor. Uns 8 gigabytes de memória, porque as ferramentas defensivas consomem muito. Um disco de 80 gigabytes. E uma rede host-only, para o tráfego do laboratório ficar dentro da sua máquina."],
+  ["theo","Aí eu baixo o instalador?"],
+  ["nia","Pelo kali.org, em Installer Images, e escolha o Purple, não o padrão. Ele é grande, então baixe antes da aula."],
+  ["theo","A aula diz para conferir o hash. Por que ter esse trabalho?"],
+  ["nia","Um hash é como a impressão digital de um arquivo. A página de download mostra a impressão digital SHA256 correta. Se a sua não bater, o arquivo pode ter sido adulterado. Isso é um ataque real, chamado ataque à cadeia de suprimentos."],
+  ["theo","A segurança começa antes mesmo de instalar. Legal. E o instalador em si?"],
+  ["nia","Escolha a instalação gráfica, defina o idioma e o teclado, crie um usuário com uma senha forte e use o disco virtual inteiro. O passo principal é a seleção de software: deixe marcadas as ferramentas do Kali Purple. É isso que o torna Purple."],
+  ["theo","E depois que ele iniciar?"],
+  ["nia","Abra um terminal e rode sudo apt update, depois sudo apt full-upgrade, e reinicie. Olhe o menu de Aplicativos. Ele está agrupado em Identificar, Proteger, Detectar, Responder e Recuperar."],
+  ["theo","E se algo der errado?"],
+  ["nia","Se a VM não inicializar, ative a virtualização na BIOS do computador. Se a tela ficar minúscula, instale os guest additions. Se as atualizações falharem, mude a rede para NAT só durante a atualização e depois volte."]]},
+ {t:"3. Quatro ferramentas",d:"Wireshark, Suricata, Greenbone, CyberChef",lines:[
+  ["theo","Hora das ferramentas. Por onde a gente começa?"],
+  ["nia","Pelo Wireshark. Ele captura o tráfego de rede para você ver cada pacote. No começo assusta, então você usa filtros de exibição."],
+  ["theo","Tipo quais?"],
+  ["nia","Digite icmp para ver só os pings. Digite dns para ver as consultas de nomes. Ou filtre por um endereço IP para acompanhar uma máquina. Depois, Statistics e Conversations mostra quem conversou com quem."],
+  ["theo","O Wireshark me deixa olhar. O que detecta as coisas por mim?"],
+  ["nia","O Suricata. Ele é um sistema de detecção de intrusão. Você escreve regras que descrevem tráfego suspeito, e ele gera um alerta sempre que o tráfego corresponde."],
+  ["theo","Como é uma regra?"],
+  ["nia","A nossa diz: alert, icmp, qualquer origem, seta, nossa rede interna. Depois, opções entre parênteses: uma mensagem, como LAB ICMP ping detected, e um número de identificação chamado sid. Seu colega faz um ping em você, e o alerta aparece no fast ponto log."],
+  ["theo","Que satisfatório. E o que é o Greenbone?"],
+  ["nia","O Greenbone, também chamado de OpenVAS, é um scanner de vulnerabilidades. Você aponta para um alvo, como a nossa máquina Metasploitable, que é vulnerável de propósito, e ele lista problemas conhecidos ordenados por gravidade."],
+  ["theo","Então o scanner me diz o que corrigir?"],
+  ["nia","Ele diz o que pode estar errado. Um analista ainda precisa confirmar o problema e decidir o que é mais importante. Esse julgamento é a verdadeira habilidade."],
+  ["theo","E a última, o CyberChef?"],
+  ["nia","Ele decodifica dados que você encontra durante uma investigação. A gente te dá um texto estranho encontrado em um script suspeito. Aplique From Base64 e ele vira as palavras Suspicious PowerShell, ou seja, PowerShell suspeito."]]},
+ {t:"4. O laboratório de time roxo",d:"Atacar, detectar, registrar",lines:[
+  ["theo","Último episódio. Como a gente junta tudo?"],
+  ["nia","Com um mini exercício de time roxo em duplas. Um é o vermelho, o outro é o azul."],
+  ["theo","Eu vou ser o vermelho. O que eu faço?"],
+  ["nia","Só na rede do laboratório e com permissão, você roda uma varredura com Nmap contra a máquina Kali Purple do seu colega."],
+  ["theo","E o azul?"],
+  ["nia","O azul já está com o Suricata rodando e o Wireshark capturando. Ele encontra a varredura no log de alertas, e no Wireshark com um filtro que mostra tentativas de conexão: pacotes SYN sem ACK."],
+  ["theo","Aí o azul ganha?"],
+  ["nia","Aí o azul escreve uma nota de incidente: o horário, o IP de origem, o que foi varrido, qual ferramenta detectou e a qual função do NIST cada passo pertence. Depois vocês trocam."],
+  ["theo","Sinceramente, lançar a varredura parece bem mais fácil do que provar que você detectou."],
+  ["nia","Esse é justamente o ponto, e é por isso que analistas de SOC são tão procurados. Qualquer um aperta um botão para atacar. Mostrar evidências claras do que aconteceu é a habilidade que os empregadores procuram."],
+  ["theo","Um último aviso?"],
+  ["nia","O mais importante: só faça varreduras em sistemas que são seus ou que você tem permissão para testar. Fora do laboratório, a mesma varredura pode ser crime. Obrigada por ouvir A Hora Roxa."]]}
+ ],
+ narr:["O Kali Linux é famoso por atacar. O Kali Purple é a edição feita para defender.",
+  "O time vermelho ataca para encontrar fraquezas. O time azul detecta e responde. Quando trabalham juntos, é o time roxo.",
+  "O Kali chama de SOC em uma caixa: ferramentas defensivas gratuitas e conhecidas, reunidas em um só lugar, sobre o mesmo sistema Kali.",
+  "O menu de Aplicativos segue as cinco funções do Framework de Cibersegurança do NIST: Identificar, Proteger, Detectar, Responder e Recuperar.",
+  "Para instalar: baixe o instalador Purple, confira o hash SHA256, crie uma máquina virtual, depois instale e atualize.",
+  "O Wireshark captura cada pacote da rede. Um filtro de exibição como icmp mostra só os pings.",
+  "O Suricata observa o tráfego e compara com regras. Uma regra tem ação, protocolo, origem, direção, destino e depois opções. Quando o tráfego corresponde, ele grava um alerta.",
+  "O Greenbone varre um computador em busca de vulnerabilidades conhecidas e as ordena por gravidade. Depois, um analista confirma e decide o que corrigir primeiro.",
+  "O CyberChef decodifica evidências. Aplique From Base64 no texto estranho e ele vira Suspicious PowerShell: PowerShell suspeito.",
+  "No laboratório, o vermelho faz a varredura com Nmap, o azul prova que o Suricata e o Wireshark detectaram, escreve uma nota de incidente, e depois vocês trocam. Sempre só na rede do laboratório."],
+ L:{title:"Kali Purple: feito para defender",red:"Vermelho",blue:"Azul",purple:"Roxo",tagline:"atacar e depois ver o que a defesa pegou",soc:"SOC em uma caixa",nist:"Framework de Cibersegurança do NIST",
+  govern:"O CSF 2.0 adiciona Governar, sem menu no Kali Purple",steps:["Baixar|ISO","Conferir|SHA256","Criar|VM","Instalar e|atualizar"],nomatch:"Não bateu? Não instale. O arquivo pode ter sido adulterado.",
+  target:"Alvo",filter:"filtro: icmp",dots:"pontos vermelhos = pings que batem com o filtro",alert:"ALERTA: LAB ICMP ping",log:"gravado em /var/log/suricata/fast.log",
+  report:"Relatório da varredura, por gravidade",sev:["Alta","Alta","Média","Baixa","Baixa"],caught:"Detectado: varredura Nmap da VM alvo"},
+ nist:[["Identificar","O que temos e onde estão as fraquezas?","Scanner de vulnerabilidades Greenbone (GVM/OpenVAS).","Exemplo: encontrar o servidor com um servidor web desatualizado."],
+  ["Proteger","Como evitamos ataques?","Ferramentas de firewall e de hardening, e o Suricata no modo de prevenção (IPS).","Exemplo: bloquear tráfego que corresponde a um ataque conhecido."],
+  ["Detectar","Como percebemos um ataque?","Suricata, Zeek, Arkime, Malcolm, Elastic Security e Wireshark.","Exemplo: um alerta dispara por uma varredura de portas às 2 da manhã."],
+  ["Responder","O que fazemos quando percebemos?","TheHive para gestão de casos, Cortex e CyberChef.","Exemplo: acompanhar quem está investigando um e-mail de phishing."],
+  ["Recuperar","Como voltamos ao normal?","Ferramentas de backup e forenses, embora seja mais processo do que software.","Exemplo: restaurar um servidor a partir de um backup limpo."]],
+ rule:["Ação. O que o Suricata faz quando há correspondência. Aqui, ele grava um alerta.","Protocolo. Que tipo de tráfego verificar. ICMP é o que o ping usa.","Origem. Qualquer endereço, qualquer porta. O tráfego pode vir de qualquer lugar.",
+  "Direção. A seta significa da origem para o destino.","Destino. Nossa rede de laboratório, definida no suricata.yaml, em qualquer porta.","Opção: a mensagem que aparece no log de alertas.",
+  "Opção: o ID da assinatura, um número único. Regras locais usam de um milhão em diante.","Opção: o número da revisão. Aumente a cada vez que editar a regra."],
+ scens:[["Qual dos nossos servidores tem um servidor web desatualizado?",0,"Encontrar fraquezas é Identificar. Você usaria o Greenbone."],
+  ["Um alerta disparou por uma varredura de portas às 2 da manhã.",2,"Perceber um ataque é Detectar. O Suricata gerou o alerta."],
+  ["Precisamos acompanhar quem está investigando o e-mail de phishing.",3,"Lidar com um incidente é Responder. O TheHive registra o caso."],
+  ["Restauramos o servidor web a partir do backup limpo de ontem à noite.",4,"Voltar ao normal é Recuperar."]],
+ voices:[["O analista do turno da noite","Trabalha em um Centro de Operações de Segurança","Meu trabalho fica quase todo nas colunas Detectar e Responder. Um alerta dispara às 2 da manhã e eu preciso decidir rápido: é um ataque de verdade ou ruído? Praticar com Suricata e Wireshark em laboratório é exatamente como se desenvolve esse instinto.","blue"],
+  ["A pentester","Paga para invadir sistemas, com permissão","Eu uso o Kali comum todos os dias. O que eu gosto no Purple é que ele me faz a próxima pergunta: alguém me percebeu? Um ataque que passa despercebido é a descoberta que o cliente mais precisa ouvir.","red"],
+  ["O responsável de TI de uma clínica pequena","Uma pessoa só, sem orçamento para segurança","Não temos dinheiro para grandes produtos comerciais de segurança. Ferramentas gratuitas como o Greenbone me ajudam a encontrar as máquinas desatualizadas antes que outra pessoa encontre. A varredura é a parte fácil. Decidir o que corrigir primeiro é o trabalho de verdade.","purple"],
+  ["O olhar ético e legal","Um lembrete de que todo laboratório precisa","A mesma varredura com Nmap é uma lição em sala e pode ser crime na rede de outra pessoa. Leis como a Computer Fraud and Abuse Act, nos EUA, e a Lei 12.737/2012, no Brasil, fazem da permissão o limite que importa. Defensores conquistam confiança respeitando esse limite.","ink"],
+  ["A gerente de contratação","Contrata profissionais de segurança em início de carreira","Muitos candidatos dizem que conhecem ferramentas de hacking. Bem menos conseguem me mostrar que detectaram um ataque e registraram tudo com clareza. Uma nota de incidente de um laboratório de time roxo é ótima para levar a uma entrevista.","blue"],
+  ["O cético","Um engenheiro sênior com dúvidas","O Kali Purple ainda está amadurecendo, e algumas ferramentas exigem muita configuração extra. Muitas equipes reais usam plataformas dedicadas, como o Security Onion ou um SIEM comercial. O Purple é uma ótima sala de aula, mas não pense que todo lugar trabalha assim.","red"]],
+ gloss:[["Time azul (blue team)","Pessoas que defendem uma rede: monitoram, detectam e respondem a ataques."],
+  ["Time vermelho (red team)","Pessoas que atacam sistemas, com permissão, para encontrar fraquezas."],
+  ["Time roxo (purple team)","Vermelho e azul trabalhando juntos para testar se as defesas detectam os ataques."],
+  ["SOC","Centro de Operações de Segurança. A equipe e o lugar que monitoram ataques 24 horas por dia."],
+  ["SIEM","Gerenciamento de Informações e Eventos de Segurança. Reúne logs de várias ferramentas em um só painel. O Elastic Security é um exemplo."],
+  ["IDS","Sistema de Detecção de Intrusão. Monitora o tráfego e alerta sobre atividades suspeitas. O Suricata é um exemplo."],
+  ["IPS","Sistema de Prevenção de Intrusão. Como um IDS, mas também pode bloquear o tráfego."],
+  ["NIST CSF","Um framework do Instituto Nacional de Padrões e Tecnologia dos EUA que organiza o trabalho de segurança em funções como Identificar e Detectar."],
+  ["Metapacote","Um único pacote que instala um grupo inteiro de ferramentas relacionadas de uma vez."],
+  ["ISO","Um único arquivo que contém um disco de instalação inteiro."],
+  ["Hash SHA256","A impressão digital de um arquivo. Se um único bit mudar, a impressão digital muda."],
+  ["Ataque à cadeia de suprimentos","Adulterar um software antes que ele chegue até você, como um instalador falso."],
+  ["Máquina virtual","Um computador que roda como um programa dentro do seu computador real."],
+  ["Rede host-only","Uma rede virtual que conecta apenas suas VMs e o seu próprio computador."],
+  ["NAT","Uma configuração de rede que permite que a VM acesse a internet pelo seu computador."],
+  ["Pacote (de rede)","Um pequeno pedaço de dados que viaja pela rede."],
+  ["Filtro de exibição","Uma busca no Wireshark que mostra só os pacotes que você quer."],
+  ["pcap","Um arquivo salvo com tráfego de rede capturado."],
+  ["Regra (Suricata)","Uma linha que descreve o tráfego a observar e o que fazer quando ele aparecer."],
+  ["sid","ID da assinatura. O número único de uma regra do Suricata."],
+  ["Vulnerabilidade","Uma fraqueza que um atacante poderia explorar."],
+  ["CVSS","Uma nota de 0 a 10 que indica a gravidade de uma vulnerabilidade."],
+  ["Base64","Uma forma de escrever dados usando só letras, dígitos e alguns símbolos. Muito usada para esconder texto em scripts."],
+  ["Defang (desarmar um link)","Alterar um link perigoso para que não possa ser clicado, como escrever hxxp em vez de http."],
+  ["Nmap","Uma ferramenta que varre a rede para encontrar computadores e portas abertas."],
+  ["Metasploitable","Uma máquina de treino vulnerável de propósito, usada como alvo no laboratório."],
+  ["Nota de incidente","Um registro escrito curto do que aconteceu, quando e como foi detectado."]]
+}};
+
+
+const DIRS={"en": {"bandit": {"title": "Warm-up: OverTheWire Bandit, levels 0 to 7", "time": "45 min", "file": "01-bandit-warmup.docx"}, "install": {"title": "Install and update Kali Purple", "time": "60 min", "file": "02-install-and-update.docx"}, "wireshark": {"title": "Wireshark: seeing the traffic", "time": "15 min", "file": "04-wireshark.docx"}, "suricata": {"title": "Suricata: writing a first detection rule", "time": "25 min", "file": "05-suricata.docx"}, "greenbone": {"title": "Greenbone (GVM/OpenVAS): finding vulnerabilities", "time": "20 min", "file": "06-greenbone.docx"}, "cyberchef": {"title": "CyberChef: decoding evidence", "time": "10 min", "file": "07-cyberchef.docx"}, "purple": {"title": "Mini purple-team lab", "time": "15 min + homework", "file": "08-purple-team-lab.docx"}}, "es": {"bandit": {"title": "Calentamiento: OverTheWire Bandit, niveles 0 a 7", "time": "45 min", "file": "01-bandit-warmup.docx"}, "install": {"title": "Instalar y actualizar Kali Purple", "time": "60 min", "file": "02-install-and-update.docx"}, "wireshark": {"title": "Wireshark: ver el tráfico", "time": "15 min", "file": "04-wireshark.docx"}, "suricata": {"title": "Suricata: escribir una primera regla de detección", "time": "25 min", "file": "05-suricata.docx"}, "greenbone": {"title": "Greenbone (GVM/OpenVAS): encontrar vulnerabilidades", "time": "20 min", "file": "06-greenbone.docx"}, "cyberchef": {"title": "CyberChef: decodificar evidencia", "time": "10 min", "file": "07-cyberchef.docx"}, "purple": {"title": "Mini laboratorio de equipo morado", "time": "15 min + tarea", "file": "08-purple-team-lab.docx"}}, "pt": {"bandit": {"title": "Aquecimento: OverTheWire Bandit, níveis 0 a 7", "time": "45 min", "file": "01-bandit-warmup.docx"}, "install": {"title": "Instalar e atualizar o Kali Purple", "time": "60 min", "file": "02-install-and-update.docx"}, "wireshark": {"title": "Wireshark: vendo o tráfego", "time": "15 min", "file": "04-wireshark.docx"}, "suricata": {"title": "Suricata: escrevendo uma primeira regra de detecção", "time": "25 min", "file": "05-suricata.docx"}, "greenbone": {"title": "Greenbone (GVM/OpenVAS): encontrando vulnerabilidades", "time": "20 min", "file": "06-greenbone.docx"}, "cyberchef": {"title": "CyberChef: decodificando evidências", "time": "10 min", "file": "07-cyberchef.docx"}, "purple": {"title": "Mini laboratório de time roxo", "time": "15 min + tarefa de casa", "file": "08-purple-team-lab.docx"}}};
+const EXTRA={
+en:{"tab.today":"Today","pt.today":"today's plan","today.h2":"Today's lesson","today.intro":"Work through these activities in order. Each one has directions you can download and print.",
+ "today.go":"Open {t}","dl.word":"⬇ Directions (Word)","dl.ws":"⬇ Worksheet (Word, English)","dl.h":"Download directions","dl.intro":"Printable Word directions for every activity, in the language selected at the top of the page.","dl.all":"⬇ All directions (ZIP)","lb.today":"▶ Listen to the plan","exit.h":"Exit ticket",
+ "pr.bandit":"Warm-up: OverTheWire Bandit","pr.b0":"Level 0: connect to the game with the password bandit0.","pr.b1":"Level 0 → 1: read the readme file in your home folder.","pr.b2":"Level 1 → 2: read a file whose name is a single dash.","pr.b3":"Level 2 → 3: read a file with spaces in its name.","pr.b4":"Level 3 → 4: find the hidden file in inhere.","pr.b5":"Level 4 → 5: find the only human-readable file in inhere.","pr.b6":"Level 5 → 6: find the human-readable, 1033-byte, non-executable file.","pr.b7":"Level 6 → 7: find the 33-byte file owned by bandit7 and group bandit6.","pr.b8":"Level 7 → 8: find the word millionth in data.txt.",
+ "pr.ws":"Beginner activity: Kali Purple Explorer worksheet","pr.w1":"Part 1: First look. Run the six commands and record what each one shows.","pr.w2":"Part 2: Menu scavenger hunt. Find one tool for each NIST function.","pr.w3":"Part 3: Package detective. Investigate the tools with apt and dpkg.","pr.w4":"Part 4: Try-it stations. Complete three stations from three different functions.","pr.w5":"Part 5: Share-out. Make a tool card and do the gallery walk.","pr.w6":"Part 6: Exit reflection."},
+es:{"tab.today":"Hoy","pt.today":"el plan de hoy","today.h2":"La lección de hoy","today.intro":"Haz estas actividades en orden. Cada una tiene instrucciones que puedes descargar e imprimir.",
+ "today.go":"Abrir {t}","dl.word":"⬇ Instrucciones (Word)","dl.ws":"⬇ Hoja de trabajo (Word, en inglés)","dl.h":"Descargar instrucciones","dl.intro":"Instrucciones en Word para imprimir, de cada actividad, en el idioma elegido arriba de la página.","dl.all":"⬇ Todas las instrucciones (ZIP)","lb.today":"▶ Escuchar el plan","exit.h":"Ticket de salida",
+ "pr.bandit":"Calentamiento: OverTheWire Bandit","pr.b0":"Nivel 0: conéctate al juego con la contraseña bandit0.","pr.b1":"Nivel 0 → 1: lee el archivo readme de tu carpeta personal.","pr.b2":"Nivel 1 → 2: lee un archivo cuyo nombre es un solo guion.","pr.b3":"Nivel 2 → 3: lee un archivo con espacios en el nombre.","pr.b4":"Nivel 3 → 4: encuentra el archivo oculto en inhere.","pr.b5":"Nivel 4 → 5: encuentra el único archivo legible en inhere.","pr.b6":"Nivel 5 → 6: encuentra el archivo legible, de 1033 bytes y no ejecutable.","pr.b7":"Nivel 6 → 7: encuentra el archivo de 33 bytes del usuario bandit7 y el grupo bandit6.","pr.b8":"Nivel 7 → 8: encuentra la palabra millionth en data.txt.",
+ "pr.ws":"Actividad para principiantes: hoja Kali Purple Explorer","pr.w1":"Parte 1: Primer vistazo. Ejecuta los seis comandos y anota lo que muestra cada uno.","pr.w2":"Parte 2: Búsqueda en el menú. Encuentra una herramienta de cada función del NIST.","pr.w3":"Parte 3: Detective de paquetes. Investiga las herramientas con apt y dpkg.","pr.w4":"Parte 4: Estaciones de prueba. Completa tres estaciones de tres funciones distintas.","pr.w5":"Parte 5: Puesta en común. Haz una tarjeta de herramienta y recorre la galería.","pr.w6":"Parte 6: Reflexión de salida."},
+pt:{"tab.today":"Hoje","pt.today":"o plano de hoje","today.h2":"A aula de hoje","today.intro":"Faça estas atividades em ordem. Cada uma tem instruções que você pode baixar e imprimir.",
+ "today.go":"Abrir {t}","dl.word":"⬇ Instruções (Word)","dl.ws":"⬇ Folha de atividades (Word, em inglês)","dl.h":"Baixar instruções","dl.intro":"Instruções em Word para imprimir, de cada atividade, no idioma escolhido no topo da página.","dl.all":"⬇ Todas as instruções (ZIP)","lb.today":"▶ Ouvir o plano","exit.h":"Ticket de saída",
+ "pr.bandit":"Aquecimento: OverTheWire Bandit","pr.b0":"Nível 0: conecte-se ao jogo com a senha bandit0.","pr.b1":"Nível 0 → 1: leia o arquivo readme da sua pasta pessoal.","pr.b2":"Nível 1 → 2: leia um arquivo cujo nome é um único traço.","pr.b3":"Nível 2 → 3: leia um arquivo com espaços no nome.","pr.b4":"Nível 3 → 4: encontre o arquivo oculto em inhere.","pr.b5":"Nível 4 → 5: encontre o único arquivo legível em inhere.","pr.b6":"Nível 5 → 6: encontre o arquivo legível, de 1033 bytes e não executável.","pr.b7":"Nível 6 → 7: encontre o arquivo de 33 bytes do usuário bandit7 e do grupo bandit6.","pr.b8":"Nível 7 → 8: encontre a palavra millionth em data.txt.",
+ "pr.ws":"Atividade para iniciantes: folha Kali Purple Explorer","pr.w1":"Parte 1: Primeiro olhar. Rode os seis comandos e anote o que cada um mostra.","pr.w2":"Parte 2: Caça no menu. Encontre uma ferramenta para cada função do NIST.","pr.w3":"Parte 3: Detetive de pacotes. Investigue as ferramentas com apt e dpkg.","pr.w4":"Parte 4: Estações de teste. Complete três estações de três funções diferentes.","pr.w5":"Parte 5: Compartilhamento. Faça um cartão de ferramenta e participe da galeria.","pr.w6":"Parte 6: Reflexão de saída."}
+};
+for(const l in EXTRA)Object.assign(I18N[l],EXTRA[l]);
+Object.assign(I18N.en,{"words.intro": "Practice this week's vocabulary with the Quizlet Match game. If it does not load, open the set on Quizlet.", "words.open": "Open the full set on Quizlet", "words.frame": "Quizlet: Week 1 Kali Basics and Lab Setup"});
+Object.assign(I18N.es,{"words.intro": "Practica el vocabulario de esta semana con el juego Match de Quizlet. Si no carga, abre el conjunto en Quizlet.", "words.open": "Abrir el conjunto completo en Quizlet", "words.frame": "Quizlet: Semana 1, conceptos básicos de Kali y configuración del laboratorio"});
+Object.assign(I18N.pt,{"words.intro": "Pratique o vocabulário desta semana com o jogo Match do Quizlet. Se não carregar, abra o conjunto no Quizlet.", "words.open": "Abrir o conjunto completo no Quizlet", "words.frame": "Quizlet: Semana 1, noções básicas de Kali e configuração do laboratório"});
+const AGENDA={
+en:[["Warm-up: OverTheWire Bandit, levels 0 to 7","45 min","Log in to a free practice server and use Linux commands to find the password for each level. You don't need Kali yet; any terminal with SSH works.",["practice"],["bandit"]],
+ ["What is Kali Purple?","30 min","Pick a way in: read the lesson, listen to the podcast, watch the video, or explore the visuals. Then try the self-check on the See it tab.",["read","listen","watch","see"],[]],
+ ["Install and update Kali Purple","60 min","Verify the installer, build your virtual machine, and update it. Keep the network on NAT for now.",["practice"],["install"]],
+ ["Beginner activity: Kali Purple Explorer worksheet","about 4.5 hours as written","Tour your new system, hunt through the NIST menus, investigate packages, and try three stations. Work with a partner, but fill in your own worksheet.",["practice"],["worksheet"]],
+ ["Tool basics: Wireshark, Suricata, Greenbone, CyberChef","about 70 min","Switch to the host-only lab network, then capture traffic, write a detection rule, scan the lab target, and decode evidence.",["practice","see"],["wireshark","suricata","greenbone","cyberchef"]],
+ ["Mini purple-team lab and exit ticket","15 min + homework","One partner scans, the other proves the defenses caught it and writes an incident note. Then answer the exit ticket.",["practice"],["purple"]]],
+es:[["Calentamiento: OverTheWire Bandit, niveles 0 a 7","45 min","Entra a un servidor de práctica gratuito y usa comandos de Linux para encontrar la contraseña de cada nivel. Todavía no necesitas Kali; sirve cualquier terminal con SSH.",["practice"],["bandit"]],
+ ["¿Qué es Kali Purple?","30 min","Elige cómo entrar: lee la lección, escucha el pódcast, mira el video o explora lo visual. Luego haz la autoevaluación en la pestaña Visualizar.",["read","listen","watch","see"],[]],
+ ["Instalar y actualizar Kali Purple","60 min","Verifica el instalador, crea tu máquina virtual y actualízala. Por ahora deja la red en NAT.",["practice"],["install"]],
+ ["Actividad para principiantes: hoja Kali Purple Explorer","unas 4,5 horas según la hoja","Recorre tu nuevo sistema, explora los menús del NIST, investiga paquetes y prueba tres estaciones. Trabaja en pareja, pero llena tu propia hoja.",["practice"],["worksheet"]],
+ ["Herramientas básicas: Wireshark, Suricata, Greenbone, CyberChef","unos 70 min","Cambia a la red solo-anfitrión del laboratorio y luego captura tráfico, escribe una regla de detección, escanea el objetivo y decodifica evidencia.",["practice","see"],["wireshark","suricata","greenbone","cyberchef"]],
+ ["Mini laboratorio de equipo morado y ticket de salida","15 min + tarea","Una persona escanea y la otra demuestra que las defensas lo detectaron y escribe una nota de incidente. Luego responde el ticket de salida.",["practice"],["purple"]]],
+pt:[["Aquecimento: OverTheWire Bandit, níveis 0 a 7","45 min","Entre em um servidor de treino gratuito e use comandos de Linux para encontrar a senha de cada nível. Você ainda não precisa do Kali; qualquer terminal com SSH serve.",["practice"],["bandit"]],
+ ["O que é o Kali Purple?","30 min","Escolha como começar: leia a aula, ouça o podcast, assista ao vídeo ou explore o visual. Depois faça a autoavaliação na aba Visualizar.",["read","listen","watch","see"],[]],
+ ["Instalar e atualizar o Kali Purple","60 min","Confira o instalador, monte sua máquina virtual e atualize. Por enquanto, deixe a rede em NAT.",["practice"],["install"]],
+ ["Atividade para iniciantes: folha Kali Purple Explorer","cerca de 4,5 horas, como está na folha","Explore seu novo sistema, percorra os menus do NIST, investigue pacotes e teste três estações. Trabalhe em dupla, mas preencha sua própria folha.",["practice"],["worksheet"]],
+ ["Ferramentas básicas: Wireshark, Suricata, Greenbone, CyberChef","cerca de 70 min","Mude para a rede host-only do laboratório e depois capture tráfego, escreva uma regra de detecção, faça a varredura no alvo e decodifique evidências.",["practice","see"],["wireshark","suricata","greenbone","cyberchef"]],
+ ["Mini laboratório de time roxo e ticket de saída","15 min + tarefa de casa","Um colega faz a varredura e o outro prova que as defesas detectaram e escreve uma nota de incidente. Depois responda ao ticket de saída.",["practice"],["purple"]]]
+};
+const EXIT={
+en:["In one sentence, how is Kali Purple different from standard Kali Linux?","Name the NIST CSF function for a vulnerability scan, and the tool you used.","What four parts come before the options in a Suricata rule?","Why do we verify the ISO's SHA256 hash before installing?"],
+es:["En una oración, ¿en qué se diferencia Kali Purple de Kali Linux estándar?","Nombra la función del NIST CSF de un escaneo de vulnerabilidades y la herramienta que usaste.","¿Qué cuatro partes van antes de las opciones en una regla de Suricata?","¿Por qué verificamos el hash SHA256 de la ISO antes de instalar?"],
+pt:["Em uma frase, como o Kali Purple é diferente do Kali Linux padrão?","Diga a função do NIST CSF de uma varredura de vulnerabilidades e a ferramenta que você usou.","Quais quatro partes vêm antes das opções em uma regra do Suricata?","Por que conferimos o hash SHA256 da ISO antes de instalar?"]
+};
+const PLAN_HTML={
+en:`<h3>Planning today</h3>
+<p>The Today tab sets the order: the Bandit warm-up, the Kali Purple introduction, install and update, the Explorer worksheet, the four tool basics, and the purple-team lab.</p>
+<p>As written, this adds up to about 8 hours, because the Explorer worksheet is planned for about 4.5 hours on its own. For a shorter class, a natural split is to end Day 1 after the worksheet, or to run only worksheet Parts 1 to 3 today.</p>
+<p>Bandit needs internet access over SSH on port 2220. Test it from a lab computer before class, since some school networks block that port. Students can play from the host computer's terminal, so they don't need Kali for the warm-up.</p>
+<p>The worksheet's Detect station pings kali.org and opens a website, so keep the VM on NAT for the worksheet and switch to host-only before anyone scans the Metasploitable target.</p>
+<p>Printable Word directions for each activity are in the directions folder, in English, Spanish, and Portuguese. The Explorer worksheet is your original file, in English. When hosting, upload the whole folder, not just index.html, so the download links work.</p>`,
+es:`<h3>Planificar el día</h3>
+<p>La pestaña Hoy marca el orden: el calentamiento con Bandit, la introducción a Kali Purple, la instalación y actualización, la hoja Explorer, las cuatro herramientas básicas y el laboratorio de equipo morado.</p>
+<p>Tal como está, suma unas 8 horas, porque la hoja Explorer por sí sola está planeada para unas 4,5 horas. Para una clase más corta, un buen punto de corte es terminar el día 1 después de la hoja, o hacer hoy solo las partes 1 a 3 de la hoja.</p>
+<p>Bandit necesita acceso a internet por SSH en el puerto 2220. Pruébalo desde una computadora del laboratorio antes de la clase, porque algunas redes escolares bloquean ese puerto. Los estudiantes pueden jugar desde la terminal de la computadora anfitriona, así que no necesitan Kali para el calentamiento.</p>
+<p>La estación Detect de la hoja hace ping a kali.org y abre un sitio web, así que deja la VM en NAT durante la hoja y cambia a solo-anfitrión antes de que alguien escanee el objetivo Metasploitable.</p>
+<p>Las instrucciones en Word de cada actividad están en la carpeta directions, en inglés, español y portugués. La hoja Explorer es tu archivo original, en inglés. Al publicar, sube la carpeta completa, no solo index.html, para que funcionen las descargas.</p>`,
+pt:`<h3>Planejando o dia</h3>
+<p>A aba Hoje define a ordem: o aquecimento com Bandit, a introdução ao Kali Purple, a instalação e atualização, a folha Explorer, as quatro ferramentas básicas e o laboratório de time roxo.</p>
+<p>Do jeito que está, isso soma cerca de 8 horas, porque a folha Explorer sozinha foi planejada para cerca de 4,5 horas. Para uma aula mais curta, um bom ponto de corte é encerrar o dia 1 depois da folha, ou fazer hoje só as partes 1 a 3 da folha.</p>
+<p>O Bandit precisa de acesso à internet por SSH na porta 2220. Teste em um computador do laboratório antes da aula, porque algumas redes escolares bloqueiam essa porta. Os estudantes podem jogar pelo terminal do computador hospedeiro, então não precisam do Kali para o aquecimento.</p>
+<p>A estação Detect da folha faz ping em kali.org e abre um site, então deixe a VM em NAT durante a folha e mude para host-only antes que alguém faça varredura no alvo Metasploitable.</p>
+<p>As instruções em Word de cada atividade estão na pasta directions, em inglês, espanhol e português. A folha Explorer é o seu arquivo original, em inglês. Ao publicar, envie a pasta inteira, não só o index.html, para os downloads funcionarem.</p>`
+};
+for(const l in PLAN_HTML)TEACH_HTML[l]=PLAN_HTML[l]+TEACH_HTML[l];
+const WS_FILE="directions/Kali_Purple_Explorer_Worksheet.docx";
+const WS_TITLE={en:"Kali Purple Explorer worksheet",es:"Hoja Kali Purple Explorer",pt:"Folha Kali Purple Explorer"};
+function dlHref(id){if(id==="worksheet")return WS_FILE;return "directions/"+LANG+"/"+DIRS[LANG][id].file}
+function dlLink(id){const a=document.createElement("a");a.className="btn dl";a.href=dlHref(id);a.setAttribute("download","");a.textContent=id==="worksheet"?t("dl.ws"):t("dl.word");return a}
+function renderToday(){
+  const ol=$("#agenda");ol.innerHTML="";
+  AGENDA[LANG].forEach(([title,time,desc,go,dls],i)=>{
+    const li=document.createElement("li");
+    li.innerHTML='<div class="ag-time"></div><div class="ag-body"><h3 class="skip-read"></h3><p></p><div class="ag-act"></div></div>';
+    li.dataset.say=time+". "+title+". "+desc;
+    li.querySelector(".ag-time").textContent=time;li.querySelector("h3").textContent=title;li.querySelector("p").textContent=desc;
+    const act=li.querySelector(".ag-act");
+    go.forEach(k=>{const b=document.createElement("button");b.className="btn";b.textContent=t("today.go",{t:t("tab."+k)});b.addEventListener("click",()=>selectTab($("#t-"+k),true));act.appendChild(b)});
+    dls.forEach(id=>{const a=dlLink(id);if(dls.length>1)a.textContent="⬇ "+(DIRS[LANG][id].title.split(":")[0]);act.appendChild(a)});
+    if(i===AGENDA[LANG].length-1){const h=document.createElement("h3");h.className="exit-h";h.textContent=t("exit.h");li.querySelector(".ag-body").appendChild(h);
+      const ex=document.createElement("ol");ex.className="exit";EXIT[LANG].forEach(q=>{const x=document.createElement("li");x.textContent=q;ex.appendChild(x)});li.querySelector(".ag-body").appendChild(ex)}
+    ol.appendChild(li)});
 }
-function save(d){ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
-function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-
-let signups = load();
-
-function updateSpots(){
-  Object.entries(JOB_IDS).forEach(([job,id])=>{
-    const n = signups.filter(s=>s.job===job).length;
-    const el = document.getElementById('spots-'+id);
-    if(el) el.textContent = n===0 ? 'No sign-ups yet — be the first' : `${n} student${n===1?'':'s'} signed up`;
-  });
+function renderDownloads(){
+  const box=$("#downloads");box.innerHTML="";
+  const h=document.createElement("h3");h.textContent=t("dl.h");box.appendChild(h);
+  const p=document.createElement("p");p.className="small";p.textContent=t("dl.intro");box.appendChild(p);
+  const ul=document.createElement("ul");ul.className="dls";
+  ["bandit","install","worksheet","wireshark","suricata","greenbone","cyberchef","purple"].forEach((id,i)=>{
+    const li=document.createElement("li");const s=document.createElement("span");
+    s.textContent=(i+1)+". "+(id==="worksheet"?WS_TITLE[LANG]:DIRS[LANG][id].title);
+    const tm=document.createElement("span");tm.className="small";tm.textContent=id==="worksheet"?"":" · "+DIRS[LANG][id].time;s.appendChild(tm);
+    li.appendChild(s);li.appendChild(dlLink(id));ul.appendChild(li)});
+  box.appendChild(ul);
+  const all=document.createElement("a");all.className="btn solid";all.href="directions/"+LANG+"/all-directions-"+LANG+".zip";all.setAttribute("download","");all.textContent=t("dl.all");box.appendChild(all);
 }
 
-const modalBg = document.getElementById('modalBg');
-let currentJob = '';
+let LANG=store.get("lang",null);
+if(!LANG||!I18N[LANG]){const nl=(navigator.language||"en").slice(0,2).toLowerCase();LANG=I18N[nl]?nl:"en"}
+function t(k,v){let s=(I18N[LANG]&&I18N[LANG][k]!==undefined)?I18N[LANG][k]:(I18N.en[k]!==undefined?I18N.en[k]:k);
+  if(v)for(const x in v)s=s.split("{"+x+"}").join(v[x]);return s}
+const D=()=>DATA[LANG];
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const ORIG_READ=$("#read-body").innerHTML;
 
-document.querySelectorAll('.signup-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    currentJob = btn.dataset.job;
-    document.getElementById('modalJobLine').textContent = 'Applying for: ' + currentJob;
-    modalBg.classList.add('show');
-  });
+/* ---------- Video scene drawings (labels come from the current language) ---------- */
+function twoLine(txt,x,y,size){const p=txt.split("|");if(p.length===1)return `<text class="sv-ink" x="${x}" y="${y+5}" text-anchor="middle" font-size="${size}" font-weight="800">${esc(p[0])}</text>`;
+  return `<text class="sv-ink" x="${x}" y="${y-4}" text-anchor="middle" font-size="${size}" font-weight="800">${esc(p[0])}<tspan x="${x}" dy="${size+3}">${esc(p[1])}</tspan></text>`}
+const SVG=[
+ L=>`<rect class="sv-ps" x="0" y="0" width="640" height="360"/>
+  <path class="pop sv-p" style="--d:.1s" d="M320 60 l90 30 v70 c0 60 -40 100 -90 120 c-50 -20 -90 -60 -90 -120 v-70z"/>
+  <path class="pop" style="--d:.5s" d="M285 170 l25 25 l50 -55" fill="none" stroke="var(--paper)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <text class="pop sv-ink" style="--d:.8s" x="320" y="325" text-anchor="middle" font-size="32" font-weight="800">${esc(L.title)}</text>`,
+ L=>`<circle class="pop sv-rs st-r" style="--d:.1s" cx="245" cy="170" r="110" stroke-width="5" fill-opacity=".8"/>
+  <circle class="pop sv-bs st-b" style="--d:.6s" cx="395" cy="170" r="110" stroke-width="5" fill-opacity=".8"/>
+  <path class="pop sv-p" style="--d:1.2s" d="M320 87 a110 110 0 0 1 0 166 a110 110 0 0 1 0 -166z" opacity=".85"/>
+  <text class="pop sv-r" style="--d:.2s" x="195" y="178" text-anchor="middle" font-size="24" font-weight="800">${esc(L.red)}</text>
+  <text class="pop sv-b" style="--d:.7s" x="445" y="178" text-anchor="middle" font-size="24" font-weight="800">${esc(L.blue)}</text>
+  <text class="pop sv-paper" style="--d:1.3s" x="320" y="178" text-anchor="middle" font-size="18" font-weight="800">${esc(L.purple)}</text>
+  <text class="pop sv-ink" style="--d:1.6s" x="320" y="330" text-anchor="middle" font-size="21">${esc(L.tagline)}</text>`,
+ L=>`<rect x="120" y="70" width="400" height="230" rx="10" fill="none" class="st-ink" stroke-width="4"/>
+  <text class="sv-ink" x="320" y="55" text-anchor="middle" font-size="22" font-weight="800">${esc(L.soc)}</text>
+  ${["Wireshark","Suricata","Greenbone","CyberChef","Zeek","Arkime","TheHive","Elastic"].map((n,i)=>{const x=150+(i%4)*92,y=100+Math.floor(i/4)*95;return `<g class="pop" style="--d:${.2+i*.25}s"><rect class="sv-ps st-p" x="${x}" y="${y}" width="82" height="70" rx="8" stroke-width="2"/><text class="sv-ink" x="${x+41}" y="${y+41}" text-anchor="middle" font-size="13" font-weight="700">${n}</text></g>`}).join("")}`,
+ L=>`${D().nist.map((f,i)=>`<g class="pop" style="--d:${.2+i*.6}s"><rect class="sv-p" x="${30+i*118}" y="130" width="108" height="100" rx="8"/><text class="sv-paper" x="${84+i*118}" y="186" text-anchor="middle" font-size="15" font-weight="800">${esc(f[0])}</text></g>`).join("")}
+  <text class="sv-ink" x="320" y="95" text-anchor="middle" font-size="22" font-weight="800">${esc(L.nist)}</text>
+  <text class="pop sv-muted" style="--d:3.4s" x="320" y="280" text-anchor="middle" font-size="17">${esc(L.govern)}</text>`,
+ L=>`<defs><marker id="ah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" class="sv-ink"/></marker></defs>
+  ${L.steps.map((s,i)=>`<g class="pop" style="--d:${.2+i*.7}s"><circle class="sv-bs st-b" cx="${95+i*150}" cy="170" r="58" stroke-width="4"/>${twoLine(s,95+i*150,170,14)}${i<3?`<path d="M${157+i*150} 170 h26" class="st-ink" stroke-width="4" marker-end="url(#ah)"/>`:""}</g>`).join("")}
+  <text class="pop sv-r" style="--d:2.8s" x="320" y="290" text-anchor="middle" font-size="17" font-weight="700">${esc(L.nomatch)}</text>`,
+ L=>`<rect class="sv-bs st-b" x="40" y="130" width="110" height="80" rx="8" stroke-width="3"/><text class="sv-ink" x="95" y="176" text-anchor="middle" font-size="15" font-weight="700">${esc(L.target)}</text>
+  <rect class="sv-ps st-p" x="490" y="130" width="110" height="80" rx="8" stroke-width="3"/><text class="sv-ink" x="545" y="176" text-anchor="middle" font-size="15" font-weight="700">Kali Purple</text>
+  <line x1="150" y1="170" x2="490" y2="170" class="st-line" stroke-width="3" stroke-dasharray="6 6"/>
+  <g transform="translate(170 0)"><circle class="pkt sv-r" style="--d:0s" cx="0" cy="170" r="10"/><circle class="pkt sv-muted" style="--d:.8s" cx="0" cy="155" r="8"/><circle class="pkt sv-r" style="--d:1.6s" cx="0" cy="185" r="10"/></g>
+  <rect class="pop sv-ink" style="--d:.8s" x="220" y="250" width="200" height="44" rx="6"/><text class="pop sv-paper" style="--d:.8s" x="320" y="279" text-anchor="middle" font-size="20" font-family="monospace">${esc(L.filter)}</text>
+  <text class="pop sv-muted" style="--d:1.2s" x="320" y="330" text-anchor="middle" font-size="15">${esc(L.dots)}</text>`,
+ L=>`${[["alert","r"],["icmp","b"],["any any","p"],["->","ink"],["$HOME_NET any","p"],["(msg; sid; rev)","b"]].map((p,i)=>{const xs=[40,120,195,300,345,510];return `<text class="pop sv-${p[1]}" style="--d:${.2+i*.5}s" x="${xs[i]}" y="120" font-size="22" font-family="monospace" font-weight="700">${esc(p[0])}</text>`}).join("")}
+  <g class="pop" style="--d:3.4s"><rect class="sv-r" x="160" y="190" width="320" height="80" rx="8"/><text class="blink sv-paper" x="320" y="237" text-anchor="middle" font-size="22" font-weight="800">${esc(L.alert)}</text></g>
+  <text class="pop sv-muted" style="--d:3.6s" x="320" y="310" text-anchor="middle" font-size="15">${esc(L.log)}</text>`,
+ L=>`<text class="sv-ink" x="320" y="50" text-anchor="middle" font-size="22" font-weight="800">${esc(L.report)}</text>
+  ${[[10,"r"],[7,"r"],[5,"p"],[3,"b"],[2,"b"]].map((b,i)=>`<rect class="grow sv-${b[1]}" style="--d:${.3+i*.35}s" x="${120+i*85}" y="${290-b[0]*20}" width="60" height="${b[0]*20}" rx="4"/><text class="sv-ink" x="${150+i*85}" y="315" text-anchor="middle" font-size="14">${esc(L.sev[i])}</text>`).join("")}
+  <line x1="100" y1="290" x2="560" y2="290" class="st-ink" stroke-width="2"/>`,
+ L=>`<rect class="sv-ps st-p" x="40" y="90" width="560" height="60" rx="6" stroke-width="2"/>
+  <text class="sv-ink" x="320" y="128" text-anchor="middle" font-size="22" font-family="monospace">U3VzcGljaW91cyBQb3dlclNoZWxs</text>
+  <text class="pop sv-p" style="--d:.8s" x="320" y="200" text-anchor="middle" font-size="22" font-weight="800">↓ From Base64</text>
+  <g class="pop" style="--d:1.6s"><rect class="sv-bs st-b" x="140" y="230" width="360" height="60" rx="6" stroke-width="3"/><text class="sv-ink" x="320" y="268" text-anchor="middle" font-size="26" font-weight="800">Suspicious PowerShell</text></g>`,
+ L=>`<rect class="sv-rs st-r" x="40" y="120" width="140" height="90" rx="8" stroke-width="3"/><text class="sv-r" x="110" y="160" text-anchor="middle" font-size="18" font-weight="800">${esc(L.red)}</text><text class="sv-ink" x="110" y="185" text-anchor="middle" font-size="14">nmap -sV</text>
+  <g transform="translate(190 0)"><circle class="pkt sv-r" cx="0" cy="150" r="7"/><circle class="pkt sv-r" style="--d:.5s" cx="0" cy="170" r="7"/><circle class="pkt sv-r" style="--d:1s" cx="0" cy="190" r="7"/></g>
+  <path class="sv-bs st-b" stroke-width="3" d="M540 100 l70 22 v55 c0 45 -30 75 -70 90 c-40 -15 -70 -45 -70 -90 v-55z"/><text class="sv-b" x="540" y="185" text-anchor="middle" font-size="18" font-weight="800">${esc(L.blue)}</text>
+  <g class="pop" style="--d:2s"><rect class="sv-ink" x="120" y="275" width="400" height="50" rx="6"/><text class="sv-paper" x="320" y="306" text-anchor="middle" font-size="17" font-weight="700">${esc(L.caught)}</text></g>`
+];
+
+/* ---------- Settings ---------- */
+const S=Object.assign({size:1,lh:1.6,font:"atkinson",theme:"auto",space:false,ruler:false,tap:false,rate:1,vs:{}},store.get("settings",{}));
+if(!S.vs||typeof S.vs!=="object")S.vs={};
+if(S.voiceA&&!S.vs.en){S.vs.en={a:S.voiceA,b:S.voiceB||""}}delete S.voiceA;delete S.voiceB;
+const root=document.documentElement;
+function applySettings(){
+  root.style.setProperty("--scale",S.size);root.style.setProperty("--lh",S.lh);
+  root.style.setProperty("--ls",S.space?".06em":"0");root.style.setProperty("--ws",S.space?".18em":"0");
+  S.font==="atkinson"?root.removeAttribute("data-font"):root.setAttribute("data-font",S.font);
+  S.theme==="auto"?root.removeAttribute("data-theme"):root.setAttribute("data-theme",S.theme);
+  document.body.classList.toggle("ruler-on",S.ruler);document.body.classList.toggle("tapmode",S.tap);
+  $("#sSize").value=S.size;$("#sizeVal").textContent=Math.round(S.size*100)+"%";
+  $("#sLh").value=S.lh;$("#sSpace").checked=S.space;$("#sRuler").checked=S.ruler;$("#sTap").checked=S.tap;
+  $("#sRate").value=S.rate;$("#rateVal").textContent=S.rate+"×";
+  const dr=$("#dRate");let best=dr.options[0];for(const o of dr.options){if(Math.abs(o.value-S.rate)<Math.abs(best.value-S.rate))best=o}dr.value=best.value;
+  $$(".seg").forEach(g=>{const k=g.dataset.set;$$("button",g).forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===S[k])))});
+  store.set("settings",S);
+}
+$("#sSize").addEventListener("input",e=>{S.size=+e.target.value;applySettings()});
+$("#sLh").addEventListener("input",e=>{S.lh=+e.target.value;applySettings()});
+$("#sRate").addEventListener("input",e=>{S.rate=+e.target.value;applySettings()});
+$("#dRate").addEventListener("change",e=>{S.rate=+e.target.value;applySettings()});
+["space","ruler","tap"].forEach(k=>$("#s"+k[0].toUpperCase()+k.slice(1)).addEventListener("change",e=>{S[k]=e.target.checked;applySettings()}));
+$$(".seg").forEach(g=>g.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S[g.dataset.set]=b.dataset.v;applySettings()}));
+$("#resetSettings").addEventListener("click",()=>{Object.assign(S,{size:1,lh:1.6,font:"atkinson",theme:"auto",space:false,ruler:false,tap:false,rate:1});applySettings()});
+document.addEventListener("pointermove",e=>{if(S.ruler){const r=$("#ruler");r.style.top=(e.clientY-r.offsetHeight/2)+"px"}});
+
+const drawer=$("#drawer");let lastFocus=null;
+$("#openSettings").addEventListener("click",()=>{lastFocus=document.activeElement;drawer.classList.add("open");$("#sSize").focus()});
+$$("[data-close]",drawer).forEach(b=>b.addEventListener("click",closeDrawer));
+function closeDrawer(){drawer.classList.remove("open");if(lastFocus)lastFocus.focus()}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&drawer.classList.contains("open"))closeDrawer()});
+
+/* ---------- Speech core ---------- */
+const synth=window.speechSynthesis||null;let voices=[];let token=0;
+const PREF={en:["en-us","en-gb"],es:["es-mx","es-us","es-419","es-es"],pt:["pt-br","pt-pt"]};
+function langVoices(){
+  const list=voices.filter(v=>(v.lang||"").toLowerCase().replace("_","-").startsWith(LANG));
+  const rank=v=>{const l=(v.lang||"").toLowerCase().replace("_","-");const i=PREF[LANG].indexOf(l);return i<0?9:i};
+  return list.sort((a,b)=>rank(a)-rank(b));
+}
+function curV(){if(!S.vs[LANG])S.vs[LANG]={a:"",b:""};return S.vs[LANG]}
+function loadVoices(){
+  if(!synth){$("#voiceNote").textContent=t("s.noSupport");return}
+  voices=synth.getVoices();const list=langVoices();const cv=curV();
+  [["sVoiceA","a"],["sVoiceB","b"]].forEach(([id,k],i)=>{const sel=$("#"+id);sel.innerHTML="";
+    if(!list.length){const o=document.createElement("option");o.value="";o.textContent=t("s.defaultVoice");sel.appendChild(o);cv[k]="";}
+    list.forEach(v=>{const o=document.createElement("option");o.value=v.name;o.textContent=v.name+" ("+v.lang+")";sel.appendChild(o)});
+    if(list.length&&!list.some(v=>v.name===cv[k]))cv[k]=(list[i]||list[0]).name;
+    sel.value=cv[k];});
+  $("#voiceNote").textContent=!voices.length?"":(!list.length?t("s.noLangVoice"):(list.length<2?t("s.oneVoice"):""));
+  store.set("settings",S);
+}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices}
+$("#sVoiceA").addEventListener("change",e=>{curV().a=e.target.value;applySettings()});
+$("#sVoiceB").addEventListener("change",e=>{curV().b=e.target.value;applySettings()});
+function say(text,who,onend){
+  const my=++token;
+  if(!synth){setTimeout(()=>{if(my===token&&onend)onend()},Math.max(1500,text.split(/\s+/).length*380/S.rate));return}
+  synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);u.rate=S.rate;
+  const cv=curV();const name=who==="theo"?cv.b:cv.a;const v=voices.find(x=>x.name===name);
+  if(v){u.voice=v;u.lang=v.lang}else{u.lang=LOCALE[LANG]}
+  u.pitch=(who==="theo"&&(!v||cv.a===cv.b))?1.3:1;
+  u.onend=()=>{if(my===token&&onend)setTimeout(()=>{if(my===token)onend()},250)};
+  u.onerror=()=>{};
+  setTimeout(()=>{if(my===token)synth.speak(u)},60);
+}
+function hush(){token++;if(synth)synth.cancel()}
+$("#testVoice").addEventListener("click",()=>{say(t("test1"),"nia",()=>say(t("test2"),"theo"))});
+
+/* ---------- Section reader ---------- */
+const P={q:[],i:0,on:false,loop:false,title:""};
+const BLOCKS="h3,p,li,.line,tbody tr";
+function spoken(el){
+  if(el.dataset.say)return el.dataset.say;
+  if(el.tagName==="TR")return $$("td",el).map(td=>td.textContent.trim()).join(". ");
+  if(el.classList.contains("line"))return el.querySelector(".txt").textContent;
+  if(el.tagName==="LI"&&el.closest(".check"))return el.querySelector("label span").textContent;
+  return el.textContent.replace(/\s+/g," ").trim();
+}
+function blocksIn(c){return $$(BLOCKS,c).filter(el=>!el.closest(".cmd")&&!el.closest(".skip-read")&&!(el.tagName==="P"&&el.closest("li"))&&el.offsetParent!==null&&!el.hidden)}
+function panelTitle(c){const p=c.closest("[role=tabpanel]");return p?t("pt."+p.id.slice(2)):""}
+function startReader(container,from){
+  stopVideo();
+  P.q=blocksIn(container);if(!P.q.length)return;
+  P.i=Math.max(0,from||0);P.title=panelTitle(container);P.on=true;speakCur();
+}
+function mark(){$$(".reading").forEach(e=>e.classList.remove("reading"));const el=P.q[P.i];if(el){el.classList.add("reading");
+  const r=el.getBoundingClientRect();if(r.top<80||r.bottom>innerHeight-110)el.scrollIntoView({block:"center",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}}
+function speakCur(){
+  const el=P.q[P.i];if(!el){done();return}
+  mark();updDock();
+  say(spoken(el),el.dataset.speaker||"nia",()=>{if(!P.on)return;P.i++;
+    if(P.i>=P.q.length){if(P.loop){P.i=0}else{done();return}}speakCur()});
+}
+function done(){P.on=false;$$(".reading").forEach(e=>e.classList.remove("reading"));updDock(true)}
+function updDock(fin){
+  const now=$("#dNow"),play=$("#dPlay");
+  if(!synth&&!P.q.length)now.textContent=t("d.nosupport");
+  else if(!P.q.length)now.textContent=t("d.ready");
+  else if(fin)now.textContent=t("d.finished",{t:P.title});
+  else now.textContent=t(P.on?"d.reading":"d.paused",{t:P.title,i:P.i+1,n:P.q.length});
+  play.textContent=P.on?"⏸":"▶";play.setAttribute("aria-label",t(P.on?"d.pauseA":"d.play"));
+  $$(".listen").forEach(b=>{const c=$("#"+b.dataset.target);const mine=P.q.length&&P.on&&c&&c.contains(P.q[0]);b.textContent=mine?t("lb.pause"):t(b.dataset.lk)})
+}
+$$(".listen").forEach(b=>b.addEventListener("click",()=>{
+  const c=$("#"+b.dataset.target);if(P.on&&c.contains(P.q[0])){pause();return}
+  if(!P.on&&P.q.length&&c.contains(P.q[0])&&P.i<P.q.length){P.on=true;speakCur();return}
+  startReader(c,0)}));
+function pause(){P.on=false;hush();updDock()}
+$("#dPlay").addEventListener("click",()=>{if(P.on){pause()}else if(P.q.length){if(P.i>=P.q.length)P.i=0;P.on=true;speakCur()}else{const c=$("[role=tabpanel]:not([hidden]) .readable");if(c)startReader(c,0)}});
+$("#dPrev").addEventListener("click",()=>{if(!P.q.length)return;P.i=Math.max(0,P.i-1);P.on=true;speakCur()});
+$("#dNext").addEventListener("click",()=>{if(!P.q.length)return;P.i=Math.min(P.q.length-1,P.i+1);P.on=true;speakCur()});
+$("#dRep").addEventListener("click",()=>{if(!P.q.length)return;if(P.i>=P.q.length)P.i=P.q.length-1;P.on=true;speakCur()});
+$("#dLoop").addEventListener("click",e=>{P.loop=!P.loop;e.currentTarget.setAttribute("aria-pressed",String(P.loop))});
+$("#dStop").addEventListener("click",()=>{hush();P.on=false;P.i=0;$$(".reading").forEach(e=>e.classList.remove("reading"));updDock(true)});
+document.addEventListener("click",e=>{
+  if(!S.tap)return;const el=e.target.closest(".readable p,.readable li,.readable .line,.readable h3,.readable tbody tr");
+  if(!el||e.target.closest("button,input,a,label,.cmd"))return;
+  const c=el.closest(".readable");const q=blocksIn(c);const i=q.indexOf(el);if(i<0)return;startReader(c,i);
 });
-document.getElementById('cancelBtn').addEventListener('click', ()=> modalBg.classList.remove('show'));
+function resetReader(){if(P.on)pause();stopVideo();P.q=[];$$(".reading").forEach(e=>e.classList.remove("reading"));updDock()}
 
-document.getElementById('saveBtn').addEventListener('click', ()=>{
-  const name = document.getElementById('sName').value.trim();
-  const grade = document.getElementById('sGrade').value;
-  const contact = document.getElementById('sContact').value.trim();
-  const availability = Array.from(document.querySelectorAll('.checks input:checked')).map(c=>c.value).join(', ');
-  const why = document.getElementById('sWhy').value.trim();
+/* ---------- Tabs ---------- */
+const tabs=$$("[role=tab]");
+function selectTab(t_,focus){
+  tabs.forEach(x=>{const on=x===t_;x.setAttribute("aria-selected",String(on));x.tabIndex=on?0:-1;$("#"+x.getAttribute("aria-controls")).hidden=!on});
+  if(focus)t_.focus();
+  resetReader();store.set("tab",t_.id);
+  const nav=$("nav.modes");if(nav.getBoundingClientRect().top<=parseFloat(getComputedStyle(nav).top)+1)window.scrollTo({top:nav.offsetTop});
+}
+tabs.forEach((x,i)=>{x.addEventListener("click",()=>selectTab(x));
+  x.addEventListener("keydown",e=>{let j=null;if(e.key==="ArrowRight")j=(i+1)%tabs.length;if(e.key==="ArrowLeft")j=(i-1+tabs.length)%tabs.length;if(e.key==="Home")j=0;if(e.key==="End")j=tabs.length-1;if(j!==null){e.preventDefault();selectTab(tabs[j],true)}})});
 
-  if(!name || !contact){ alert('Please enter your name and a way to reach you.'); return; }
-
-  signups.push({name, grade, contact, job: currentJob, availability, why, status:'New'});
-  save(signups);
-
-  document.getElementById('sName').value='';
-  document.getElementById('sContact').value='';
-  document.getElementById('sWhy').value='';
-  document.querySelectorAll('.checks input').forEach(c=>c.checked=false);
-  document.getElementById('sGrade').selectedIndex=0;
-
-  modalBg.classList.remove('show');
-  updateSpots();
-  renderRoster();
-  alert('Thanks, ' + name + '! You\'re signed up for ' + currentJob + '. A staff sponsor will follow up with you.');
-});
-
-document.getElementById('adminToggle').addEventListener('click', ()=>{
-  document.getElementById('adminPanel').classList.toggle('show');
-  renderRoster();
-});
-document.getElementById('jobFilter').addEventListener('change', renderRoster);
-document.getElementById('statusFilter').addEventListener('change', renderRoster);
-
-function renderRoster(){
-  const jobF = document.getElementById('jobFilter').value;
-  const statusF = document.getElementById('statusFilter').value;
-  let rows = signups.filter((s,i)=>{ s._i=i; return (!jobF || s.job===jobF) && (!statusF || s.status===statusF); });
-
-  const tbody = document.getElementById('rosterBody');
-  if(rows.length===0){
-    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-row">No sign-ups yet for this filter.</div></td></tr>`;
-  } else {
-    tbody.innerHTML = rows.map(s=>`
-      <tr>
-        <td><strong>${escapeHtml(s.name)}</strong></td>
-        <td>${escapeHtml(s.grade)}</td>
-        <td>${escapeHtml(s.contact)}</td>
-        <td>${escapeHtml(s.job)}</td>
-        <td>${escapeHtml(s.availability)||'—'}</td>
-        <td>${escapeHtml(s.why)||'—'}</td>
-        <td>
-          <select class="statusSel" data-i="${s._i}">
-            ${['New','Contacted','Placed'].map(st=>`<option ${st===s.status?'selected':''}>${st}</option>`).join('')}
-          </select>
-        </td>
-        <td><button class="delbtn" data-i="${s._i}" title="Remove">✕</button></td>
-      </tr>`).join('');
-  }
-  document.getElementById('rosterCount').textContent = `${rows.length} of ${signups.length} sign-ups`;
-
-  document.querySelectorAll('.statusSel').forEach(sel=>{
-    sel.addEventListener('change', ()=>{
-      signups[sel.dataset.i].status = sel.value;
-      save(signups);
-    });
-  });
-  document.querySelectorAll('.delbtn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      if(confirm('Remove this sign-up?')){
-        signups.splice(parseInt(btn.dataset.i),1);
-        save(signups);
-        updateSpots();
-        renderRoster();
-      }
-    });
-  });
+/* ---------- Podcast ---------- */
+let ep=store.get("ep",0);
+function renderEp(){
+  const E=D().episodes;if(ep>=E.length)ep=0;
+  const box=$("#episodes");box.innerHTML="";
+  E.forEach((e,i)=>{const b=document.createElement("button");b.setAttribute("aria-pressed",String(i===ep));b.innerHTML=esc(e.t)+"<small>"+esc(e.d)+"</small>";
+    b.addEventListener("click",()=>{ep=i;store.set("ep",i);resetReader();renderEp()});box.appendChild(b)});
+  const tr=$("#transcript");tr.innerHTML="";
+  E[ep].lines.forEach(([who,txt])=>{const p=document.createElement("p");p.className="line";p.dataset.speaker=who;
+    p.innerHTML='<span class="who">'+(who==="nia"?"Nia":"Theo")+'</span><span class="txt"></span>';p.querySelector(".txt").textContent=txt;tr.appendChild(p)});
 }
 
-updateSpots();
+/* ---------- Video ---------- */
+const stage=$("#stage"),prog=$("#vprog");let vi=0,vplaying=false;
+function buildScenes(){
+  stage.innerHTML="";prog.innerHTML="";const L=D().L;
+  SVG.forEach((f,i)=>{const d=document.createElement("div");d.className="scene";d.innerHTML='<svg viewBox="0 0 640 360" aria-hidden="true">'+f(L)+'</svg>';stage.appendChild(d);
+    const b=document.createElement("button");b.setAttribute("aria-label",t("v.scene",{i:i+1,n:SVG.length}));b.addEventListener("click",()=>{vi=i;showScene(true)});prog.appendChild(b)});
+  showScene(false);
+}
+function showScene(restart){
+  const N=D().narr;
+  $$(".scene",stage).forEach((s,i)=>{s.classList.remove("on");if(i===vi){void s.offsetWidth;s.classList.add("on")}});
+  $$("button",prog).forEach((b,i)=>{b.className=i<vi?"done":i===vi?"cur":"";b.setAttribute("aria-current",i===vi?"step":"false")});
+  $("#vcaption").textContent=N[vi];stage.setAttribute("aria-label",t("v.scene",{i:vi+1,n:SVG.length})+" "+N[vi]);
+  if(restart&&vplaying)narrate();
+}
+function narrate(){
+  if(P.on)pause();
+  say(D().narr[vi],"nia",()=>{if(!vplaying)return;
+    if($("#vauto").checked&&vi<SVG.length-1){setTimeout(()=>{if(!vplaying)return;vi++;showScene(true)},900)}
+    else{vplaying=false;setV()}});
+}
+function setV(){$("#vplay").textContent=vplaying?t("v.pause"):(vi>=SVG.length-1?t("v.again"):t("v.play"))}
+function stopVideo(){if(vplaying){vplaying=false;hush();setV()}}
+$("#vplay").addEventListener("click",()=>{if(vplaying){stopVideo();return}if(P.on)pause();P.q=[];updDock();
+  if(vi>=SVG.length-1)vi=0;vplaying=true;setV();showScene(false);narrate()});
+$("#vprev").addEventListener("click",()=>{vi=Math.max(0,vi-1);showScene(true);setV()});
+$("#vnext").addEventListener("click",()=>{vi=Math.min(SVG.length-1,vi+1);showScene(true);setV()});
+$("#vrep").addEventListener("click",()=>{showScene(false);if(!vplaying){vplaying=true;setV()}narrate()});
+$("#vcap").addEventListener("change",e=>{$("#vcaption").hidden=!e.target.checked});
+
+/* ---------- See it ---------- */
+const RULE_PARTS=[["alert","red"],["icmp","blue"],["any any","purple"],["->","ink"],["$HOME_NET any","purple"],['msg:"LAB ICMP ping detected";',"blue"],["sid:1000001;","blue"],["rev:1;","blue"]];
+const colors={red:["var(--red)","var(--red-soft)"],blue:["var(--blue)","var(--blue-soft)"],purple:["var(--purple)","var(--purple-soft)"],ink:["var(--ink)","var(--purple-soft)"]};
+function para(box,html){box.innerHTML="";(Array.isArray(html)?html:[html]).forEach(h=>{const p=document.createElement("p");p.innerHTML=h;box.appendChild(p)})}
+function renderSee(){
+  const d=D();
+  const nist=$("#nist");nist.innerHTML="";para($("#nistOut"),esc(t("see.nistPh")));
+  d.nist.forEach(f=>{const b=document.createElement("button");b.textContent=f[0];b.setAttribute("aria-pressed","false");
+    b.addEventListener("click",()=>{$$("button",nist).forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+      para($("#nistOut"),["<b>"+esc(f[0])+":</b> "+esc(f[1]),"<b>"+esc(t("see.tools"))+"</b> "+esc(f[2]),esc(f[3])])});
+    nist.appendChild(b)});
+  const rule=$("#rule");rule.innerHTML="";para($("#ruleOut"),esc(t("see.rulePh")));
+  RULE_PARTS.forEach(([txt,c],i)=>{const b=document.createElement("button");b.textContent=txt;b.style.setProperty("--c",colors[c][0]);b.style.setProperty("--s",colors[c][1]);
+    b.setAttribute("aria-pressed","false");if(i===5)rule.appendChild(document.createTextNode(" ("));
+    b.addEventListener("click",()=>{$$("#rule button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));para($("#ruleOut"),esc(d.rule[i]))});
+    rule.appendChild(b)});
+  rule.appendChild(document.createTextNode(")"));
+  const sc=$("#scens");sc.innerHTML="";
+  d.scens.forEach(([q,a,why])=>{const box=document.createElement("div");box.className="scen";
+    box.innerHTML='<p style="margin:0"></p><div class="opts"></div><p class="fb" aria-live="polite"></p>';box.querySelector("p").textContent="\u201C"+q+"\u201D";
+    d.nist.forEach((f,k)=>{const b=document.createElement("button");b.textContent=f[0];b.addEventListener("click",()=>{
+      $$(".opts button",box).forEach(x=>x.className="");const ok=k===a;b.className=ok?"right":"wrong";
+      box.querySelector(".fb").textContent=ok?t("fbYes")+" "+why:t("fbNo")});box.querySelector(".opts").appendChild(b)});
+    sc.appendChild(box)});
+}
+
+/* ---------- Perspectives ---------- */
+function renderVoices(){
+  const box=$("#voices");box.innerHTML="";
+  D().voices.forEach(([h,role,q,c])=>{const a=document.createElement("article");a.className="voice";a.style.setProperty("--c","var(--"+c+")");
+    a.innerHTML="<h3></h3><p class=\"role\"></p><p class=\"q\"></p>";a.querySelector("h3").textContent=h;a.querySelector(".role").textContent=role;a.querySelector(".q").textContent=q;box.appendChild(a)});
+}
+
+/* ---------- Practice ---------- */
+const ticks=store.get("ticks",{});
+$$(".check input").forEach(c=>{c.checked=!!ticks[c.dataset.k];c.addEventListener("change",()=>{ticks[c.dataset.k]=c.checked;store.set("ticks",ticks)})});
+$("#resetChecks").addEventListener("click",()=>{$$(".check input").forEach(c=>{c.checked=false;ticks[c.dataset.k]=false});store.set("ticks",ticks)});
+$$(".copy").forEach(b=>b.addEventListener("click",async()=>{const code=b.previousElementSibling;
+  try{await navigator.clipboard.writeText(code.textContent);b.textContent=t("copied")}catch(e){const r=document.createRange();r.selectNodeContents(code);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent=t("ctrlc")}
+  setTimeout(()=>b.textContent=t("copy"),1800)}));
+
+/* ---------- Glossary ---------- */
+const gl=$("#gloss");
+function filterGloss(){if(!$("#gfilter"))return;const v=$("#gfilter").value.toLowerCase().trim();$$("li",gl).forEach(li=>li.hidden=!!v&&!li.textContent.toLowerCase().includes(v))}
+function renderGloss(){if(!gl)return;gl.innerHTML="";D().gloss.forEach(([w,d])=>{const li=document.createElement("li");li.innerHTML="<b></b>: <span></span>";li.querySelector("b").textContent=w;li.querySelector("span").textContent=d;li.dataset.say=w+". "+d;gl.appendChild(li)});filterGloss()}
+
+
+/* ---------- Language ---------- */
+function applyLang(){
+  resetReader();
+  root.lang=LOCALE[LANG];document.title=t("title");
+  $$("[data-i18n]").forEach(el=>{el.textContent=t(el.dataset.i18n)});
+  $$("[data-i18n-attr]").forEach(el=>el.dataset.i18nAttr.split(";").forEach(pair=>{const i=pair.indexOf(":");el.setAttribute(pair.slice(0,i),t(pair.slice(i+1)))}));
+  $("#read-body").innerHTML=LANG==="en"?ORIG_READ:READ_HTML[LANG];
+  $("#teach-body").innerHTML=TEACH_HTML[LANG];
+  $$(".copy").forEach(b=>b.textContent=t("copy"));
+  $$(".langsw button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===LANG)));
+  renderToday();renderDownloads();renderVoices();renderEp();buildScenes();renderSee();renderGloss();
+  loadVoices();setV();updDock();
+}
+$$(".langsw button").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.lang===LANG)return;LANG=b.dataset.lang;store.set("lang",LANG);applyLang()}));
+
+/* ---------- Init ---------- */
+applySettings();
+applyLang();
+const saved=store.get("tab","t-today");const st=$("#"+saved);if(st&&st!==tabs[0])selectTab(st);
+updDock();
+})();
+
 </script>
 </body>
 </html>
