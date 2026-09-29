@@ -500,6 +500,44 @@ sudo suricata -c /etc/suricata/suricata.yaml -i eth0</code><button class="copy">
   <p class="small"><a href="https://quizlet.com/1214512383/week-1-kali-basics-and-lab-setup-flash-cards/" target="_blank" rel="noopener" data-i18n="words.open">Open the full set on Quizlet</a></p>
 </section>
 
+<!-- TEACH -->
+<section role="tabpanel" id="p-teach" aria-labelledby="t-teach" data-title="For instructors" hidden>
+  <h2 data-i18n="teach.h2">For instructors</h2>
+  <div class="listenbar"><button class="btn solid listen" data-target="teach-body" data-lk="lb.page">▶ Listen to this page</button></div>
+  <div class="readable read" id="teach-body">
+  </div>
+</section>
+</main>
+
+<footer data-i18n="footer">Based on the lesson plan "Introduction to Kali Linux Purple." Scan only systems you have permission to test.</footer>
+</div>
+
+<!-- Settings drawer -->
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="setTitle">
+  <div class="scrim" data-close></div>
+  <div class="sheet">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem">
+      <h2 id="setTitle" style="margin:0" data-i18n="s.title">Text and sound</h2>
+      <button class="btn" data-close data-i18n="s.done">Done</button>
+    </div>
+    <div class="field"><label for="sSize"><span data-i18n="s.size">Text size</span>: <span id="sizeVal">100%</span></label><input type="range" id="sSize" min="0.9" max="2" step="0.1" value="1"></div>
+    <div class="field"><label for="sLh" data-i18n="s.lh">Line spacing</label><input type="range" id="sLh" min="1.4" max="2.4" step="0.1" value="1.6"></div>
+    <div class="field"><span data-i18n="s.font">Font</span><div class="seg" data-set="font">
+      <button data-v="atkinson">Atkinson</button><button data-v="lexend" style="font-family:Lexend">Lexend</button><button data-v="andika" style="font-family:Andika">Andika</button><button data-v="serif" style="font-family:Georgia,serif">Serif</button></div></div>
+    <div class="field"><span data-i18n="s.colors">Page colors</span><div class="seg" data-set="theme">
+      <button data-v="auto" data-i18n="th.auto">Match device</button><button data-v="light" data-i18n="th.light">Light</button><button data-v="dark" data-i18n="th.dark">Dark</button><button data-v="contrast" data-i18n="th.contrast">High contrast</button><button data-v="tint" data-i18n="th.tint">Tinted</button></div></div>
+    <div class="field"><label class="toggle"><input type="checkbox" id="sSpace"> <span data-i18n="s.space">Extra letter and word spacing</span></label></div>
+    <div class="field"><label class="toggle"><input type="checkbox" id="sRuler"> <span data-i18n="s.ruler">Reading ruler that follows the pointer</span></label></div>
+    <div class="field"><label class="toggle"><input type="checkbox" id="sTap"> <span data-i18n="s.tap">Tap a paragraph to hear it</span></label></div>
+    <hr style="border:0;border-top:1px solid var(--line)">
+    <div class="field"><label for="sVoiceA" data-i18n="s.voiceA">Main reading voice (also Nia)</label><select id="sVoiceA"></select></div>
+    <div class="field"><label for="sVoiceB" data-i18n="s.voiceB">Second podcast voice (Theo)</label><select id="sVoiceB"></select></div>
+    <div class="field"><label for="sRate"><span data-i18n="s.rate">Speaking speed</span>: <span id="rateVal">1×</span></label><input type="range" id="sRate" min="0.5" max="2" step="0.1" value="1"></div>
+    <p><button class="btn" id="testVoice" data-i18n="s.test">Test voices</button></p>
+    <p class="small" id="voiceNote"></p>
+    <p><button class="btn" id="resetSettings" data-i18n="s.reset">Reset all settings</button></p>
+  </div>
+</div>
 
 <!-- Player dock -->
 <div class="dock" role="region" aria-label="Read-aloud player" data-i18n-attr="aria-label:d.region">
