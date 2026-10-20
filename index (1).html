@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IT Exploratory – Today’s Agenda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#DCE3E8; --surface:#F7F9FA; --surface-2:#EBEFF2; --ink:#1C2A39; --muted:#55657A; --line:#C3CDD6;
+  --tape:#F2C230; --tape-ink:#2A2100;
+  --a1:#7A4FD6; --a2:#12807F; --a3:#C8641A; --a4:#2867C9; --rest:#9AA7B4;
+  --focus:#1C2A39;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121820; --surface:#1B232D; --surface-2:#242E3A; --ink:#E6EDF3; --muted:#9AA9B9; --line:#334050;
+    --tape:#F2C230; --tape-ink:#2A2100;
+    --a1:#A88BF0; --a2:#3DB8B5; --a3:#EE8E45; --a4:#6A9EF0; --rest:#5E6B78; --focus:#F2C230;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121820; --surface:#1B232D; --surface-2:#242E3A; --ink:#E6EDF3; --muted:#9AA9B9; --line:#334050;
+  --a1:#A88BF0; --a2:#3DB8B5; --a3:#EE8E45; --a4:#6A9EF0; --rest:#5E6B78; --focus:#F2C230;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.0625rem;line-height:1.55}
+h1,h2,h3{font-family:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif;line-height:1.1;margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:4px}
+.wrap{max-width:68rem;margin:0 auto;padding:1.5rem 1.25rem 4rem}
+
+/* Header */
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.25rem}
+header.top h1{font-size:clamp(2rem,5vw,3.25rem);font-weight:800;letter-spacing:-.02em}
+header.top p{margin:.35rem 0 0;color:var(--muted)}
+.clock{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:700;font-size:clamp(1.75rem,4vw,2.5rem);font-variant-numeric:tabular-nums;background:var(--tape);color:var(--tape-ink);padding:.15rem .7rem;border-radius:3px;transform:rotate(-1.5deg);box-shadow:0 2px 0 rgba(0,0,0,.15)}
+
+/* Day strip */
+.strip{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1.25rem 1.25rem 1rem}
+.bar-scroll{overflow-x:auto}
+.bar{position:relative;display:flex;height:64px;min-width:640px;border-radius:8px;overflow:hidden}
+.seg{position:relative;display:flex;align-items:flex-end;padding:.35rem .45rem;color:#fff;font-size:.8rem;font-weight:700;border-right:2px solid var(--surface);cursor:pointer;text-decoration:none;opacity:.92;min-width:0}
+.seg:last-child{border-right:0}
+.seg span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seg.rest{background:repeating-linear-gradient(-45deg,var(--rest) 0 6px,transparent 6px 12px),var(--surface-2);color:var(--ink)}
+.seg.done{opacity:.4}
+.needle{position:absolute;top:-6px;bottom:-6px;width:3px;background:var(--ink);border-radius:2px;pointer-events:none;display:none}
+.needle::before{content:"";position:absolute;top:-4px;left:-5px;width:13px;height:13px;border-radius:50%;background:var(--tape);border:3px solid var(--ink)}
+.ticks{position:relative;height:1.4rem;min-width:640px;margin-top:.3rem;color:var(--muted);font-size:.8rem;font-variant-numeric:tabular-nums}
+.ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.ticks span:first-child{transform:none}
+.ticks span:last-child{transform:translateX(-100%)}
+
+/* Now panel */
+.now{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center;margin-top:1rem;padding-top:1rem;border-top:1px dashed var(--line)}
+.now h2{font-size:clamp(1.4rem,3vw,1.9rem);font-weight:700}
+.now .sub{color:var(--muted);margin-top:.25rem}
+.left{text-align:right}
+.left b{display:block;font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:clamp(2rem,5vw,3rem);font-variant-numeric:tabular-nums;line-height:1}
+.left small{color:var(--muted)}
+.prog{grid-column:1/-1;height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--now-color,var(--ink));transition:width .6s}
+
+/* Layout */
+.cols{display:grid;grid-template-columns:minmax(15rem,20rem) 1fr;gap:1.5rem;margin-top:1.75rem;align-items:start}
+@media (max-width:820px){.cols{grid-template-columns:1fr}}
+.side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 1rem)}
+@media (max-width:820px){.side{position:static}}
+.side h2,.acts>h2{font-size:1.25rem;margin-bottom:.75rem}
+ol.agenda{list-style:none;margin:0;padding:0;border-left:3px solid var(--line)}
+ol.agenda li{position:relative;padding:.5rem 0 .5rem 1rem}
+ol.agenda li::before{content:"";position:absolute;left:-8px;top:.95rem;width:13px;height:13px;border-radius:50%;background:var(--c,var(--rest));border:2px solid var(--bg)}
+ol.agenda li.current{background:var(--surface);border-radius:0 8px 8px 0}
+ol.agenda li.current::before{box-shadow:0 0 0 4px var(--tape)}
+ol.agenda li.past{opacity:.5}
+ol.agenda .t{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+ol.agenda a{display:block;font-weight:700;text-decoration:none}
+ol.agenda a:hover{text-decoration:underline}
+ol.agenda .rest-name{display:block;font-weight:700}
+.reset{margin-top:1rem;background:none;border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:.4rem .7rem;font:inherit;font-size:.85rem;cursor:pointer}
+
+/* Activity cards */
+.act{background:var(--surface);border:1px solid var(--line);border-left:8px solid var(--c);border-radius:6px 14px 14px 6px;padding:1.25rem 1.4rem 1.4rem;margin-bottom:1.25rem}
+.act-head{display:flex;flex-wrap:wrap;gap:.75rem 1rem;align-items:flex-start;justify-content:space-between}
+.act-num{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;color:var(--c);font-size:1rem}
+.act h3{font-size:clamp(1.35rem,2.6vw,1.7rem);font-weight:700;margin-top:.15rem}
+.when{color:var(--muted);font-size:.9rem;margin-top:.3rem;font-variant-numeric:tabular-nums}
+.badge{font-size:.85rem;font-weight:700;padding:.2rem .6rem;border-radius:99px;background:var(--surface-2);white-space:nowrap}
+.badge.complete{background:var(--c);color:#fff}
+.act p{max-width:68ch;margin:.75rem 0}
+.act h4{font-size:1rem;margin:1.1rem 0 .4rem;font-family:"Bricolage Grotesque",system-ui,sans-serif}
+ul.checks{list-style:none;margin:0;padding:0;display:grid;gap:.15rem}
+ul.checks label{display:flex;gap:.6rem;align-items:flex-start;padding:.35rem .5rem;border-radius:6px;cursor:pointer}
+ul.checks label:hover{background:var(--surface-2)}
+ul.checks input{appearance:none;flex:none;width:1.2rem;height:1.2rem;margin-top:.15rem;border:2px solid var(--muted);border-radius:4px;display:grid;place-content:center;cursor:pointer;background:var(--surface)}
+ul.checks input::after{content:"";width:.6rem;height:.35rem;border-left:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(-45deg) translate(1px,-1px);opacity:0}
+ul.checks input:checked{background:var(--c);border-color:var(--c)}
+ul.checks input:checked::after{opacity:1}
+ul.checks input:checked + span{color:var(--muted);text-decoration:line-through}
+.phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.75rem;margin:.75rem 0}
+.phase{background:var(--surface-2);border-radius:10px;padding:.8rem .9rem}
+.phase b{display:block;margin-bottom:.2rem}
+.phase p{margin:0;font-size:.95rem}
+.submit{display:inline-flex;align-items:center;gap:.5rem;margin-top:1.25rem;background:var(--c);color:#fff;text-decoration:none;font-weight:700;padding:.7rem 1.1rem;border-radius:8px}
+.submit:hover{filter:brightness(1.08)}
+.inline-link{font-weight:700}
+.note{font-size:.9rem;color:var(--muted)}
+footer{color:var(--muted);font-size:.85rem;margin-top:2rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Information Technology Exploratory</h1>
+      <p>Today’s agenda · 8:00 AM to 1:00 PM</p>
+    </div>
+    <div class="clock" id="clock" aria-live="off">--:--</div>
+  </header>
+
+  <section class="strip" aria-label="Day timeline">
+    <div class="bar-scroll">
+      <div class="bar" id="bar"><div class="needle" id="needle"></div></div>
+      <div class="ticks" id="ticks"></div>
+    </div>
+    <div class="now" id="now">
+      <div>
+        <h2 id="nowTitle">Loading…</h2>
+        <div class="sub" id="nowSub"></div>
+      </div>
+      <div class="left" id="nowLeft"></div>
+      <div class="prog"><i id="nowProg"></i></div>
+    </div>
+  </section>
+
+  <div class="cols">
+    <aside class="side">
+      <h2>Schedule</h2>
+      <ol class="agenda" id="agenda"></ol>
+      <button class="reset" id="reset" type="button">Clear all checkmarks</button>
+    </aside>
+
+    <main class="acts">
+      <h2>Activities</h2>
+
+      <article class="act" id="act1" style="--c:var(--a1)">
+        <div class="act-head">
+          <div>
+            <div class="act-num">Activity 1</div>
+            <h3>Vision Board: My Information Technology Exploratory</h3>
+            <div class="when">8:00 – 8:40 AM</div>
+          </div>
+          <span class="badge" data-badge="act1"></span>
+        </div>
+        <p>Create a digital vision board in <a class="inline-link" href="https://www.canva.com" target="_blank" rel="noopener">Canva</a> that captures your goals, expectations, and personal definition of Information Technology. Reflect on what you hope to learn this week and throughout the exploratory, then bring those ideas to life using images, icons, quotes, and personal touches. Choose colors, fonts, and layouts that reflect your intentions.</p>
+        <h4>Save and download your board as an image</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a1-1"><span>Open your finished design in Canva.</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-2"><span>Click <b>Share</b> in the top-right corner.</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-3"><span>Select <b>Download</b>.</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-4"><span>Under “File type,” choose <b>PNG</b> or <b>JPG</b>.</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-5"><span>Click <b>Download</b> (it usually saves to your Downloads folder).</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-6"><span>Upload that image file to Canvas.</span></label></li>
+        </ul>
+        <a class="submit" href="https://blackstonevalleyregional.instructure.com/courses/6337/assignments" target="_blank" rel="noopener">Submit Activity 1 in Canvas</a>
+      </article>
+
+      <article class="act" id="act2" style="--c:var(--a2)">
+        <div class="act-head">
+          <div>
+            <div class="act-num">Activity 2</div>
+            <h3>PC TEMP Chart</h3>
+            <div class="when">8:40 – 9:00 AM and 9:15 – 9:50 AM · Teacher-led, we do this together</div>
+          </div>
+          <span class="badge" data-badge="act2"></span>
+        </div>
+        <p>Computers are complex systems that require many components and connections to function properly. We’ll fill in the TEMP Chart together as a class. Follow along with your teacher during the presentation and complete each term as we go. Don’t work ahead. TEMP Charts let you define a term and give an example and an image to support it. This chart will come in handy when we build our computers, since you’ll be able to reference the parts you’re using.</p>
+        <h4>As we go through each term together</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a2-1"><span>Write the definition your teacher gives during the presentation.</span></label></li>
+          <li><label><input type="checkbox" data-k="a2-2"><span>Add an example when your teacher shows you one.</span></label></li>
+          <li><label><input type="checkbox" data-k="a2-3"><span>Add an image when your teacher shows you one.</span></label></li>
+          <li><label><input type="checkbox" data-k="a2-4"><span>Upload your completed TEMP Chart for grading.</span></label></li>
+        </ul>
+        <a class="submit" href="https://blackstonevalleyregional.instructure.com/courses/6337/assignments" target="_blank" rel="noopener">Submit Activity 2 in Canvas</a>
+      </article>
+
+      <article class="act" id="act3" style="--c:var(--a3)">
+        <div class="act-head">
+          <div>
+            <div class="act-num">Activity 3</div>
+            <h3>PC Teardown and Rebuild</h3>
+            <div class="when">9:50 – 11:07 AM and 11:37 AM – 12:05 PM</div>
+          </div>
+          <span class="badge" data-badge="act3"></span>
+        </div>
+        <div class="phases">
+          <div class="phase"><b>1. Teardown</b><p>Take the PC apart completely, with a junior helping you every step of the way. Ask questions! Learn what each part does and how it comes out.</p></div>
+          <div class="phase"><b>2. Bench reconnect</b><p>With your junior’s help, reconnect all the components outside the case on the bench (an “open-air” or “bench test” setup) so you can see how everything connects.</p></div>
+          <div class="phase"><b>3. Solo rebuild</b><p>Once the bench test works, rebuild the entire PC inside the case on your own, with no junior help. Show what you’ve learned.</p></div>
+        </div>
+        <h4>Progress</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a3-p1"><span>Teardown complete</span></label></li>
+          <li><label><input type="checkbox" data-k="a3-p2"><span>Bench reconnect complete and running</span></label></li>
+          <li><label><input type="checkbox" data-k="a3-p3"><span>Solo rebuild complete</span></label></li>
+        </ul>
+        <h4>Photos to take (3)</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a3-ph1"><span>📸 PC fully connected and running on the bench (open-air, before the case)</span></label></li>
+          <li><label><input type="checkbox" data-k="a3-ph2"><span>📸 PC fully rebuilt inside the tower/case</span></label></li>
+          <li><label><input type="checkbox" data-k="a3-ph3"><span>📸 PC running BIOS</span></label></li>
+        </ul>
+        <h4>Sign-off checklist (junior confirms)</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a3-s1"><span>Junior watched the PC power on and run successfully when it was first received/tested</span></label></li>
+          <li><label><input type="checkbox" data-k="a3-s2"><span>Freshman correctly pointed to and named each major component on the bench (CPU, GPU, RAM, motherboard, PSU, storage, etc.)</span></label></li>
+          <li><label><input type="checkbox" data-k="a3-s3"><span>Freshman completed the case rebuild independently</span></label></li>
+          <li><label><input type="checkbox" data-k="a3-s4"><span>All 3 photos submitted</span></label></li>
+        </ul>
+        <a class="submit" href="https://blackstonevalleyregional.instructure.com/courses/6337/assignments" target="_blank" rel="noopener">Submit Activity 3 in Canvas</a>
+      </article>
+
+      <article class="act" id="act4" style="--c:var(--a4)">
+        <div class="act-head">
+          <div>
+            <div class="act-num">Activity 4</div>
+            <h3>Windows Install</h3>
+            <div class="when">12:05 – 1:00 PM</div>
+          </div>
+          <span class="badge" data-badge="act4"></span>
+        </div>
+        <h4>Step 1: Install Windows 10/11</h4>
+        <p>Boot from the install media (USB/DVD) and install Windows. Create a local account, connect to Wi-Fi/network, and let all setup steps finish completely.</p>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a4-1"><span>Boot media created / selected correctly</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-2"><span>Windows installed successfully (10 or 11)</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-3"><span>PC boots fully to the Windows desktop</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-4"><span>Windows Update checked / installed</span></label></li>
+        </ul>
+        <h4>Step 2: Install Malwarebytes</h4>
+        <p>Download and install Malwarebytes from the official site. Run a full scan and make sure it comes back clean before moving on.</p>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a4-5"><span>Malwarebytes downloaded from the official source</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-6"><span>Malwarebytes installed successfully</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-7"><span>Full scan run and completed with no unresolved threats</span></label></li>
+        </ul>
+        <h4>Step 3: Install Minecraft Education</h4>
+        <p>Install Minecraft Education from the Microsoft Store (or official installer), sign in, and confirm it opens and runs correctly.</p>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a4-8"><span>Minecraft Education installed successfully</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-9"><span>Signed in with the correct account</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-10"><span>App opens and runs without errors</span></label></li>
+        </ul>
+        <h4>Required photos (3)</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a4-ph1"><span>📸 Windows desktop after a successful install (showing version/edition)</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-ph2"><span>📸 Malwarebytes showing a completed scan with results</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-ph3"><span>📸 Minecraft Education open and running, signed in</span></label></li>
+        </ul>
+        <a class="submit" href="https://blackstonevalleyregional.instructure.com/courses/6337/assignments/357095?module_item_id=567375" target="_blank" rel="noopener">Submit Activity 4 in Canvas</a>
+      </article>
+
+      <footer>Your checkmarks are saved on this device only.</footer>
+    </main>
+  </div>
+</div>
+
+<script>
+(function(){
+  var DAY_START = "8:00", DAY_END = "13:00";
+  var blocks = [
+    {s:"8:00",  e:"8:40",  name:"Activity 1: Vision Board", act:"act1", c:"--a1", short:"Vision Board"},
+    {s:"8:40",  e:"9:00",  name:"Activity 2: PC TEMP Chart", act:"act2", c:"--a2", short:"TEMP Chart", part:"Teacher-led: follow along"},
+    {s:"9:00",  e:"9:15",  name:"Break", rest:true, short:"Break"},
+    {s:"9:15",  e:"9:50",  name:"Activity 2: PC TEMP Chart", act:"act2", c:"--a2", short:"TEMP Chart", part:"Teacher-led: finish together and submit"},
+    {s:"9:50",  e:"11:07", name:"Activity 3: PC Teardown and Rebuild", act:"act3", c:"--a3", short:"Teardown + Bench", part:"Teardown and bench reconnect"},
+    {s:"11:07", e:"11:37", name:"Lunch", rest:true, short:"Lunch"},
+    {s:"11:37", e:"12:05", name:"Activity 3: PC Teardown and Rebuild", act:"act3", c:"--a3", short:"Solo Rebuild", part:"Solo rebuild and BIOS"},
+    {s:"12:05", e:"13:00", name:"Activity 4: Windows Install", act:"act4", c:"--a4", short:"Windows Install"}
+  ];
+  function mins(t){var p=t.split(":");return +p[0]*60 + +p[1];}
+  function fmt(m){var h=Math.floor(m/60),mm=m%60,ap=h>=12?"PM":"AM";h=h%12||12;return h+":"+(mm<10?"0":"")+mm+" "+ap;}
+  function fmtShort(m){var h=Math.floor(m/60),mm=m%60;h=h%12||12;return h+":"+(mm<10?"0":"")+mm;}
+  var D0=mins(DAY_START), D1=mins(DAY_END), SPAN=D1-D0;
+  blocks.forEach(function(b){b.sm=mins(b.s);b.em=mins(b.e);});
+
+  // Build bar + ticks + agenda
+  var bar=document.getElementById("bar"), needle=document.getElementById("needle"),
+      ticks=document.getElementById("ticks"), agenda=document.getElementById("agenda");
+  blocks.forEach(function(b,i){
+    var seg=document.createElement(b.rest?"div":"a");
+    seg.className="seg"+(b.rest?" rest":"");
+    seg.style.flex=(b.em-b.sm)+" 0 0";
+    if(!b.rest){seg.href="#"+b.act;seg.style.background="var("+b.c+")";}
+    seg.title=b.name+" ("+fmt(b.sm)+" – "+fmt(b.em)+")";
+    seg.innerHTML="<span>"+b.short+"</span>";
+    b.seg=seg; bar.insertBefore(seg,needle);
+
+    var li=document.createElement("li");
+    if(!b.rest) li.style.setProperty("--c","var("+b.c+")");
+    li.innerHTML='<div class="t">'+fmt(b.sm)+" – "+fmt(b.em)+"</div>"+
+      (b.rest?'<span class="rest-name">'+b.name+"</span>":'<a href="#'+b.act+'">'+b.name+"</a>")+
+      (b.part?'<div class="note">'+b.part+"</div>":"");
+    b.li=li; agenda.appendChild(li);
+  });
+  for(var h=D0;h<=D1;h+=60){
+    var sp=document.createElement("span");sp.style.left=((h-D0)/SPAN*100)+"%";sp.textContent=fmtShort(h);ticks.appendChild(sp);
+  }
+
+  // Live updates
+  var clock=document.getElementById("clock"), nT=document.getElementById("nowTitle"),
+      nS=document.getElementById("nowSub"), nL=document.getElementById("nowLeft"), nP=document.getElementById("nowProg"),
+      nowBox=document.getElementById("now");
+  function tick(){
+    var d=new Date(), m=d.getHours()*60+d.getMinutes()+d.getSeconds()/60;
+    var hh=d.getHours()%12||12, mi=d.getMinutes();
+    clock.textContent=hh+":"+(mi<10?"0":"")+mi;
+    if(m>=D0&&m<=D1){needle.style.display="block";needle.style.left="calc("+((m-D0)/SPAN*100)+"% - 1.5px)";}
+    else needle.style.display="none";
+
+    var cur=null, next=null;
+    blocks.forEach(function(b){
+      var past=m>=b.em, isCur=m>=b.sm&&m<b.em;
+      b.seg.classList.toggle("done",past);
+      b.li.classList.toggle("past",past);
+      b.li.classList.toggle("current",isCur);
+      if(isCur) cur=b;
+      if(!next&&b.sm>m) next=b;
+    });
+    if(cur){
+      var left=Math.ceil(cur.em-m);
+      nT.textContent=cur.rest?cur.name:cur.name;
+      nS.textContent=(cur.part?cur.part+". ":"")+(next?"Next up at "+fmt(next.sm)+": "+next.name:"Last block of the day");
+      nL.innerHTML="<b>"+left+"</b><small>"+(left===1?"minute":"minutes")+" left</small>";
+      nP.style.width=((m-cur.sm)/(cur.em-cur.sm)*100)+"%";
+      nowBox.style.setProperty("--now-color",cur.rest?"var(--rest)":"var("+cur.c+")");
+    }else if(m<D0){
+      nT.textContent="Starts at "+fmt(D0);
+      nS.textContent="First up: "+blocks[0].name;
+      var until=Math.ceil(D0-m), uh=Math.floor(until/60), um=until%60;
+      nL.innerHTML="<b>"+(uh?uh+"h "+um+"m":um+"m")+"</b><small>until start</small>";
+      nP.style.width="0%";
+    }else{
+      nT.textContent="That’s a wrap for today";
+      nS.textContent="Make sure all four activities are submitted in Canvas.";
+      nL.innerHTML=""; nP.style.width="100%";
+      nowBox.style.setProperty("--now-color","var(--tape)");
+    }
+  }
+  tick(); setInterval(tick,15000);
+
+  // Checklists
+  var KEY="it-exploratory-agenda-checks", state={};
+  try{state=JSON.parse(localStorage.getItem(KEY)||"{}")||{};}catch(e){state={};}
+  var boxes=document.querySelectorAll("input[data-k]");
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+  function badges(){
+    document.querySelectorAll("[data-badge]").forEach(function(bd){
+      var id=bd.getAttribute("data-badge"), all=document.querySelectorAll("#"+id+" input[data-k]"), n=0;
+      all.forEach(function(x){if(x.checked)n++;});
+      bd.textContent=n===all.length?"Complete ✓":n+" of "+all.length+" done";
+      bd.classList.toggle("complete",n===all.length);
+    });
+  }
+  boxes.forEach(function(b){
+    b.checked=!!state[b.dataset.k];
+    b.addEventListener("change",function(){state[b.dataset.k]=b.checked;save();badges();});
+  });
+  badges();
+  document.getElementById("reset").addEventListener("click",function(){
+    if(!confirm("Clear all checkmarks on this device?"))return;
+    state={};save();boxes.forEach(function(b){b.checked=false;});badges();
+  });
+})();
+</script>
+</body>
+</html>
