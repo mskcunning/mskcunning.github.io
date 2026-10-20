@@ -11,7 +11,7 @@
 :root{
   --bg:#DCE3E8; --surface:#F7F9FA; --surface-2:#EBEFF2; --ink:#1C2A39; --muted:#55657A; --line:#C3CDD6;
   --tape:#F2C230; --tape-ink:#2A2100;
-  --a1:#7A4FD6; --a2:#12807F; --a3:#C8641A; --a4:#2867C9; --rest:#9AA7B4;
+  --a1:#7A4FD6; --a2:#12807F; --a3:#C8641A; --a4:#2867C9; --ec:#A8256F; --rest:#9AA7B4;
   --focus:#1C2A39;
   color-scheme: light;
   box-sizing:border-box;
@@ -21,12 +21,13 @@
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#121820; --surface:#1B232D; --surface-2:#242E3A; --ink:#E6EDF3; --muted:#9AA9B9; --line:#334050;
-    --tape:#F2C230; --tape-ink:#2A2100;
+    --tape:#F2C230; --tape-ink:#2A2100; --ec:#E472B4;
     --a1:#A88BF0; --a2:#3DB8B5; --a3:#EE8E45; --a4:#6A9EF0; --rest:#5E6B78; --focus:#F2C230;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"]{
+  --ec:#E472B4;
   --bg:#121820; --surface:#1B232D; --surface-2:#242E3A; --ink:#E6EDF3; --muted:#9AA9B9; --line:#334050;
   --a1:#A88BF0; --a2:#3DB8B5; --a3:#EE8E45; --a4:#6A9EF0; --rest:#5E6B78; --focus:#F2C230;
   color-scheme: dark;
@@ -117,6 +118,11 @@ ul.checks input:checked + span{color:var(--muted);text-decoration:line-through}
 .inline-link{font-weight:700}
 .note{font-size:.9rem;color:var(--muted)}
 footer{color:var(--muted);font-size:.85rem;margin-top:2rem}
+.ec-link{display:block;margin-top:1.25rem;padding:.75rem .9rem;border:2px dashed var(--ec);border-radius:10px;color:var(--ec);font-weight:700;text-decoration:none}
+.ec-link:hover{background:var(--surface)}
+.ec-intro{background:var(--surface-2);border-radius:10px;padding:.7rem .9rem;max-width:68ch}
+.challenge{border-top:1px dashed var(--line);margin-top:1.25rem;padding-top:.25rem}
+.challenge h4{font-size:1.15rem}
 </style>
 </head>
 <body>
@@ -124,7 +130,7 @@ footer{color:var(--muted);font-size:.85rem;margin-top:2rem}
   <header class="top">
     <div>
       <h1>Information Technology Exploratory</h1>
-      <p>Today’s agenda · 8:00 AM to 1:00 PM</p>
+      <p>Today’s agenda · 8:00 AM to 1:45 PM</p>
     </div>
     <div class="clock" id="clock" aria-live="off">--:--</div>
   </header>
@@ -148,6 +154,7 @@ footer{color:var(--muted);font-size:.85rem;margin-top:2rem}
     <aside class="side">
       <h2>Schedule</h2>
       <ol class="agenda" id="agenda"></ol>
+      <a class="ec-link" href="#extra">Finished early? Try an extra credit challenge</a>
       <button class="reset" id="reset" type="button">Clear all checkmarks</button>
     </aside>
 
@@ -237,7 +244,7 @@ footer{color:var(--muted);font-size:.85rem;margin-top:2rem}
           <div>
             <div class="act-num">Activity 4</div>
             <h3>Windows Install</h3>
-            <div class="when">12:05 – 1:00 PM</div>
+            <div class="when">12:05 – 1:45 PM</div>
           </div>
           <span class="badge" data-badge="act4"></span>
         </div>
@@ -272,6 +279,57 @@ footer{color:var(--muted);font-size:.85rem;margin-top:2rem}
         <a class="submit" href="https://blackstonevalleyregional.instructure.com/courses/6337/assignments/357095?module_item_id=567375" target="_blank" rel="noopener">Submit Activity 4 in Canvas</a>
       </article>
 
+      <article class="act" id="extra" style="--c:var(--ec)">
+        <div class="act-head">
+          <div>
+            <div class="act-num">Extra credit</div>
+            <h3>Finished early? Pick a challenge</h3>
+            <div class="when">Anytime after your current activity is submitted</div>
+          </div>
+        </div>
+        <p class="ec-intro">Only start these once your current activity is submitted. You can do one challenge or all three. Ask your teacher if you’re not sure you’re ready.</p>
+
+        <div class="challenge">
+          <h4>Challenge A: Plan a PC on PCPartPicker</h4>
+          <p>Go to <a class="inline-link" href="https://pcpartpicker.com/list/" target="_blank" rel="noopener">PCPartPicker</a> and use the System Builder to plan a complete computer. Choose one budget:</p>
+          <div class="phases">
+            <div class="phase"><b>Student PC: under $600</b><p>Fast enough for school work, web browsing, and Minecraft Education.</p></div>
+            <div class="phase"><b>Gaming PC: under $1,200</b><p>Smooth gameplay on modern games at 1080p or 1440p.</p></div>
+            <div class="phase"><b>Dream build: no limit</b><p>Go all out, but you have to justify every part you pick.</p></div>
+          </div>
+          <ul class="checks">
+            <li><label><input type="checkbox" data-k="ec-a1"><span>Picked a CPU, motherboard, RAM, storage, power supply, and case</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-a2"><span>Picked a graphics card, or explained why the CPU’s built-in graphics are enough</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-a3"><span>Compatibility check shows no errors</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-a4"><span>Total price stays under your budget</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-a5"><span>Wrote one sentence for each part explaining why you chose it</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-a6"><span>Copied your list’s share link (or took a screenshot of the full list)</span></label></li>
+          </ul>
+        </div>
+
+        <div class="challenge">
+          <h4>Challenge B: Upgrade the PC you rebuilt</h4>
+          <p>Look at the parts in the PC you worked on today. Use PCPartPicker to find three upgrades that would make it faster or better, and make sure each one is compatible with that motherboard.</p>
+          <ul class="checks">
+            <li><label><input type="checkbox" data-k="ec-b1"><span>Listed the current parts in your PC</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-b2"><span>Found 3 compatible upgrades with prices</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-b3"><span>Explained what each upgrade would improve</span></label></li>
+          </ul>
+        </div>
+
+        <div class="challenge">
+          <h4>Challenge C: Build a giant PC in Minecraft Education</h4>
+          <p>Open Minecraft Education on the PC you just set up and build a giant model of the inside of a computer. Use signs to label each part.</p>
+          <ul class="checks">
+            <li><label><input type="checkbox" data-k="ec-c1"><span>Built at least 6 parts: motherboard, CPU, RAM, GPU, PSU, and storage</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-c2"><span>Labeled every part with a sign</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-c3"><span>📸 Took a screenshot of your finished build</span></label></li>
+          </ul>
+        </div>
+
+        <a class="submit" href="https://blackstonevalleyregional.instructure.com/courses/6337/assignments" target="_blank" rel="noopener">Submit extra credit in Canvas</a>
+      </article>
+
       <footer>Your checkmarks are saved on this device only.</footer>
     </main>
   </div>
@@ -279,7 +337,7 @@ footer{color:var(--muted);font-size:.85rem;margin-top:2rem}
 
 <script>
 (function(){
-  var DAY_START = "8:00", DAY_END = "13:00";
+  var DAY_START = "8:00", DAY_END = "13:45";
   var blocks = [
     {s:"8:00",  e:"9:00",  name:"Activity 1: Vision Board", act:"act1", c:"--a1", short:"Vision Board"},
     {s:"9:00",  e:"9:15",  name:"Break", rest:true, short:"Break"},
@@ -287,7 +345,7 @@ footer{color:var(--muted);font-size:.85rem;margin-top:2rem}
     {s:"9:50",  e:"11:07", name:"Activity 3: PC Teardown and Rebuild", act:"act3", c:"--a3", short:"Teardown + Bench", part:"Teardown and bench reconnect"},
     {s:"11:07", e:"11:37", name:"Lunch", rest:true, short:"Lunch"},
     {s:"11:37", e:"12:05", name:"Activity 3: PC Teardown and Rebuild", act:"act3", c:"--a3", short:"Solo Rebuild", part:"Solo rebuild and BIOS"},
-    {s:"12:05", e:"13:00", name:"Activity 4: Windows Install", act:"act4", c:"--a4", short:"Windows Install"}
+    {s:"12:05", e:"13:45", name:"Activity 4: Windows Install", act:"act4", c:"--a4", short:"Windows Install"}
   ];
   function mins(t){var p=t.split(":");return +p[0]*60 + +p[1];}
   function fmt(m){var h=Math.floor(m/60),mm=m%60,ap=h>=12?"PM":"AM";h=h%12||12;return h+":"+(mm<10?"0":"")+mm+" "+ap;}
@@ -314,9 +372,9 @@ footer{color:var(--muted);font-size:.85rem;margin-top:2rem}
       (b.part?'<div class="note">'+b.part+"</div>":"");
     b.li=li; agenda.appendChild(li);
   });
-  for(var h=D0;h<=D1;h+=60){
-    var sp=document.createElement("span");sp.style.left=((h-D0)/SPAN*100)+"%";sp.textContent=fmtShort(h);ticks.appendChild(sp);
-  }
+  function addTick(t){var sp=document.createElement("span");sp.style.left=((t-D0)/SPAN*100)+"%";sp.textContent=fmtShort(t);ticks.appendChild(sp);}
+  for(var h=D0;h<D1;h+=60) addTick(h);
+  addTick(D1);
 
   // Live updates
   var clock=document.getElementById("clock"), nT=document.getElementById("nowTitle"),
