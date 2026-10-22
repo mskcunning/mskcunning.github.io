@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>IT Exploratory – Today’s Agenda</title>
+<title>IT Exploratory – Career Research &amp; Ozaria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -124,13 +124,27 @@ footer{color:var(--muted);font-size:.85rem;margin-top:2rem}
 .challenge{border-top:1px dashed var(--line);margin-top:1.25rem;padding-top:.25rem}
 .challenge h4{font-size:1.15rem}
 </style>
+<style>
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;margin:.5rem 0 .75rem;padding:0;list-style:none}
+.chips li{background:var(--surface-2);border-radius:99px;padding:.2rem .7rem;font-size:.9rem}
+.chips a{font-weight:700}
+.tools{display:grid;grid-template-columns:minmax(7rem,auto) 1fr;gap:.35rem 1rem;margin:.5rem 0;max-width:40rem}
+.tools dt{font-weight:700;color:var(--muted)}
+.tools dd{margin:0}
+.defs{background:var(--surface-2);border-radius:10px;padding:.7rem .9rem;max-width:68ch;margin:.75rem 0}
+.defs p{margin:.35rem 0}
+.warn{border-left:4px solid var(--tape);background:var(--surface-2);padding:.6rem .9rem;border-radius:0 8px 8px 0;max-width:68ch;margin:.75rem 0}
+:root{--a5:#B03A48;--a6:#4F7A12;--a7:#8A5A00}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--a5:#EE7A86;--a6:#A3C95A;--a7:#E0B04A}}
+:root[data-theme="dark"]{--a5:#EE7A86;--a6:#A3C95A;--a7:#E0B04A}
+</style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <div>
       <h1>Information Technology Exploratory</h1>
-      <p>Today’s agenda · 8:00 AM to 1:45 PM</p>
+      <p>Today’s agenda · Career Research, Ozaria Coding, and Cybersecurity · <span id="dayRange"></span></p>
     </div>
     <div class="clock" id="clock" aria-live="off">--:--</div>
   </header>
@@ -154,7 +168,6 @@ footer{color:var(--muted);font-size:.85rem;margin-top:2rem}
     <aside class="side">
       <h2>Schedule</h2>
       <ol class="agenda" id="agenda"></ol>
-      <a class="ec-link" href="#extra">Finished early? Try an extra credit challenge</a>
       <button class="reset" id="reset" type="button">Clear all checkmarks</button>
     </aside>
 
@@ -165,169 +178,241 @@ footer{color:var(--muted);font-size:.85rem;margin-top:2rem}
         <div class="act-head">
           <div>
             <div class="act-num">Activity 1</div>
-            <h3>Vision Board: My Information Technology Exploratory</h3>
-            <div class="when">8:00 – 9:00 AM</div>
+            <h3>IT &amp; Networking Career Research</h3>
+            <div class="when" data-when="act1"></div>
           </div>
           <span class="badge" data-badge="act1"></span>
         </div>
-        <p>Create a digital vision board in <a class="inline-link" href="https://www.canva.com" target="_blank" rel="noopener">Canva</a> that captures your goals, expectations, and personal definition of Information Technology. Reflect on what you hope to learn this week and throughout the exploratory, then bring those ideas to life using images, icons, quotes, and personal touches. Choose colors, fonts, and layouts that reflect your intentions.</p>
-        <h4>Save and download your board as an image</h4>
+        <p>Research current IT and computer networking job listings, salary ranges, required skills, and certifications, then apply that research to a career poster.</p>
+
+        <h4>Step 1: Search jobs on Indeed</h4>
         <ul class="checks">
-          <li><label><input type="checkbox" data-k="a1-1"><span>Open your finished design in Canva.</span></label></li>
-          <li><label><input type="checkbox" data-k="a1-2"><span>Click <b>Share</b> in the top-right corner.</span></label></li>
-          <li><label><input type="checkbox" data-k="a1-3"><span>Select <b>Download</b>.</span></label></li>
-          <li><label><input type="checkbox" data-k="a1-4"><span>Under “File type,” choose <b>PNG</b> or <b>JPG</b>.</span></label></li>
-          <li><label><input type="checkbox" data-k="a1-5"><span>Click <b>Download</b> (it usually saves to your Downloads folder).</span></label></li>
-          <li><label><input type="checkbox" data-k="a1-6"><span>Upload that image file to Canvas.</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-1"><span>Go to <a class="inline-link" href="https://www.indeed.com" target="_blank" rel="noopener">Indeed</a>, search <b>“Network Administrator”</b> with your town in the location field, and click <b>Find Jobs</b>.</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-2"><span>Review the results, then narrow your search by adding certification terms: Cisco CCNA, CCNP, CCNA Security, CCNA Voice, etc.</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-3"><span>Click into one listing that interests you and note the requirements.</span></label></li>
         </ul>
-        <a class="submit" href="https://blackstonevalleyregional.instructure.com/courses/6337/assignments/357095?module_item_id=567375" target="_blank" rel="noopener">Submit Activity 1 in Canvas</a>
+
+        <h4>Step 2: Check salaries on Salary.com</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a1-4"><span>Go to <a class="inline-link" href="https://www.salary.com" target="_blank" rel="noopener">Salary.com</a> and click the <b>Job Search</b> menu.</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-5"><span>In the “What am I Worth” box, search <b>“Network Administrator”</b>, enter your town, and click <b>Get my salary estimate</b>.</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-6"><span>Click the first job listed to view its salary estimate chart and review the different job-level options.</span></label></li>
+        </ul>
+
+        <h4>Step 3: Research a career of your choice and make a poster</h4>
+        <p>Pick any career and research it the same way until you find a job posting that catches your eye. Some ideas:</p>
+        <ul class="chips">
+          <li>Fashion Designer</li><li>Hair Dresser</li><li>Diesel Mechanic</li><li>Electrician</li><li>Web Developer</li><li>Game Developer</li><li>Cybersecurity Analyst</li><li>Computer Technician</li>
+        </ul>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a1-7"><span>Picked a career and found a job posting</span></label></li>
+        </ul>
+        <p>Create a poster for your career in <a class="inline-link" href="https://www.canva.com" target="_blank" rel="noopener">Canva</a>. Your poster must include:</p>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a1-p1"><span>Job role</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-p2"><span>Salary range</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-p3"><span>Details of the job role</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-p4"><span>Certifications that may apply</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-p5"><span>Job requirements</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-p6"><span>How IT/technology factors into the role</span></label></li>
+        </ul>
+        <h4>Submit</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a1-8"><span>Downloaded the poster from Canva (top-right button)</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-9"><span>Uploaded the poster to Canvas</span></label></li>
+        </ul>
+        <a class="submit" data-submit="act1" target="_blank" rel="noopener">Submit Activity 1 in Canvas</a>
       </article>
 
       <article class="act" id="act2" style="--c:var(--a2)">
         <div class="act-head">
           <div>
             <div class="act-num">Activity 2</div>
-            <h3>PC TEMP Chart</h3>
-            <div class="when">9:15 – 9:50 AM · Teacher-led, we do this together</div>
+            <h3>Ozaria Coding Intro</h3>
+            <div class="when" data-when="act2"></div>
           </div>
           <span class="badge" data-badge="act2"></span>
         </div>
-        <p>Computers are complex systems that require many components and connections to function properly. We’ll fill in the TEMP Chart together as a class. Follow along with your teacher during the presentation and complete each term as we go. Don’t work ahead. TEMP Charts let you define a term and give an example and an image to support it. This chart will come in handy when we build our computers, since you’ll be able to reference the parts you’re using.</p>
-        <h4>As we go through each term together</h4>
+        <p>Begin working through the Ozaria coding course to build foundational programming skills.</p>
+        <h4>Tasks</h4>
         <ul class="checks">
-          <li><label><input type="checkbox" data-k="a2-1"><span>Write the definition your teacher gives during the presentation.</span></label></li>
-          <li><label><input type="checkbox" data-k="a2-2"><span>Add an example when your teacher shows you one.</span></label></li>
-          <li><label><input type="checkbox" data-k="a2-3"><span>Add an image when your teacher shows you one.</span></label></li>
-          <li><label><input type="checkbox" data-k="a2-4"><span>Upload your completed TEMP Chart for grading.</span></label></li>
+          <li><label><input type="checkbox" data-k="a2-1"><span>Go to <a class="inline-link" href="https://www.ozaria.com/students?_cc=SmallHillHalf" target="_blank" rel="noopener">Ozaria</a> and log in or create your account.</span></label></li>
+          <li><label><input type="checkbox" data-k="a2-2"><span>Complete the assigned lesson(s) for today at your own pace.</span></label></li>
+          <li><label><input type="checkbox" data-k="a2-3"><span>Work through each level’s challenges before moving to the next.</span></label></li>
         </ul>
-        <a class="submit" href="https://blackstonevalleyregional.instructure.com/courses/6337/assignments/357095?module_item_id=567375" target="_blank" rel="noopener">Submit Activity 2 in Canvas</a>
+        <h4>Submission</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a2-4"><span>📸 Screenshot of your Ozaria progress/completion screen at the end of the day (or your certificate, if you finished)</span></label></li>
+          <li><label><input type="checkbox" data-k="a2-5"><span>Uploaded to Canvas</span></label></li>
+        </ul>
+        <a class="submit" data-submit="act2" target="_blank" rel="noopener">Submit Activity 2 in Canvas</a>
       </article>
 
       <article class="act" id="act3" style="--c:var(--a3)">
         <div class="act-head">
           <div>
             <div class="act-num">Activity 3</div>
-            <h3>PC Teardown and Rebuild</h3>
-            <div class="when">9:50 – 11:07 AM and 11:37 AM – 12:05 PM</div>
+            <h3>CyberGames</h3>
+            <div class="when" data-when="act3"></div>
           </div>
           <span class="badge" data-badge="act3"></span>
         </div>
-        <div class="phases">
-          <div class="phase"><b>1. Teardown</b><p>Take the PC apart completely, with a junior helping you every step of the way. Ask questions! Learn what each part does and how it comes out.</p></div>
-          <div class="phase"><b>2. Bench reconnect</b><p>With your junior’s help, reconnect all the components outside the case on the bench (an “open-air” or “bench test” setup) so you can see how everything connects.</p></div>
-          <div class="phase"><b>3. Solo rebuild</b><p>Once the bench test works, rebuild the entire PC inside the case on your own, with no junior help. Show what you’ve learned.</p></div>
-        </div>
-        <h4>Progress</h4>
+        <p>Practice recognizing phishing attempts and other cybersecurity threats through two interactive games.</p>
+        <h4>Tasks</h4>
         <ul class="checks">
-          <li><label><input type="checkbox" data-k="a3-p1"><span>Teardown complete</span></label></li>
-          <li><label><input type="checkbox" data-k="a3-p2"><span>Bench reconnect complete and running</span></label></li>
-          <li><label><input type="checkbox" data-k="a3-p3"><span>Solo rebuild complete</span></label></li>
+          <li><label><input type="checkbox" data-k="a3-1"><span>Play the <a class="inline-link" href="https://www.phishingbox.com/cybersecurity-game" target="_blank" rel="noopener">Undersea Security</a> phishing game.</span></label></li>
+          <li><label><input type="checkbox" data-k="a3-2"><span>Play <a class="inline-link" href="https://beinternetawesome.withgoogle.com/en_us/interland" target="_blank" rel="noopener">Interland</a> from Be Internet Awesome.</span></label></li>
         </ul>
-        <h4>Photos to take (3)</h4>
+        <h4>Submission 3</h4>
         <ul class="checks">
-          <li><label><input type="checkbox" data-k="a3-ph1"><span>📸 PC fully connected and running on the bench (open-air, before the case)</span></label></li>
-          <li><label><input type="checkbox" data-k="a3-ph2"><span>📸 PC fully rebuilt inside the tower/case</span></label></li>
-          <li><label><input type="checkbox" data-k="a3-ph3"><span>📸 PC running BIOS</span></label></li>
+          <li><label><input type="checkbox" data-k="a3-3"><span>📸 Screenshot showing your completion/results from both games</span></label></li>
         </ul>
-        <h4>Sign-off checklist (junior confirms)</h4>
-        <ul class="checks">
-          <li><label><input type="checkbox" data-k="a3-s1"><span>Junior watched the PC power on and run successfully when it was first received/tested</span></label></li>
-          <li><label><input type="checkbox" data-k="a3-s2"><span>Freshman correctly pointed to and named each major component on the bench (CPU, GPU, RAM, motherboard, PSU, storage, etc.)</span></label></li>
-          <li><label><input type="checkbox" data-k="a3-s3"><span>Freshman completed the case rebuild independently</span></label></li>
-          <li><label><input type="checkbox" data-k="a3-s4"><span>All 3 photos submitted</span></label></li>
-        </ul>
-        <a class="submit" href="https://blackstonevalleyregional.instructure.com/courses/6337/assignments/357095?module_item_id=567375" target="_blank" rel="noopener">Submit Activity 3 in Canvas</a>
+        <a class="submit" data-submit="act3" target="_blank" rel="noopener">Submit Activity 3 in Canvas</a>
       </article>
 
       <article class="act" id="act4" style="--c:var(--a4)">
         <div class="act-head">
           <div>
             <div class="act-num">Activity 4</div>
-            <h3>Windows Install</h3>
-            <div class="when">12:05 – 1:45 PM</div>
+            <h3>Minecraft Education: Cyber Fundamentals</h3>
+            <div class="when" data-when="act4"></div>
           </div>
           <span class="badge" data-badge="act4"></span>
         </div>
-        <h4>Step 1: Install Windows 10/11</h4>
-        <p>Boot from the install media (USB/DVD) and install Windows. Create a local account, connect to Wi-Fi/network, and let all setup steps finish completely.</p>
+        <p>Complete the Minecraft Education Cyber Fundamentals course and upload your certificate of completion.</p>
+        <h4>Tasks</h4>
         <ul class="checks">
-          <li><label><input type="checkbox" data-k="a4-1"><span>Boot media created / selected correctly</span></label></li>
-          <li><label><input type="checkbox" data-k="a4-2"><span>Windows installed successfully (10 or 11)</span></label></li>
-          <li><label><input type="checkbox" data-k="a4-3"><span>PC boots fully to the Windows desktop</span></label></li>
-          <li><label><input type="checkbox" data-k="a4-4"><span>Windows Update checked / installed</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-1"><span>Launch Minecraft Education Edition (latest version) and sign in with your school account.</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-2"><span>Download and start the <a class="inline-link" data-file="cyberCourse" target="_blank" rel="noopener">Cyber Fundamentals course</a>.</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-3"><span>Complete the course: follow the in-game tutorials, participate in all activities/challenges, and take notes as needed.</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-4"><span>Once finished, generate and download/save your certificate of completion.</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-5"><span>Upload your certificate and confirm your submission went through.</span></label></li>
         </ul>
-        <h4>Step 2: Install Malwarebytes</h4>
-        <p>Download and install Malwarebytes from the official site. Run a full scan and make sure it comes back clean before moving on.</p>
-        <ul class="checks">
-          <li><label><input type="checkbox" data-k="a4-5"><span>Malwarebytes downloaded from the official source</span></label></li>
-          <li><label><input type="checkbox" data-k="a4-6"><span>Malwarebytes installed successfully</span></label></li>
-          <li><label><input type="checkbox" data-k="a4-7"><span>Full scan run and completed with no unresolved threats</span></label></li>
-        </ul>
-        <h4>Step 3: Install Minecraft Education</h4>
-        <p>Install Minecraft Education from the Microsoft Store (or official installer), sign in, and confirm it opens and runs correctly.</p>
-        <ul class="checks">
-          <li><label><input type="checkbox" data-k="a4-8"><span>Minecraft Education installed successfully</span></label></li>
-          <li><label><input type="checkbox" data-k="a4-9"><span>Signed in with the correct account</span></label></li>
-          <li><label><input type="checkbox" data-k="a4-10"><span>App opens and runs without errors</span></label></li>
-        </ul>
-        <h4>Required photos (3)</h4>
-        <ul class="checks">
-          <li><label><input type="checkbox" data-k="a4-ph1"><span>📸 Windows desktop after a successful install (showing version/edition)</span></label></li>
-          <li><label><input type="checkbox" data-k="a4-ph2"><span>📸 Malwarebytes showing a completed scan with results</span></label></li>
-          <li><label><input type="checkbox" data-k="a4-ph3"><span>📸 Minecraft Education open and running, signed in</span></label></li>
-        </ul>
-        <a class="submit" href="https://blackstonevalleyregional.instructure.com/courses/6337/assignments/357095?module_item_id=567375" target="_blank" rel="noopener">Submit Activity 4 in Canvas</a>
+        <div class="challenge">
+          <h4>Extra credit (optional)</h4>
+          <p>Finished early? Complete one or both of these worlds for extra credit on your daily grade, and upload the certificates.</p>
+          <ul class="chips">
+            <li><a href="https://education.minecraft.net/en-us/lessons/cyber-fundamentals-2-the-interceptors" target="_blank" rel="noopener">Cyber Fundamentals 2</a></li>
+            <li><a href="https://education.minecraft.net/en-us/lessons/cyber-castle-challenge" target="_blank" rel="noopener">Cyber Castle Challenge</a></li>
+          </ul>
+        </div>
+        <h4>Submission 4</h4>
+        <p class="note">Upload your certificate of completion (and any extra credit certificates).</p>
+        <a class="submit" data-submit="act4" target="_blank" rel="noopener">Submit Activity 4 in Canvas</a>
       </article>
 
-      <article class="act" id="extra" style="--c:var(--ec)">
+      <article class="act" id="act5" style="--c:var(--a5)">
         <div class="act-head">
           <div>
-            <div class="act-num">Extra credit</div>
-            <h3>Finished early? Pick a challenge</h3>
-            <div class="when">Anytime after your current activity is submitted</div>
+            <div class="act-num">Activity 5</div>
+            <h3>Strong Password Creation</h3>
+            <div class="when" data-when="act5"></div>
           </div>
+          <span class="badge" data-badge="act5"></span>
         </div>
-        <p class="ec-intro">Only start these once your current activity is submitted. You can do one challenge or all three. Ask your teacher if you’re not sure you’re ready.</p>
+        <p>Learn what makes a password strong, then check real-world tools that test password and account security.</p>
+        <h4>Tasks</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a5-1"><span>Join the <a class="inline-link" href="https://nearpod.com/student/" target="_blank" rel="noopener">Nearpod</a> lesson with PIN <b>lpmgt</b>.</span></label></li>
+          <li><label><input type="checkbox" data-k="a5-2"><span>Create a strong password on your whiteboard, following the criteria from the lesson.</span></label></li>
+          <li><label><input type="checkbox" data-k="a5-3"><span>Check whether an email has been compromised: <a class="inline-link" href="https://haveibeenpwned.com" target="_blank" rel="noopener">Have I Been Pwned</a></span></label></li>
+          <li><label><input type="checkbox" data-k="a5-4"><span>Check whether a password has been compromised: <a class="inline-link" href="https://haveibeenpwned.com/Passwords" target="_blank" rel="noopener">Pwned Passwords</a></span></label></li>
+          <li><label><input type="checkbox" data-k="a5-5"><span>Check password strength: <a class="inline-link" href="https://www.passwordmonster.com" target="_blank" rel="noopener">Password Monster</a></span></label></li>
+        </ul>
+        <h4>Submission 5</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a5-6"><span>📸 Picture of your whiteboard with the strong password you created</span></label></li>
+        </ul>
+        <a class="submit" data-submit="act5" target="_blank" rel="noopener">Submit Activity 5 in Canvas</a>
+      </article>
 
-        <div class="challenge">
-          <h4>Challenge A: Plan a PC on PCPartPicker</h4>
-          <p>Go to <a class="inline-link" href="https://pcpartpicker.com/list/" target="_blank" rel="noopener">PCPartPicker</a> and use the System Builder to plan a complete computer. Choose one budget:</p>
-          <div class="phases">
-            <div class="phase"><b>Student PC: under $600</b><p>Fast enough for school work, web browsing, and Minecraft Education.</p></div>
-            <div class="phase"><b>Gaming PC: under $1,200</b><p>Smooth gameplay on modern games at 1080p or 1440p.</p></div>
-            <div class="phase"><b>Dream build: no limit</b><p>Go all out, but you have to justify every part you pick.</p></div>
+      <article class="act" id="act6" style="--c:var(--a6)">
+        <div class="act-head">
+          <div>
+            <div class="act-num">Activity 6</div>
+            <h3>Keylogger Attack</h3>
+            <div class="when" data-when="act6"></div>
           </div>
-          <ul class="checks">
-            <li><label><input type="checkbox" data-k="ec-a1"><span>Picked a CPU, motherboard, RAM, storage, power supply, and case</span></label></li>
-            <li><label><input type="checkbox" data-k="ec-a2"><span>Picked a graphics card, or explained why the CPU’s built-in graphics are enough</span></label></li>
-            <li><label><input type="checkbox" data-k="ec-a3"><span>Compatibility check shows no errors</span></label></li>
-            <li><label><input type="checkbox" data-k="ec-a4"><span>Total price stays under your budget</span></label></li>
-            <li><label><input type="checkbox" data-k="ec-a5"><span>Wrote one sentence for each part explaining why you chose it</span></label></li>
-            <li><label><input type="checkbox" data-k="ec-a6"><span>Copied your list’s share link (or took a screenshot of the full list)</span></label></li>
-          </ul>
+          <span class="badge" data-badge="act6"></span>
         </div>
+        <p>Understand how keylogging attacks work by running one in a controlled lab environment using Kali Linux and the CyberRange.</p>
+        <h4>Tasks</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a6-1"><span>Review the <a class="inline-link" data-file="keyloggerDoc" target="_blank" rel="noopener">Part 1: Keylogger Attack instructions</a>.</span></label></li>
+          <li><label><input type="checkbox" data-k="a6-2"><span>Log in to the <a class="inline-link" href="https://portal.cyber.org" target="_blank" rel="noopener">CYBER.ORG Range</a>.</span></label></li>
+          <li><label><input type="checkbox" data-k="a6-3"><span>Set up and run your keylogger attack in Kali against your partner’s system.</span></label></li>
+        </ul>
+        <h4>Submission 6</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a6-4"><span>📸 Screenshot of your system running the attack in Kali</span></label></li>
+          <li><label><input type="checkbox" data-k="a6-5"><span>📸 Screenshot showing your partner’s keylog</span></label></li>
+        </ul>
+        <a class="submit" data-submit="act6" target="_blank" rel="noopener">Submit Activity 6 in Canvas</a>
+      </article>
 
-        <div class="challenge">
-          <h4>Challenge B: Upgrade the PC you rebuilt</h4>
-          <p>Look at the parts in the PC you worked on today. Use PCPartPicker to find three upgrades that would make it faster or better, and make sure each one is compatible with that motherboard.</p>
-          <ul class="checks">
-            <li><label><input type="checkbox" data-k="ec-b1"><span>Listed the current parts in your PC</span></label></li>
-            <li><label><input type="checkbox" data-k="ec-b2"><span>Found 3 compatible upgrades with prices</span></label></li>
-            <li><label><input type="checkbox" data-k="ec-b3"><span>Explained what each upgrade would improve</span></label></li>
-          </ul>
+      <article class="act" id="act7" style="--c:var(--a7)">
+        <div class="act-head">
+          <div>
+            <div class="act-num">Activity 7</div>
+            <h3>OSINT Phishing Attack</h3>
+            <div class="when" data-when="act7"></div>
+          </div>
+          <span class="badge" data-badge="act7"></span>
         </div>
-
-        <div class="challenge">
-          <h4>Challenge C: Build a giant PC in Minecraft Education</h4>
-          <p>Open Minecraft Education on the PC you just set up and build a giant model of the inside of a computer. Use signs to label each part.</p>
-          <ul class="checks">
-            <li><label><input type="checkbox" data-k="ec-c1"><span>Built at least 6 parts: motherboard, CPU, RAM, GPU, PSU, and storage</span></label></li>
-            <li><label><input type="checkbox" data-k="ec-c2"><span>Labeled every part with a sign</span></label></li>
-            <li><label><input type="checkbox" data-k="ec-c3"><span>📸 Took a screenshot of your finished build</span></label></li>
-          </ul>
+        <h4>Project objectives</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a7-o1"><span>Recognize the characteristics of a phishing attack.</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-o2"><span>Identify OSINT (Open Source Intelligence) methods available to gather information about a target organization or person.</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-o3"><span>Apply specialized techniques to craft a spear-phishing email.</span></label></li>
+        </ul>
+        <div class="defs">
+          <p><b>Phishing:</b> the attempt to obtain sensitive information such as usernames, passwords, SSN#, and credit card details, for malicious reasons, by masquerading as a trustworthy entity in an electronic communication.</p>
+          <p><b>Spear-phishing:</b> an email or electronic communications scam targeted towards a specific individual, organization, or business.</p>
         </div>
-
-        <a class="submit" href="https://blackstonevalleyregional.instructure.com/courses/6337/assignments/357095?module_item_id=567375" target="_blank" rel="noopener">Submit extra credit in Canvas</a>
+        <p>You will use OSINT online search tools to research a target (someone over 18 in your life) to see what information about them is publicly available online.</p>
+        <div class="phases">
+          <div class="phase"><b>Part 1: Online footprint report</b><p>Use OSINT tools to find as much information as possible about your target. Document it with links to websites and screenshots. Try searching for the target’s family members too, since they may have posted useful information.</p></div>
+          <div class="phase"><b>Part 2: Phishing email</b><p>Write a phishing email based on your research, aimed at convincing the target to provide some asset: money, credentials, or other items of value.</p></div>
+        </div>
+        <p class="warn"><b>Important:</b> Before starting your research, log out of all your social media accounts so information isn’t gathered through your personal account links.</p>
+        <h4>Information to gather</h4>
+        <p class="note">Begin with ONLY the target’s name and the town where they live. You may already know some of this, but you must prove you found it online with website links and screenshots.</p>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a7-i1"><span>Birthdate/age</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-i2"><span>Phone/home address</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-i3"><span>Parents/siblings/relatives</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-i4"><span>Hobbies</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-i5"><span>Job/career</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-i6"><span>Religion</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-i7"><span>Clubs</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-i8"><span>Politics</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-i9"><span>Vacation/travel</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-i10"><span>Books/music/movies</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-i11"><span>Shopping</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-i12"><span>Sports teams supported</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-i13"><span>Usernames</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-i14"><span>Education/schools</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-i15"><span>Charities/causes</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-i16"><span>Appearance in news articles</span></label></li>
+        </ul>
+        <h4>Suggested OSINT tools</h4>
+        <p class="note">You may use any other tools as long as they are publicly accessible.</p>
+        <dl class="tools">
+          <dt>General info</dt><dd><a href="https://www.google.com" target="_blank" rel="noopener">Google Search</a>, <a href="https://archive.org" target="_blank" rel="noopener">Archive.org</a></dd>
+          <dt>Work</dt><dd><a href="https://www.linkedin.com" target="_blank" rel="noopener">LinkedIn</a></dd>
+          <dt>Politics</dt><dd><a href="https://www.opensecrets.org/donor-lookup/" target="_blank" rel="noopener">OpenSecrets Donor Lookup</a></dd>
+          <dt>Social media</dt><dd><a href="https://www.facebook.com" target="_blank" rel="noopener">Facebook</a>, <a href="https://x.com" target="_blank" rel="noopener">Twitter/X</a>, <a href="https://www.classmates.com" target="_blank" rel="noopener">Classmates</a>, <a href="https://www.pinterest.com" target="_blank" rel="noopener">Pinterest</a>, <a href="https://www.youtube.com" target="_blank" rel="noopener">YouTube</a>, <a href="https://www.reddit.com" target="_blank" rel="noopener">Reddit</a></dd>
+          <dt>Shopping</dt><dd><a href="https://www.amazon.com/registries?ref_=nav_ListFlyout_find" target="_blank" rel="noopener">Amazon Wish Lists</a></dd>
+          <dt>Home/address/phone</dt><dd><a href="https://www.spokeo.com" target="_blank" rel="noopener">Spokeo</a>, <a href="https://www.zillow.com" target="_blank" rel="noopener">Zillow</a>, <a href="https://www.google.com/maps" target="_blank" rel="noopener">Google Street View</a></dd>
+          <dt>Photos</dt><dd><a href="https://images.google.com" target="_blank" rel="noopener">Google Reverse Image Search</a>, <a href="https://www.instagram.com" target="_blank" rel="noopener">Instagram</a></dd>
+        </dl>
+        <h4>Submission 7</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a7-s1"><span>Downloaded the <a class="inline-link" data-file="osintDoc" target="_blank" rel="noopener">OSINT document</a></span></label></li>
+          <li><label><input type="checkbox" data-k="a7-s2"><span>Filled in the required information and your sample phishing email</span></label></li>
+          <li><label><input type="checkbox" data-k="a7-s3"><span>Uploaded the document to Canvas</span></label></li>
+        </ul>
+        <a class="submit" data-submit="act7" target="_blank" rel="noopener">Submit Activity 7 in Canvas</a>
       </article>
 
       <footer>Your checkmarks are saved on this device only.</footer>
@@ -337,46 +422,78 @@ footer{color:var(--muted);font-size:.85rem;margin-top:2rem}
 
 <script>
 (function(){
+  /* ===== EDIT HERE: submission links ===== */
+  var SUBMIT_LINKS = {
+    act1: "https://blackstonevalleyregional.instructure.com/courses/6337/assignments",
+    act2: "https://blackstonevalleyregional.instructure.com/courses/6337/assignments",
+    act3: "https://blackstonevalleyregional.instructure.com/courses/6337/assignments",
+    act4: "https://blackstonevalleyregional.instructure.com/courses/6337/assignments",
+    act5: "https://blackstonevalleyregional.instructure.com/courses/6337/assignments",
+    act6: "https://blackstonevalleyregional.instructure.com/courses/6337/assignments",
+    act7: "https://blackstonevalleyregional.instructure.com/courses/6337/assignments"
+  };
+
+  /* ===== EDIT HERE: download links for files in Canvas ===== */
+  var FILE_LINKS = {
+    cyberCourse:  "https://education.minecraft.net/en-us/lessons/cyber-fundamentals",
+    keyloggerDoc: "https://blackstonevalleyregional.instructure.com/courses/6337/files",
+    osintDoc:     "https://blackstonevalleyregional.instructure.com/courses/6337/files"
+  };
+
+  /* ===== EDIT HERE: schedule (24-hour times) ===== */
   var DAY_START = "8:00", DAY_END = "13:45";
   var blocks = [
-    {s:"8:00",  e:"9:00",  name:"Activity 1: Vision Board", act:"act1", c:"--a1", short:"Vision Board"},
-    {s:"9:00",  e:"9:40",  name:"Break", rest:true, short:"Break"},
-    {s:"9:40",  e:"10:10",  name:"Activity 2: PC TEMP Chart", act:"act2", c:"--a2", short:"TEMP Chart", part:"Teacher-led: follow along and submit"},
-    {s:"10:10",  e:"11:07", name:"Activity 3: PC Teardown and Rebuild", act:"act3", c:"--a3", short:"Teardown + Bench", part:"Teardown and bench reconnect"},
+    {s:"8:00",  e:"9:00",  name:"Activity 1: IT & Networking Career Research", act:"act1", c:"--a1", short:"Career Research"},
+    {s:"9:00",  e:"9:15",  name:"Break", rest:true, short:"Break"},
+    {s:"9:15",  e:"9:45",  name:"Activity 2: Ozaria Coding Intro", act:"act2", c:"--a2", short:"Ozaria"},
+    {s:"9:45",  e:"10:05", name:"Activity 3: CyberGames", act:"act3", c:"--a3", short:"CyberGames"},
+    {s:"10:05", e:"11:07", name:"Activity 4: Minecraft Cyber Fundamentals", act:"act4", c:"--a4", short:"Minecraft Cyber"},
     {s:"11:07", e:"11:37", name:"Lunch", rest:true, short:"Lunch"},
-    {s:"11:37", e:"12:05", name:"Activity 3: PC Teardown and Rebuild", act:"act3", c:"--a3", short:"Solo Rebuild", part:"Solo rebuild and BIOS"},
-    {s:"12:05", e:"13:45", name:"Activity 4: Windows Install", act:"act4", c:"--a4", short:"Windows Install"}
+    {s:"11:37", e:"12:00", name:"Activity 5: Strong Password Creation", act:"act5", c:"--a5", short:"Passwords"},
+    {s:"12:00", e:"12:45", name:"Activity 6: Keylogger Attack", act:"act6", c:"--a6", short:"Keylogger"},
+    {s:"12:45", e:"13:45", name:"Activity 7: OSINT Phishing Attack", act:"act7", c:"--a7", short:"OSINT Phishing"}
   ];
+  /* ======================================== */
+
   function mins(t){var p=t.split(":");return +p[0]*60 + +p[1];}
   function fmt(m){var h=Math.floor(m/60),mm=m%60,ap=h>=12?"PM":"AM";h=h%12||12;return h+":"+(mm<10?"0":"")+mm+" "+ap;}
   function fmtShort(m){var h=Math.floor(m/60),mm=m%60;h=h%12||12;return h+":"+(mm<10?"0":"")+mm;}
   var D0=mins(DAY_START), D1=mins(DAY_END), SPAN=D1-D0;
   blocks.forEach(function(b){b.sm=mins(b.s);b.em=mins(b.e);});
 
-  // Build bar + ticks + agenda
+  // Submission links and time labels come from the settings above
+  document.querySelectorAll("[data-submit]").forEach(function(a){a.href=SUBMIT_LINKS[a.dataset.submit];});
+  document.querySelectorAll("[data-file]").forEach(function(a){a.href=FILE_LINKS[a.dataset.file];});
+  document.getElementById("dayRange").textContent=fmt(D0)+" to "+fmt(D1);
+  document.querySelectorAll("[data-when]").forEach(function(el){
+    el.textContent=blocks.filter(function(b){return b.act===el.dataset.when;})
+      .map(function(b){return fmt(b.sm)+" – "+fmt(b.em);}).join(" and ");
+  });
+
   var bar=document.getElementById("bar"), needle=document.getElementById("needle"),
       ticks=document.getElementById("ticks"), agenda=document.getElementById("agenda");
-  blocks.forEach(function(b,i){
+  blocks.forEach(function(b){
     var seg=document.createElement(b.rest?"div":"a");
     seg.className="seg"+(b.rest?" rest":"");
     seg.style.flex=(b.em-b.sm)+" 0 0";
     if(!b.rest){seg.href="#"+b.act;seg.style.background="var("+b.c+")";}
     seg.title=b.name+" ("+fmt(b.sm)+" – "+fmt(b.em)+")";
-    seg.innerHTML="<span>"+b.short+"</span>";
+    var sp=document.createElement("span");sp.textContent=b.short;seg.appendChild(sp);
     b.seg=seg; bar.insertBefore(seg,needle);
 
     var li=document.createElement("li");
     if(!b.rest) li.style.setProperty("--c","var("+b.c+")");
-    li.innerHTML='<div class="t">'+fmt(b.sm)+" – "+fmt(b.em)+"</div>"+
-      (b.rest?'<span class="rest-name">'+b.name+"</span>":'<a href="#'+b.act+'">'+b.name+"</a>")+
-      (b.part?'<div class="note">'+b.part+"</div>":"");
+    var t=document.createElement("div");t.className="t";t.textContent=fmt(b.sm)+" – "+fmt(b.em);li.appendChild(t);
+    var nm=document.createElement(b.rest?"span":"a");nm.textContent=b.name;
+    if(b.rest)nm.className="rest-name";else nm.href="#"+b.act;
+    li.appendChild(nm);
+    if(b.part){var n=document.createElement("div");n.className="note";n.textContent=b.part;li.appendChild(n);}
     b.li=li; agenda.appendChild(li);
   });
   function addTick(t){var sp=document.createElement("span");sp.style.left=((t-D0)/SPAN*100)+"%";sp.textContent=fmtShort(t);ticks.appendChild(sp);}
   for(var h=D0;h<D1;h+=60) addTick(h);
   addTick(D1);
 
-  // Live updates
   var clock=document.getElementById("clock"), nT=document.getElementById("nowTitle"),
       nS=document.getElementById("nowSub"), nL=document.getElementById("nowLeft"), nP=document.getElementById("nowProg"),
       nowBox=document.getElementById("now");
@@ -386,19 +503,15 @@ footer{color:var(--muted);font-size:.85rem;margin-top:2rem}
     clock.textContent=hh+":"+(mi<10?"0":"")+mi;
     if(m>=D0&&m<=D1){needle.style.display="block";needle.style.left="calc("+((m-D0)/SPAN*100)+"% - 1.5px)";}
     else needle.style.display="none";
-
-    var cur=null, next=null;
+    var cur=null,next=null;
     blocks.forEach(function(b){
-      var past=m>=b.em, isCur=m>=b.sm&&m<b.em;
-      b.seg.classList.toggle("done",past);
-      b.li.classList.toggle("past",past);
-      b.li.classList.toggle("current",isCur);
-      if(isCur) cur=b;
-      if(!next&&b.sm>m) next=b;
+      var past=m>=b.em,isCur=m>=b.sm&&m<b.em;
+      b.seg.classList.toggle("done",past);b.li.classList.toggle("past",past);b.li.classList.toggle("current",isCur);
+      if(isCur)cur=b; if(!next&&b.sm>m)next=b;
     });
     if(cur){
       var left=Math.ceil(cur.em-m);
-      nT.textContent=cur.rest?cur.name:cur.name;
+      nT.textContent=cur.name;
       nS.textContent=(cur.part?cur.part+". ":"")+(next?"Next up at "+fmt(next.sm)+": "+next.name:"Last block of the day");
       nL.innerHTML="<b>"+left+"</b><small>"+(left===1?"minute":"minutes")+" left</small>";
       nP.style.width=((m-cur.sm)/(cur.em-cur.sm)*100)+"%";
@@ -406,26 +519,25 @@ footer{color:var(--muted);font-size:.85rem;margin-top:2rem}
     }else if(m<D0){
       nT.textContent="Starts at "+fmt(D0);
       nS.textContent="First up: "+blocks[0].name;
-      var until=Math.ceil(D0-m), uh=Math.floor(until/60), um=until%60;
+      var until=Math.ceil(D0-m),uh=Math.floor(until/60),um=until%60;
       nL.innerHTML="<b>"+(uh?uh+"h "+um+"m":um+"m")+"</b><small>until start</small>";
       nP.style.width="0%";
     }else{
       nT.textContent="That’s a wrap for today";
-      nS.textContent="Make sure all four activities are submitted in Canvas.";
-      nL.innerHTML=""; nP.style.width="100%";
+      nS.textContent="Make sure all of your activities are submitted in Canvas.";
+      nL.innerHTML="";nP.style.width="100%";
       nowBox.style.setProperty("--now-color","var(--tape)");
     }
   }
   tick(); setInterval(tick,15000);
 
-  // Checklists
-  var KEY="it-exploratory-agenda-checks", state={};
+  var KEY="it-exploratory-career-ozaria-checks", state={};
   try{state=JSON.parse(localStorage.getItem(KEY)||"{}")||{};}catch(e){state={};}
   var boxes=document.querySelectorAll("input[data-k]");
   function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
   function badges(){
     document.querySelectorAll("[data-badge]").forEach(function(bd){
-      var id=bd.getAttribute("data-badge"), all=document.querySelectorAll("#"+id+" input[data-k]"), n=0;
+      var id=bd.getAttribute("data-badge"),all=document.querySelectorAll("#"+id+" input[data-k]"),n=0;
       all.forEach(function(x){if(x.checked)n++;});
       bd.textContent=n===all.length?"Complete ✓":n+" of "+all.length+" done";
       bd.classList.toggle("complete",n===all.length);
