@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IT Exploratory – Home Network &amp; SOHO Build</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#DCE3E8; --surface:#F7F9FA; --surface-2:#EBEFF2; --ink:#1C2A39; --muted:#55657A; --line:#C3CDD6;
+  --tape:#F2C230; --tape-ink:#2A2100;
+  --a1:#7A4FD6; --a2:#12807F; --a3:#C8641A; --a4:#2867C9; --ec:#A8256F; --rest:#9AA7B4;
+  --focus:#1C2A39;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121820; --surface:#1B232D; --surface-2:#242E3A; --ink:#E6EDF3; --muted:#9AA9B9; --line:#334050;
+    --tape:#F2C230; --tape-ink:#2A2100; --ec:#E472B4;
+    --a1:#A88BF0; --a2:#3DB8B5; --a3:#EE8E45; --a4:#6A9EF0; --rest:#5E6B78; --focus:#F2C230;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ec:#E472B4;
+  --bg:#121820; --surface:#1B232D; --surface-2:#242E3A; --ink:#E6EDF3; --muted:#9AA9B9; --line:#334050;
+  --a1:#A88BF0; --a2:#3DB8B5; --a3:#EE8E45; --a4:#6A9EF0; --rest:#5E6B78; --focus:#F2C230;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.0625rem;line-height:1.55}
+h1,h2,h3{font-family:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif;line-height:1.1;margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:4px}
+.wrap{max-width:68rem;margin:0 auto;padding:1.5rem 1.25rem 4rem}
+
+/* Header */
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.25rem}
+header.top h1{font-size:clamp(2rem,5vw,3.25rem);font-weight:800;letter-spacing:-.02em}
+header.top p{margin:.35rem 0 0;color:var(--muted)}
+.clock{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:700;font-size:clamp(1.75rem,4vw,2.5rem);font-variant-numeric:tabular-nums;background:var(--tape);color:var(--tape-ink);padding:.15rem .7rem;border-radius:3px;transform:rotate(-1.5deg);box-shadow:0 2px 0 rgba(0,0,0,.15)}
+
+/* Day strip */
+.strip{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1.25rem 1.25rem 1rem}
+.bar-scroll{overflow-x:auto}
+.bar{position:relative;display:flex;height:64px;min-width:640px;border-radius:8px;overflow:hidden}
+.seg{position:relative;display:flex;align-items:flex-end;padding:.35rem .45rem;color:#fff;font-size:.8rem;font-weight:700;border-right:2px solid var(--surface);cursor:pointer;text-decoration:none;opacity:.92;min-width:0}
+.seg:last-child{border-right:0}
+.seg span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seg.rest{background:repeating-linear-gradient(-45deg,var(--rest) 0 6px,transparent 6px 12px),var(--surface-2);color:var(--ink)}
+.seg.done{opacity:.4}
+.needle{position:absolute;top:-6px;bottom:-6px;width:3px;background:var(--ink);border-radius:2px;pointer-events:none;display:none}
+.needle::before{content:"";position:absolute;top:-4px;left:-5px;width:13px;height:13px;border-radius:50%;background:var(--tape);border:3px solid var(--ink)}
+.ticks{position:relative;height:1.4rem;min-width:640px;margin-top:.3rem;color:var(--muted);font-size:.8rem;font-variant-numeric:tabular-nums}
+.ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.ticks span:first-child{transform:none}
+.ticks span:last-child{transform:translateX(-100%)}
+
+/* Now panel */
+.now{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center;margin-top:1rem;padding-top:1rem;border-top:1px dashed var(--line)}
+.now h2{font-size:clamp(1.4rem,3vw,1.9rem);font-weight:700}
+.now .sub{color:var(--muted);margin-top:.25rem}
+.left{text-align:right}
+.left b{display:block;font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:clamp(2rem,5vw,3rem);font-variant-numeric:tabular-nums;line-height:1}
+.left small{color:var(--muted)}
+.prog{grid-column:1/-1;height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--now-color,var(--ink));transition:width .6s}
+
+/* Layout */
+.cols{display:grid;grid-template-columns:minmax(15rem,20rem) 1fr;gap:1.5rem;margin-top:1.75rem;align-items:start}
+@media (max-width:820px){.cols{grid-template-columns:1fr}}
+.side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 1rem)}
+@media (max-width:820px){.side{position:static}}
+.side h2,.acts>h2{font-size:1.25rem;margin-bottom:.75rem}
+ol.agenda{list-style:none;margin:0;padding:0;border-left:3px solid var(--line)}
+ol.agenda li{position:relative;padding:.5rem 0 .5rem 1rem}
+ol.agenda li::before{content:"";position:absolute;left:-8px;top:.95rem;width:13px;height:13px;border-radius:50%;background:var(--c,var(--rest));border:2px solid var(--bg)}
+ol.agenda li.current{background:var(--surface);border-radius:0 8px 8px 0}
+ol.agenda li.current::before{box-shadow:0 0 0 4px var(--tape)}
+ol.agenda li.past{opacity:.5}
+ol.agenda .t{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+ol.agenda a{display:block;font-weight:700;text-decoration:none}
+ol.agenda a:hover{text-decoration:underline}
+ol.agenda .rest-name{display:block;font-weight:700}
+.reset{margin-top:1rem;background:none;border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:.4rem .7rem;font:inherit;font-size:.85rem;cursor:pointer}
+
+/* Activity cards */
+.act{background:var(--surface);border:1px solid var(--line);border-left:8px solid var(--c);border-radius:6px 14px 14px 6px;padding:1.25rem 1.4rem 1.4rem;margin-bottom:1.25rem}
+.act-head{display:flex;flex-wrap:wrap;gap:.75rem 1rem;align-items:flex-start;justify-content:space-between}
+.act-num{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;color:var(--c);font-size:1rem}
+.act h3{font-size:clamp(1.35rem,2.6vw,1.7rem);font-weight:700;margin-top:.15rem}
+.when{color:var(--muted);font-size:.9rem;margin-top:.3rem;font-variant-numeric:tabular-nums}
+.badge{font-size:.85rem;font-weight:700;padding:.2rem .6rem;border-radius:99px;background:var(--surface-2);white-space:nowrap}
+.badge.complete{background:var(--c);color:#fff}
+.act p{max-width:68ch;margin:.75rem 0}
+.act h4{font-size:1rem;margin:1.1rem 0 .4rem;font-family:"Bricolage Grotesque",system-ui,sans-serif}
+ul.checks{list-style:none;margin:0;padding:0;display:grid;gap:.15rem}
+ul.checks label{display:flex;gap:.6rem;align-items:flex-start;padding:.35rem .5rem;border-radius:6px;cursor:pointer}
+ul.checks label:hover{background:var(--surface-2)}
+ul.checks input{appearance:none;flex:none;width:1.2rem;height:1.2rem;margin-top:.15rem;border:2px solid var(--muted);border-radius:4px;display:grid;place-content:center;cursor:pointer;background:var(--surface)}
+ul.checks input::after{content:"";width:.6rem;height:.35rem;border-left:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(-45deg) translate(1px,-1px);opacity:0}
+ul.checks input:checked{background:var(--c);border-color:var(--c)}
+ul.checks input:checked::after{opacity:1}
+ul.checks input:checked + span{color:var(--muted);text-decoration:line-through}
+.phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.75rem;margin:.75rem 0}
+.phase{background:var(--surface-2);border-radius:10px;padding:.8rem .9rem}
+.phase b{display:block;margin-bottom:.2rem}
+.phase p{margin:0;font-size:.95rem}
+.submit{display:inline-flex;align-items:center;gap:.5rem;margin-top:1.25rem;background:var(--c);color:#fff;text-decoration:none;font-weight:700;padding:.7rem 1.1rem;border-radius:8px}
+.submit:hover{filter:brightness(1.08)}
+.inline-link{font-weight:700}
+.note{font-size:.9rem;color:var(--muted)}
+footer{color:var(--muted);font-size:.85rem;margin-top:2rem}
+.ec-link{display:block;margin-top:1.25rem;padding:.75rem .9rem;border:2px dashed var(--ec);border-radius:10px;color:var(--ec);font-weight:700;text-decoration:none}
+.ec-link:hover{background:var(--surface)}
+.ec-intro{background:var(--surface-2);border-radius:10px;padding:.7rem .9rem;max-width:68ch}
+.challenge{border-top:1px dashed var(--line);margin-top:1.25rem;padding-top:.25rem}
+.challenge h4{font-size:1.15rem}
+</style>
+<style>
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;margin:.5rem 0 .75rem;padding:0;list-style:none}
+.chips li{background:var(--surface-2);border-radius:99px;padding:.2rem .7rem;font-size:.9rem}
+.chips a{font-weight:700}
+.tools{display:grid;grid-template-columns:minmax(7rem,auto) 1fr;gap:.35rem 1rem;margin:.5rem 0;max-width:40rem}
+.tools dt{font-weight:700;color:var(--muted)}
+.tools dd{margin:0}
+.defs{background:var(--surface-2);border-radius:10px;padding:.7rem .9rem;max-width:68ch;margin:.75rem 0}
+.defs p{margin:.35rem 0}
+.warn{border-left:4px solid var(--tape);background:var(--surface-2);padding:.6rem .9rem;border-radius:0 8px 8px 0;max-width:68ch;margin:.75rem 0}
+:root{--a5:#B03A48;--a6:#4F7A12;--a7:#8A5A00}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--a5:#EE7A86;--a6:#A3C95A;--a7:#E0B04A}}
+:root[data-theme="dark"]{--a5:#EE7A86;--a6:#A3C95A;--a7:#E0B04A}
+:root{--ec:#A8256F}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ec:#E472B4}}
+:root[data-theme="dark"]{--ec:#E472B4}
+.ec-link{display:block;margin-top:1.25rem;padding:.75rem .9rem;border:2px dashed var(--ec);border-radius:10px;color:var(--ec);font-weight:700;text-decoration:none}
+.ec-link:hover{background:var(--surface)}
+.ec-intro{background:var(--surface-2);border-radius:10px;padding:.7rem .9rem;max-width:68ch}
+.challenge{border-top:1px dashed var(--line);margin-top:1.25rem;padding-top:.25rem}
+.challenge h4{font-size:1.15rem}
+.tablewrap{overflow-x:auto;margin:.5rem 0}
+table.ip{border-collapse:collapse;width:100%;min-width:20rem;font-size:.95rem}
+table.ip th,table.ip td{text-align:left;padding:.45rem .7rem;border-bottom:1px solid var(--line)}
+table.ip th{background:var(--surface-2);font-family:"Bricolage Grotesque",system-ui,sans-serif}
+table.ip td:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+ol.t568b{list-style:none;margin:.3rem 0 0;padding:0;display:grid;gap:.15rem;counter-reset:pin}
+ol.t568b li{counter-increment:pin;display:flex;align-items:center;gap:.6rem;font-size:.95rem}
+ol.t568b li::before{content:counter(pin);width:1.3rem;height:1.3rem;flex:none;display:grid;place-content:center;background:var(--surface);border:1px solid var(--line);border-radius:4px;font-size:.8rem;font-weight:700}
+.t568b .w{width:2.4rem;height:1rem;flex:none;border-radius:3px;border:1px solid rgba(0,0,0,.25)}
+.t568b .o{background:#ff7a1a}.t568b .wo{background:linear-gradient(90deg,#fff 50%,#ff7a1a 50%)}
+.t568b .g{background:#1aa33a}.t568b .wg{background:linear-gradient(90deg,#fff 50%,#1aa33a 50%)}
+.t568b .b{background:#1a6bff}.t568b .wb{background:linear-gradient(90deg,#fff 50%,#1a6bff 50%)}
+.t568b .br{background:#8a5a2b}.t568b .wbr{background:linear-gradient(90deg,#fff 50%,#8a5a2b 50%)}
+
+.cols>*{min-width:0} /* keeps wide tables/timeline from pushing the page sideways on phones */
+/* Language toggle */
+.langrow{display:flex;justify-content:flex-end;margin:0 0 1rem}
+.langbar{display:inline-flex;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:3px}
+.langbar button{font:700 .85rem/1 "Bricolage Grotesque",system-ui,sans-serif;border:0;background:none;color:var(--muted);padding:.5rem .85rem;border-radius:99px;cursor:pointer}
+.langbar button:hover{color:var(--ink)}
+.langbar button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+</style>
+</head>
+<body><div class="wrap">
+  <div class="langrow">
+    <div class="langbar" role="group" aria-label="Language">
+      <button type="button" data-lang="en" lang="en" aria-pressed="true">English</button>
+      <button type="button" data-lang="es" lang="es" aria-pressed="false">Español</button>
+      <button type="button" data-lang="pt" lang="pt" aria-pressed="false">Português</button>
+    </div>
+  </div>
+
+  <header class="top">
+    <div>
+      <h1>Information Technology Exploratory</h1>
+      <p><span>Today’s agenda · Home Network &amp; SOHO Build</span> · <span id="dayRange"></span></p>
+    </div>
+    <div class="clock" id="clock" aria-live="off">--:--</div>
+  </header>
+
+  <section class="strip" aria-label="Day timeline">
+    <div class="bar-scroll">
+      <div class="bar" id="bar"><div class="needle" id="needle"></div></div>
+      <div class="ticks" id="ticks"></div>
+    </div>
+    <div class="now" id="now">
+      <div>
+        <h2 id="nowTitle">Loading…</h2>
+        <div class="sub" id="nowSub"></div>
+      </div>
+      <div class="left" id="nowLeft"></div>
+      <div class="prog"><i id="nowProg"></i></div>
+    </div>
+  </section>
+
+  <div class="cols">
+    <aside class="side">
+      <h2>Schedule</h2>
+      <ol class="agenda" id="agenda"></ol>
+      <a class="ec-link" href="#extra">Finished early? Try an extra credit challenge</a>
+      <button class="reset" id="reset" type="button">Clear all checkmarks</button>
+    </aside>
+
+    <main class="acts">
+      <h2>Activities</h2>
+
+<article class="act" id="act1" style="--c:var(--a1)">
+        <div class="act-head">
+          <div>
+            <div class="act-num">Activity 1</div>
+            <h3>Draw Your Home Network Topology</h3>
+            <div class="when" data-when="act1"></div>
+          </div>
+          <span class="badge" data-badge="act1"></span>
+        </div>
+        <p>Diagram the real devices and connections in your own home network as a warm-up before working with an unfamiliar client network.</p>
+        <h4>Tasks</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a1-1"><span>On butcher paper or a whiteboard, sketch every device on your home network: modem, router, computers, phones, smart TVs/speakers, game consoles, printers, etc.</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-2"><span>Label each connection as wired (Ethernet) or wireless (Wi-Fi).</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-3"><span>Mark where your ISP modem enters the home, where your router sits, and any extra switches or access points.</span></label></li>
+          <li><label><input type="checkbox" data-k="a1-4"><span>If you have a guest network, note which devices are on it vs. the main network.</span></label></li>
+        </ul>
+        <h4>Submission 1</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a1-5"><span>📸 Photo of your home network topology diagram</span></label></li>
+        </ul>
+        <a class="submit" data-submit="act1" target="_blank" rel="noopener">Submit Activity 1 in Canvas</a>
+      </article>
+
+<article class="act" id="act2" style="--c:var(--a2)">
+        <div class="act-head">
+          <div>
+            <div class="act-num">Activity 2</div>
+            <h3>School Network Site Survey</h3>
+            <div class="when" data-when="act2"></div>
+          </div>
+          <span class="badge" data-badge="act2"></span>
+        </div>
+        <p>Walk the building and map the real network infrastructure — wireless access points, cameras, and network closets — the way a technician documents an unfamiliar client site.</p>
+        <p class="warn"><b>Before you go:</b> stay in your assigned area, don’t touch or unplug any equipment, and let your teacher know your route. You’re documenting what you see, not changing anything.</p>
+        <h4>Tasks</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a2-1"><span>Get a floor plan or sketch the layout of your assigned area (hallways, rooms, stairwells).</span></label></li>
+          <li><label><input type="checkbox" data-k="a2-2"><span>Find every <b>wireless access point (WAP)</b> you can. Note where each is mounted (ceiling vs. wall) and its location on your map.</span></label></li>
+          <li><label><input type="checkbox" data-k="a2-3"><span>Find the <b>security cameras</b>. Note each one’s type (dome or bullet) and the area it appears to cover.</span></label></li>
+          <li><label><input type="checkbox" data-k="a2-4"><span>Locate any <b>network closets, switches, or patch panels</b> and note visible cable runs or wall drops.</span></label></li>
+          <li><label><input type="checkbox" data-k="a2-5"><span>Use a Wi-Fi analyzer app to check signal strength around your area and mark any dead zones.</span></label></li>
+          <li><label><input type="checkbox" data-k="a2-6"><span>Mark every access point and camera on your map, and keep a running count of each.</span></label></li>
+        </ul>
+        <div class="defs">
+          <p><b>What to look for:</b></p>
+          <p><b>Access point (WAP):</b> usually a small white box or disc on the ceiling with one or two small lights, broadcasting the Wi-Fi.</p>
+          <p><b>Dome camera:</b> a half-sphere behind dark glass, often on a ceiling. <b>Bullet camera:</b> a cylinder pointing in one direction, often on a wall.</p>
+          <p><b>Network closet:</b> a wall rack or small room with switches and bundles of blue/colored cables.</p>
+        </div>
+        <h4>Submission 2</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a2-7"><span>📸 Photo of your annotated map showing the access points and cameras you found</span></label></li>
+          <li><label><input type="checkbox" data-k="a2-8"><span>Your total count of access points and cameras in your area</span></label></li>
+        </ul>
+        <a class="submit" data-submit="act2" target="_blank" rel="noopener">Submit Activity 2 in Canvas</a>
+      </article>
+
+<article class="act" id="act3" style="--c:var(--a3)">
+        <div class="act-head">
+          <div>
+            <div class="act-num">Activity 3</div>
+            <h3>Intro to Packet Tracer: Map Your Home Network</h3>
+            <div class="when" data-when="act3"></div>
+          </div>
+          <span class="badge" data-badge="act3"></span>
+        </div>
+        <p class="note">With a junior. Learn Packet Tracer basics by recreating your Activity 1 home network in simulation, while mentoring a junior-level student through the same build.</p>
+        <h4>Tasks</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a3-1"><span>Recreate your Activity 1 diagram in Packet Tracer: modem/cloud, router, switch (if you have one), and your end devices.</span></label></li>
+          <li><label><input type="checkbox" data-k="a3-2"><span>Cable everything, then address it using the class-wide scheme below so every pair’s network is consistent.</span></label></li>
+          <li><label><input type="checkbox" data-k="a3-3"><span>Explain to your partner what each device and cable is doing as you go.</span></label></li>
+          <li><label><input type="checkbox" data-k="a3-4"><span>Use ping to test connectivity between at least two devices, and show your partner how to read a successful vs. failed ping.</span></label></li>
+        </ul>
+        <h4>IP addressing (Activity 3 only)</h4>
+        <div class="tablewrap">
+          <table class="ip">
+            <tr><th>Item</th><th>Value</th></tr>
+            <tr><td>LAN network</td><td>192.168.1.0 /24</td></tr>
+            <tr><td>Router / gateway</td><td>192.168.1.1</td></tr>
+            <tr><td>DHCP pool</td><td>192.168.1.100 – 192.168.1.199</td></tr>
+            <tr><td>Static devices (desktop, printer)</td><td>192.168.1.10 – 192.168.1.20</td></tr>
+            <tr><td>Guest network (if added)</td><td>192.168.2.0 /24, gateway 192.168.2.1</td></tr>
+            <tr><td>Subnet mask</td><td>255.255.255.0</td></tr>
+          </table>
+        </div>
+        <h4>Submission 3</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a3-5"><span>📸 Successful ping screenshot</span></label></li>
+          <li><label><input type="checkbox" data-k="a3-6"><span>📸 Screenshot of the full network topology</span></label></li>
+        </ul>
+        <a class="submit" data-submit="act3" target="_blank" rel="noopener">Submit Activity 3 in Canvas</a>
+      </article>
+
+<article class="act" id="act4" style="--c:var(--a4)">
+        <div class="act-head">
+          <div>
+            <div class="act-num">Activity 4</div>
+            <h3>SOHO Network Configuration in Packet Tracer</h3>
+            <div class="when" data-when="act4"></div>
+          </div>
+          <span class="badge" data-badge="act4"></span>
+        </div>
+        <p class="note">On your own. Independently design and configure a small office/home office (SOHO) network in Packet Tracer, applying DHCP, static reservations, and a secured, isolated guest network.</p>
+        <h4>Client work order</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a4-1"><span>Wired desktop</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-2"><span>Wired printer</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-3"><span>Wi-Fi for two laptops and a tablet</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-4"><span>A separate, isolated guest network with strong Wi-Fi security</span></label></li>
+        </ul>
+        <h4>IP addressing scheme</h4>
+        <div class="tablewrap">
+          <table class="ip">
+            <tr><th>Item</th><th>Value</th></tr>
+            <tr><td>LAN network</td><td>192.168.10.0 /24</td></tr>
+            <tr><td>Router / gateway</td><td>192.168.10.1</td></tr>
+            <tr><td>DHCP pool</td><td>192.168.10.100 – 192.168.10.199</td></tr>
+            <tr><td>Desktop PC (static reservation)</td><td>192.168.10.10</td></tr>
+            <tr><td>Printer (static reservation)</td><td>192.168.10.11</td></tr>
+            <tr><td>Laptops + smart device</td><td>DHCP (within pool)</td></tr>
+            <tr><td>Guest network</td><td>192.168.20.0 /24</td></tr>
+            <tr><td>Guest gateway</td><td>192.168.20.1</td></tr>
+            <tr><td>Guest DHCP pool</td><td>192.168.20.100 – 192.168.20.199</td></tr>
+            <tr><td>Subnet mask</td><td>255.255.255.0</td></tr>
+          </table>
+        </div>
+        <h4>Tasks</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a4-5"><span>Build the topology: router, switch, wired endpoints, and wireless endpoints on a main SSID plus a separate guest SSID.</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-6"><span>Configure the router: LAN IP/gateway, desktop and printer reservations, WPA2/WPA3 on both SSIDs, guest isolation, WPS disabled.</span></label></li>
+          <li><label><input type="checkbox" data-k="a4-7"><span>Verify with ping tests between every device and to a simulated internet server; fix anything that fails before calling it done.</span></label></li>
+        </ul>
+        <h4>Submission 4</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a4-8"><span>📸 Screen capture of the Packet Tracer file running the pings across all devices</span></label></li>
+        </ul>
+        <a class="submit" data-submit="act4" target="_blank" rel="noopener">Submit Activity 4 in Canvas</a>
+      </article>
+
+<article class="act" id="act5" style="--c:var(--a5)">
+        <div class="act-head">
+          <div>
+            <div class="act-num">Activity 5</div>
+            <h3>Build &amp; Configure the Physical SOHO Network</h3>
+            <div class="when" data-when="act5"></div>
+          </div>
+          <span class="badge" data-badge="act5"></span>
+        </div>
+        <p>Physically replicate your validated Packet Tracer SOHO design using real hardware.</p>
+        <h4>Tasks</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a5-1"><span>Cable router → switch → nodes using the patch cables provided.</span></label></li>
+          <li><label><input type="checkbox" data-k="a5-2"><span>Configure the router to match your Activity 4 design.</span></label></li>
+          <li><label><input type="checkbox" data-k="a5-3"><span>Configure the main and guest Wi-Fi SSIDs with WPA2/WPA3, disable WPS, and confirm guest isolation is actually on — don’t just assume it.</span></label></li>
+          <li><label><input type="checkbox" data-k="a5-4"><span>Test end-to-end: ping the gateway, ping an external IP, confirm DNS resolution, and confirm a guest device can’t reach the desktop PC’s shared folder.</span></label></li>
+          <li><label><input type="checkbox" data-k="a5-5"><span>Note any differences between your Packet Tracer simulation and the real hardware.</span></label></li>
+          <li><label><input type="checkbox" data-k="a5-6"><span>Get your instructor sign-off.</span></label></li>
+        </ul>
+        <h4>Submission 5</h4>
+        <ul class="checks">
+          <li><label><input type="checkbox" data-k="a5-7"><span>📸 Photo of your working physical SOHO network matching your validated design</span></label></li>
+        </ul>
+        <a class="submit" data-submit="act5" target="_blank" rel="noopener">Submit Activity 5 in Canvas</a>
+      </article>
+
+      <article class="act" id="extra" style="--c:var(--ec)">
+        <div class="act-head">
+          <div>
+            <div class="act-num">Extra credit</div>
+            <h3>Finished early? Pick a challenge</h3>
+            <div class="when">Anytime after your current activity is submitted</div>
+          </div>
+        </div>
+        <p class="ec-intro">Only start these once your current activity is submitted and signed off. You can do one challenge or several. Ask your teacher if you’re not sure you’re ready.</p>
+
+        <div class="challenge">
+          <h4>Challenge A: Add a VLAN to your SOHO network</h4>
+          <p>In Packet Tracer, extend your Activity 4 design so the guest network is separated with a VLAN on the switch instead of just a second SSID. Prove the separation works.</p>
+          <ul class="checks">
+            <li><label><input type="checkbox" data-k="ec-a1"><span>Created a separate VLAN for guest traffic on the switch</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-a2"><span>Assigned the correct ports/SSID to the guest VLAN</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-a3"><span>Ping test proves a guest device cannot reach the desktop or printer</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-a4"><span>📸 Screenshot of the VLAN config and the blocked ping</span></label></li>
+          </ul>
+        </div>
+
+        <div class="challenge">
+          <h4>Challenge B: Wi-Fi channel audit</h4>
+          <p>Build on your site survey. Use a Wi-Fi analyzer to look at the access points you found and check which channels they use. Spot where neighboring APs overlap on the same channel and recommend better assignments.</p>
+          <ul class="checks">
+            <li><label><input type="checkbox" data-k="ec-b1"><span>Listed the access points and the channel each one uses</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-b2"><span>Identified at least one spot where APs overlap on the same or close channels</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-b3"><span>Recommended better channel assignments (e.g., 1, 6, 11 on 2.4 GHz)</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-b4"><span>📸 Screenshot of the analyzer showing the channels</span></label></li>
+          </ul>
+        </div>
+
+        <div class="challenge">
+          <h4>Challenge C: Set up port forwarding</h4>
+          <p>On your physical SOHO router, set up a port forwarding rule (for example, to a game server or a web server on the desktop PC) and confirm it reaches the right device. Then explain the security trade-off.</p>
+          <ul class="checks">
+            <li><label><input type="checkbox" data-k="ec-c1"><span>Created a port forwarding rule to a specific internal device</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-c2"><span>Confirmed the forwarded port reaches that device</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-c3"><span>Wrote one or two sentences on the security risk of opening a port</span></label></li>
+          </ul>
+        </div>
+
+        <div class="challenge">
+          <h4>Challenge D: Document the client network</h4>
+          <p>Write a short handoff document for your SOHO client, the way a real technician would leave one behind, so someone else could manage the network later.</p>
+          <ul class="checks">
+            <li><label><input type="checkbox" data-k="ec-d1"><span>Listed every device with its IP address</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-d2"><span>Recorded both SSIDs and the security type used (not the passwords)</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-d3"><span>Included a labeled diagram of the final network</span></label></li>
+            <li><label><input type="checkbox" data-k="ec-d4"><span>Noted any differences between the Packet Tracer sim and the real hardware</span></label></li>
+          </ul>
+        </div>
+
+        <a class="submit" data-submit="extra" target="_blank" rel="noopener">Submit extra credit in Canvas</a>
+      </article>
+
+      <footer>Your checkmarks are saved on this device only.</footer>
+    </main>
+  </div>
+</div>
+<script>
+/* ===== Language switcher (English / Español / Português) =====
+   Page text is matched by its English wording. To translate new text, add an entry to DICT:
+   "English text as it reads on the page": {"es":"…","pt":"…"}  */
+var I18N=(function(){
+  var DICT={"Information Technology Exploratory": {"es": "Exploratorio de Tecnología de la Información","pt": "Exploratório de Tecnologia da Informação"},"Language": {"es": "Idioma","pt": "Idioma"},"Day timeline": {"es": "Línea de tiempo del día","pt": "Linha do tempo do dia"},"Loading…": {"es": "Cargando…","pt": "Carregando…"},"Schedule": {"es": "Horario","pt": "Horário"},"Finished early? Try an extra credit challenge": {"es": "¿Terminaste temprano? Intenta un reto de crédito extra","pt": "Terminou cedo? Tente um desafio de crédito extra"},"Clear all checkmarks": {"es": "Borrar todas las marcas","pt": "Limpar todas as marcações"},"Activities": {"es": "Actividades","pt": "Atividades"},"Activity 1": {"es": "Actividad 1","pt": "Atividade 1"},"Activity 2": {"es": "Actividad 2","pt": "Atividade 2"},"Activity 3": {"es": "Actividad 3","pt": "Atividade 3"},"Activity 4": {"es": "Actividad 4","pt": "Atividade 4"},"Activity 5": {"es": "Actividad 5","pt": "Atividade 5"},"Extra credit": {"es": "Crédito extra","pt": "Crédito extra"},"Submit Activity 1 in Canvas": {"es": "Entregar la Actividad 1 en Canvas","pt": "Enviar a Atividade 1 no Canvas"},"Submit Activity 2 in Canvas": {"es": "Entregar la Actividad 2 en Canvas","pt": "Enviar a Atividade 2 no Canvas"},"Submit Activity 3 in Canvas": {"es": "Entregar la Actividad 3 en Canvas","pt": "Enviar a Atividade 3 no Canvas"},"Submit Activity 4 in Canvas": {"es": "Entregar la Actividad 4 en Canvas","pt": "Enviar a Atividade 4 no Canvas"},"Submit Activity 5 in Canvas": {"es": "Entregar la Actividad 5 en Canvas","pt": "Enviar a Atividade 5 no Canvas"},"Submit extra credit in Canvas": {"es": "Entregar el crédito extra en Canvas","pt": "Enviar o crédito extra no Canvas"},"Finished early? Pick a challenge": {"es": "¿Terminaste temprano? Elige un reto","pt": "Terminou cedo? Escolha um desafio"},"Anytime after your current activity is submitted": {"es": "En cualquier momento después de entregar tu actividad actual","pt": "A qualquer momento depois de enviar sua atividade atual"},"Your checkmarks are saved on this device only.": {"es": "Tus marcas se guardan solo en este dispositivo.","pt": "Suas marcações ficam salvas apenas neste dispositivo."},"Tasks": {"es": "Tareas","pt": "Tarefas"},"Break": {"es": "Descanso","pt": "Intervalo"},"Lunch": {"es": "Almuerzo","pt": "Almoço"},"Site Survey": {"es": "Inspección","pt": "Levantamento"},"SOHO Config": {"es": "Config. SOHO","pt": "Config. SOHO"},"Physical Build": {"es": "Montaje físico","pt": "Montagem física"},"Next up at {t}: {n}": {"es": "A continuación, a las {t}: {n}","pt": "A seguir, às {t}: {n}"},"Last block of the day": {"es": "Último bloque del día","pt": "Último bloco do dia"},"minute left": {"es": "minuto restante","pt": "minuto restante"},"minutes left": {"es": "minutos restantes","pt": "minutos restantes"},"Starts at {t}": {"es": "Empieza a las {t}","pt": "Começa às {t}"},"First up: {n}": {"es": "Primero: {n}","pt": "Primeiro: {n}"},"until start": {"es": "para empezar","pt": "para começar"},"That’s a wrap for today": {"es": "¡Eso es todo por hoy!","pt": "Por hoje é só!"},"Complete ✓": {"es": "Completo ✓","pt": "Concluído ✓"},"{n} of {m} done": {"es": "{n} de {m} hechos","pt": "{n} de {m} feitos"},"Clear all checkmarks on this device?": {"es": "¿Borrar todas las marcas en este dispositivo?","pt": "Limpar todas as marcações neste dispositivo?"},"{a} to {b}": {"es": "de {a} a {b}","pt": "das {a} às {b}"},"and": {"es": "y","pt": "e"},"IT Exploratory – Home Network & SOHO Build": {"es": "Exploratorio de TI – Red doméstica y montaje SOHO","pt": "Exploratório de TI – Rede doméstica e montagem SOHO"},"Today’s agenda · Home Network & SOHO Build": {"es": "Agenda de hoy · Red doméstica y montaje SOHO","pt": "Agenda de hoje · Rede doméstica e montagem SOHO"},"Draw Your Home Network Topology": {"es": "Dibuja la topología de tu red doméstica","pt": "Desenhe a topologia da sua rede doméstica"},"Diagram the real devices and connections in your own home network as a warm-up before working with an unfamiliar client network.": {"es": "Haz un diagrama de los dispositivos y conexiones reales de la red de tu casa, como calentamiento antes de trabajar con la red desconocida de un cliente.","pt": "Faça um diagrama dos dispositivos e conexões reais da rede da sua casa, como aquecimento antes de trabalhar com a rede desconhecida de um cliente."},"On butcher paper or a whiteboard, sketch every device on your home network: modem, router, computers, phones, smart TVs/speakers, game consoles, printers, etc.": {"es": "En papel kraft o en una pizarra, dibuja cada dispositivo de la red de tu casa: módem, router, computadoras, teléfonos, smart TVs/bocinas inteligentes, consolas de videojuegos, impresoras, etc.","pt": "Em papel kraft ou num quadro branco, desenhe cada dispositivo da rede da sua casa: modem, roteador, computadores, celulares, smart TVs/caixas de som inteligentes, videogames, impressoras etc."},"Label each connection as wired (Ethernet) or wireless (Wi-Fi).": {"es": "Etiqueta cada conexión como cableada (Ethernet) o inalámbrica (Wi-Fi).","pt": "Identifique cada conexão como cabeada (Ethernet) ou sem fio (Wi-Fi)."},"Mark where your ISP modem enters the home, where your router sits, and any extra switches or access points.": {"es": "Marca por dónde entra a la casa el módem de tu proveedor de internet, dónde está tu router y cualquier switch o punto de acceso adicional.","pt": "Marque por onde o modem do seu provedor de internet entra na casa, onde fica seu roteador e quaisquer switches ou pontos de acesso extras."},"If you have a guest network, note which devices are on it vs. the main network.": {"es": "Si tienes una red de invitados, anota qué dispositivos están en ella y cuáles en la red principal.","pt": "Se você tiver uma rede de convidados, anote quais dispositivos estão nela e quais estão na rede principal."},"Submission 1": {"es": "Entrega 1","pt": "Envio 1"},"Submission 2": {"es": "Entrega 2","pt": "Envio 2"},"Submission 3": {"es": "Entrega 3","pt": "Envio 3"},"Submission 4": {"es": "Entrega 4","pt": "Envio 4"},"Submission 5": {"es": "Entrega 5","pt": "Envio 5"},"📸 Photo of your home network topology diagram": {"es": "📸 Foto de tu diagrama de topología de la red doméstica","pt": "📸 Foto do seu diagrama de topologia da rede doméstica"},"School Network Site Survey": {"es": "Inspección de la red escolar","pt": "Levantamento da rede escolar"},"Walk the building and map the real network infrastructure — wireless access points, cameras, and network closets — the way a technician documents an unfamiliar client site.": {"es": "Recorre el edificio y haz un mapa de la infraestructura de red real — puntos de acceso inalámbrico, cámaras y armarios de red — como lo hace un técnico al documentar el sitio desconocido de un cliente.","pt": "Percorra o prédio e mapeie a infraestrutura de rede real — pontos de acesso sem fio, câmeras e armários de rede — do jeito que um técnico documenta o local desconhecido de um cliente."},"Before you go: stay in your assigned area, don’t touch or unplug any equipment, and let your teacher know your route. You’re documenting what you see, not changing anything.": {"es": "<b>Antes de salir:</b> quédate en tu área asignada, no toques ni desconectes ningún equipo y avísale a tu maestro qué ruta vas a seguir. Estás documentando lo que ves, no cambiando nada.","pt": "<b>Antes de sair:</b> fique na sua área designada, não toque nem desconecte nenhum equipamento e avise o professor sobre o seu trajeto. Você está documentando o que vê, não alterando nada."},"Get a floor plan or sketch the layout of your assigned area (hallways, rooms, stairwells).": {"es": "Consigue un plano o dibuja la distribución de tu área asignada (pasillos, salones, escaleras).","pt": "Pegue uma planta baixa ou desenhe o layout da sua área designada (corredores, salas, escadas)."},"Find every wireless access point (WAP) you can. Note where each is mounted (ceiling vs. wall) and its location on your map.": {"es": "Encuentra todos los <b>puntos de acceso inalámbrico (WAP)</b> que puedas. Anota dónde está montado cada uno (techo o pared) y su ubicación en tu mapa.","pt": "Encontre todos os <b>pontos de acesso sem fio (WAP)</b> que puder. Anote onde cada um está instalado (teto ou parede) e sua localização no mapa."},"Find the security cameras. Note each one’s type (dome or bullet) and the area it appears to cover.": {"es": "Encuentra las <b>cámaras de seguridad</b>. Anota el tipo de cada una (domo o bala) y el área que parece cubrir.","pt": "Encontre as <b>câmeras de segurança</b>. Anote o tipo de cada uma (dome ou bullet) e a área que ela parece cobrir."},"Locate any network closets, switches, or patch panels and note visible cable runs or wall drops.": {"es": "Ubica cualquier <b>armario de red, switch o patch panel</b> y anota los tendidos de cable visibles o las tomas de red en la pared.","pt": "Localize <b>armários de rede, switches ou patch panels</b> e anote os cabos aparentes ou pontos de rede na parede."},"Use a Wi-Fi analyzer app to check signal strength around your area and mark any dead zones.": {"es": "Usa una app analizadora de Wi-Fi para revisar la intensidad de la señal en tu área y marca las zonas sin señal.","pt": "Use um app analisador de Wi-Fi para verificar a força do sinal na sua área e marque as zonas sem sinal."},"Mark every access point and camera on your map, and keep a running count of each.": {"es": "Marca cada punto de acceso y cada cámara en tu mapa, y lleva la cuenta de cada uno.","pt": "Marque cada ponto de acesso e cada câmera no mapa e vá contando quantos há de cada."},"What to look for:": {"es": "<b>Qué buscar:</b>","pt": "<b>O que procurar:</b>"},"Access point (WAP): usually a small white box or disc on the ceiling with one or two small lights, broadcasting the Wi-Fi.": {"es": "<b>Punto de acceso (WAP):</b> normalmente una pequeña caja o disco blanco en el techo con una o dos lucecitas, que transmite el Wi-Fi.","pt": "<b>Ponto de acesso (WAP):</b> geralmente uma pequena caixa ou disco branco no teto com uma ou duas luzinhas, transmitindo o Wi-Fi."},"Dome camera: a half-sphere behind dark glass, often on a ceiling. Bullet camera: a cylinder pointing in one direction, often on a wall.": {"es": "<b>Cámara domo:</b> una media esfera detrás de un vidrio oscuro, a menudo en el techo. <b>Cámara bala:</b> un cilindro que apunta en una dirección, a menudo en la pared.","pt": "<b>Câmera dome:</b> uma meia esfera atrás de um vidro escuro, geralmente no teto. <b>Câmera bullet:</b> um cilindro apontando para uma direção, geralmente na parede."},"Network closet: a wall rack or small room with switches and bundles of blue/colored cables.": {"es": "<b>Armario de red:</b> un rack de pared o un cuarto pequeño con switches y manojos de cables azules o de colores.","pt": "<b>Armário de rede:</b> um rack de parede ou uma salinha com switches e feixes de cabos azuis/coloridos."},"📸 Photo of your annotated map showing the access points and cameras you found": {"es": "📸 Foto de tu mapa con anotaciones que muestre los puntos de acceso y las cámaras que encontraste","pt": "📸 Foto do seu mapa anotado mostrando os pontos de acesso e as câmeras que você encontrou"},"Your total count of access points and cameras in your area": {"es": "Tu conteo total de puntos de acceso y cámaras en tu área","pt": "Sua contagem total de pontos de acesso e câmeras na sua área"},"Intro to Packet Tracer: Map Your Home Network": {"es": "Introducción a Packet Tracer: Mapea tu red doméstica","pt": "Introdução ao Packet Tracer: Mapeie sua rede doméstica"},"With a junior. Learn Packet Tracer basics by recreating your Activity 1 home network in simulation, while mentoring a junior-level student through the same build.": {"es": "Con un junior. Aprende lo básico de Packet Tracer recreando en simulación la red doméstica de tu Actividad 1, mientras guías a un estudiante de nivel junior en el mismo montaje.","pt": "Com um junior. Aprenda o básico do Packet Tracer recriando em simulação a rede doméstica da Atividade 1, enquanto orienta um aluno de nível junior na mesma montagem."},"Recreate your Activity 1 diagram in Packet Tracer: modem/cloud, router, switch (if you have one), and your end devices.": {"es": "Recrea tu diagrama de la Actividad 1 en Packet Tracer: módem/nube, router, switch (si tienes uno) y tus dispositivos finales.","pt": "Recrie seu diagrama da Atividade 1 no Packet Tracer: modem/nuvem, roteador, switch (se tiver) e seus dispositivos finais."},"Cable everything, then address it using the class-wide scheme below so every pair’s network is consistent.": {"es": "Conecta todo con cables y luego asigna las direcciones con el esquema de toda la clase que aparece abajo, para que la red de cada pareja sea consistente.","pt": "Cabeie tudo e depois configure os endereços usando o esquema da turma abaixo, para que a rede de cada dupla seja consistente."},"Explain to your partner what each device and cable is doing as you go.": {"es": "Explícale a tu compañero qué hace cada dispositivo y cada cable mientras avanzan.","pt": "Explique ao seu parceiro o que cada dispositivo e cada cabo está fazendo enquanto vocês avançam."},"Use ping to test connectivity between at least two devices, and show your partner how to read a successful vs. failed ping.": {"es": "Usa ping para probar la conectividad entre al menos dos dispositivos, y muéstrale a tu compañero cómo distinguir un ping exitoso de uno fallido.","pt": "Use o ping para testar a conectividade entre pelo menos dois dispositivos e mostre ao seu parceiro como diferenciar um ping bem-sucedido de um que falhou."},"IP addressing (Activity 3 only)": {"es": "Direccionamiento IP (solo Actividad 3)","pt": "Endereçamento IP (somente Atividade 3)"},"Item": {"es": "Elemento","pt": "Item"},"Value": {"es": "Valor","pt": "Valor"},"LAN network": {"es": "Red LAN","pt": "Rede LAN"},"Router / gateway": {"es": "Router / puerta de enlace","pt": "Roteador / gateway"},"DHCP pool": {"es": "Rango DHCP","pt": "Pool DHCP"},"Static devices (desktop, printer)": {"es": "Dispositivos estáticos (computadora de escritorio, impresora)","pt": "Dispositivos estáticos (desktop, impressora)"},"Guest network (if added)": {"es": "Red de invitados (si se agrega)","pt": "Rede de convidados (se adicionada)"},"192.168.2.0 /24, gateway 192.168.2.1": {"es": "192.168.2.0 /24, puerta de enlace 192.168.2.1","pt": "192.168.2.0 /24, gateway 192.168.2.1"},"Subnet mask": {"es": "Máscara de subred","pt": "Máscara de sub-rede"},"📸 Successful ping screenshot": {"es": "📸 Captura de pantalla de un ping exitoso","pt": "📸 Print de um ping bem-sucedido"},"📸 Screenshot of the full network topology": {"es": "📸 Captura de pantalla de la topología de red completa","pt": "📸 Print da topologia de rede completa"},"SOHO Network Configuration in Packet Tracer": {"es": "Configuración de red SOHO en Packet Tracer","pt": "Configuração de rede SOHO no Packet Tracer"},"On your own. Independently design and configure a small office/home office (SOHO) network in Packet Tracer, applying DHCP, static reservations, and a secured, isolated guest network.": {"es": "Por tu cuenta. Diseña y configura de forma independiente una red de oficina pequeña/oficina en casa (SOHO) en Packet Tracer, aplicando DHCP, reservas estáticas y una red de invitados segura y aislada.","pt": "Sozinho. Projete e configure de forma independente uma rede de pequeno escritório/escritório doméstico (SOHO) no Packet Tracer, aplicando DHCP, reservas estáticas e uma rede de convidados segura e isolada."},"Client work order": {"es": "Orden de trabajo del cliente","pt": "Ordem de serviço do cliente"},"Wired desktop": {"es": "Computadora de escritorio cableada","pt": "Desktop cabeado"},"Wired printer": {"es": "Impresora cableada","pt": "Impressora cabeada"},"Wi-Fi for two laptops and a tablet": {"es": "Wi-Fi para dos laptops y una tableta","pt": "Wi-Fi para dois notebooks e um tablet"},"A separate, isolated guest network with strong Wi-Fi security": {"es": "Una red de invitados separada y aislada, con seguridad Wi-Fi fuerte","pt": "Uma rede de convidados separada e isolada, com segurança Wi-Fi forte"},"IP addressing scheme": {"es": "Esquema de direccionamiento IP","pt": "Esquema de endereçamento IP"},"Desktop PC (static reservation)": {"es": "PC de escritorio (reserva estática)","pt": "PC desktop (reserva estática)"},"Printer (static reservation)": {"es": "Impresora (reserva estática)","pt": "Impressora (reserva estática)"},"Laptops + smart device": {"es": "Laptops + dispositivo inteligente","pt": "Notebooks + dispositivo inteligente"},"DHCP (within pool)": {"es": "DHCP (dentro del rango)","pt": "DHCP (dentro do pool)"},"Guest network": {"es": "Red de invitados","pt": "Rede de convidados"},"Guest gateway": {"es": "Puerta de enlace de invitados","pt": "Gateway de convidados"},"Guest DHCP pool": {"es": "Rango DHCP de invitados","pt": "Pool DHCP de convidados"},"Build the topology: router, switch, wired endpoints, and wireless endpoints on a main SSID plus a separate guest SSID.": {"es": "Arma la topología: router, switch, dispositivos cableados y dispositivos inalámbricos en un SSID principal más un SSID de invitados aparte.","pt": "Monte a topologia: roteador, switch, dispositivos cabeados e dispositivos sem fio em um SSID principal, mais um SSID de convidados separado."},"Configure the router: LAN IP/gateway, desktop and printer reservations, WPA2/WPA3 on both SSIDs, guest isolation, WPS disabled.": {"es": "Configura el router: IP de LAN/puerta de enlace, reservas para la computadora y la impresora, WPA2/WPA3 en ambos SSID, aislamiento de invitados y WPS desactivado.","pt": "Configure o roteador: IP da LAN/gateway, reservas do desktop e da impressora, WPA2/WPA3 nos dois SSIDs, isolamento de convidados e WPS desativado."},"Verify with ping tests between every device and to a simulated internet server; fix anything that fails before calling it done.": {"es": "Verifica con pruebas de ping entre todos los dispositivos y hacia un servidor de internet simulado; corrige lo que falle antes de darlo por terminado.","pt": "Verifique com testes de ping entre todos os dispositivos e até um servidor de internet simulado; corrija o que falhar antes de dar por concluído."},"📸 Screen capture of the Packet Tracer file running the pings across all devices": {"es": "📸 Captura de pantalla del archivo de Packet Tracer haciendo ping entre todos los dispositivos","pt": "📸 Captura de tela do arquivo do Packet Tracer executando os pings entre todos os dispositivos"},"Build & Configure the Physical SOHO Network": {"es": "Arma y configura la red SOHO física","pt": "Monte e configure a rede SOHO física"},"Physically replicate your validated Packet Tracer SOHO design using real hardware.": {"es": "Reproduce físicamente tu diseño SOHO validado en Packet Tracer usando hardware real.","pt": "Reproduza fisicamente seu projeto SOHO validado no Packet Tracer usando hardware real."},"Cable router → switch → nodes using the patch cables provided.": {"es": "Conecta router → switch → nodos con los cables de red proporcionados.","pt": "Cabeie roteador → switch → nós usando os cabos de rede fornecidos."},"Configure the router to match your Activity 4 design.": {"es": "Configura el router para que coincida con tu diseño de la Actividad 4.","pt": "Configure o roteador de acordo com seu projeto da Atividade 4."},"Configure the main and guest Wi-Fi SSIDs with WPA2/WPA3, disable WPS, and confirm guest isolation is actually on — don’t just assume it.": {"es": "Configura los SSID de Wi-Fi principal y de invitados con WPA2/WPA3, desactiva WPS y confirma que el aislamiento de invitados realmente esté activado — no lo des por hecho.","pt": "Configure os SSIDs de Wi-Fi principal e de convidados com WPA2/WPA3, desative o WPS e confirme que o isolamento de convidados está mesmo ativado — não presuma."},"Test end-to-end: ping the gateway, ping an external IP, confirm DNS resolution, and confirm a guest device can’t reach the desktop PC’s shared folder.": {"es": "Prueba de extremo a extremo: haz ping a la puerta de enlace, haz ping a una IP externa, confirma la resolución DNS y confirma que un dispositivo invitado no pueda acceder a la carpeta compartida de la PC de escritorio.","pt": "Teste de ponta a ponta: faça ping no gateway, faça ping em um IP externo, confirme a resolução de DNS e confirme que um dispositivo convidado não consegue acessar a pasta compartilhada do PC desktop."},"Note any differences between your Packet Tracer simulation and the real hardware.": {"es": "Anota cualquier diferencia entre tu simulación en Packet Tracer y el hardware real.","pt": "Anote as diferenças entre sua simulação no Packet Tracer e o hardware real."},"Get your instructor sign-off.": {"es": "Obtén la aprobación de tu instructor.","pt": "Obtenha a aprovação do seu instrutor."},"📸 Photo of your working physical SOHO network matching your validated design": {"es": "📸 Foto de tu red SOHO física funcionando, igual a tu diseño validado","pt": "📸 Foto da sua rede SOHO física funcionando, de acordo com seu projeto validado"},"Only start these once your current activity is submitted and signed off. You can do one challenge or several. Ask your teacher if you’re not sure you’re ready.": {"es": "Empieza estos retos solo cuando hayas entregado tu actividad actual y te la hayan aprobado. Puedes hacer un reto o varios. Pregúntale a tu maestro si no estás seguro de estar listo.","pt": "Só comece estes desafios depois de enviar sua atividade atual e ela ter sido aprovada. Você pode fazer um desafio ou vários. Pergunte ao professor se não tiver certeza de que está pronto."},"Challenge A: Add a VLAN to your SOHO network": {"es": "Reto A: Agrega una VLAN a tu red SOHO","pt": "Desafio A: Adicione uma VLAN à sua rede SOHO"},"In Packet Tracer, extend your Activity 4 design so the guest network is separated with a VLAN on the switch instead of just a second SSID. Prove the separation works.": {"es": "En Packet Tracer, amplía tu diseño de la Actividad 4 para que la red de invitados quede separada con una VLAN en el switch en lugar de solo un segundo SSID. Demuestra que la separación funciona.","pt": "No Packet Tracer, amplie seu projeto da Atividade 4 para que a rede de convidados fique separada por uma VLAN no switch, em vez de apenas um segundo SSID. Prove que a separação funciona."},"Created a separate VLAN for guest traffic on the switch": {"es": "Creé una VLAN separada para el tráfico de invitados en el switch","pt": "Criei uma VLAN separada para o tráfego de convidados no switch"},"Assigned the correct ports/SSID to the guest VLAN": {"es": "Asigné los puertos/SSID correctos a la VLAN de invitados","pt": "Atribuí as portas/SSID corretos à VLAN de convidados"},"Ping test proves a guest device cannot reach the desktop or printer": {"es": "La prueba de ping demuestra que un dispositivo invitado no puede llegar a la computadora ni a la impresora","pt": "O teste de ping prova que um dispositivo convidado não consegue acessar o desktop nem a impressora"},"📸 Screenshot of the VLAN config and the blocked ping": {"es": "📸 Captura de pantalla de la configuración de la VLAN y del ping bloqueado","pt": "📸 Print da configuração da VLAN e do ping bloqueado"},"Challenge B: Wi-Fi channel audit": {"es": "Reto B: Auditoría de canales Wi-Fi","pt": "Desafio B: Auditoria de canais Wi-Fi"},"Build on your site survey. Use a Wi-Fi analyzer to look at the access points you found and check which channels they use. Spot where neighboring APs overlap on the same channel and recommend better assignments.": {"es": "Continúa a partir de tu inspección. Usa un analizador de Wi-Fi para ver los puntos de acceso que encontraste y revisar qué canales usan. Detecta dónde los AP vecinos se superponen en el mismo canal y recomienda mejores asignaciones.","pt": "Continue a partir do seu levantamento. Use um analisador de Wi-Fi para ver os pontos de acesso que você encontrou e verificar quais canais eles usam. Identifique onde APs vizinhos se sobrepõem no mesmo canal e recomende distribuições melhores."},"Listed the access points and the channel each one uses": {"es": "Hice una lista de los puntos de acceso y el canal que usa cada uno","pt": "Listei os pontos de acesso e o canal que cada um usa"},"Identified at least one spot where APs overlap on the same or close channels": {"es": "Identifiqué al menos un lugar donde los AP se superponen en canales iguales o cercanos","pt": "Identifiquei pelo menos um ponto onde APs se sobrepõem em canais iguais ou próximos"},"Recommended better channel assignments (e.g., 1, 6, 11 on 2.4 GHz)": {"es": "Recomendé mejores asignaciones de canales (p. ej., 1, 6, 11 en 2.4 GHz)","pt": "Recomendei distribuições de canais melhores (ex.: 1, 6, 11 em 2,4 GHz)"},"📸 Screenshot of the analyzer showing the channels": {"es": "📸 Captura de pantalla del analizador mostrando los canales","pt": "📸 Print do analisador mostrando os canais"},"Challenge C: Set up port forwarding": {"es": "Reto C: Configura el reenvío de puertos","pt": "Desafio C: Configure o redirecionamento de portas"},"On your physical SOHO router, set up a port forwarding rule (for example, to a game server or a web server on the desktop PC) and confirm it reaches the right device. Then explain the security trade-off.": {"es": "En tu router SOHO físico, configura una regla de reenvío de puertos (por ejemplo, hacia un servidor de juegos o un servidor web en la PC de escritorio) y confirma que llega al dispositivo correcto. Luego explica qué se sacrifica en seguridad.","pt": "No seu roteador SOHO físico, configure uma regra de redirecionamento de portas (por exemplo, para um servidor de jogos ou um servidor web no PC desktop) e confirme que ela chega ao dispositivo certo. Depois explique o custo disso em segurança."},"Created a port forwarding rule to a specific internal device": {"es": "Creé una regla de reenvío de puertos hacia un dispositivo interno específico","pt": "Criei uma regra de redirecionamento de portas para um dispositivo interno específico"},"Confirmed the forwarded port reaches that device": {"es": "Confirmé que el puerto reenviado llega a ese dispositivo","pt": "Confirmei que a porta redirecionada chega a esse dispositivo"},"Wrote one or two sentences on the security risk of opening a port": {"es": "Escribí una o dos oraciones sobre el riesgo de seguridad de abrir un puerto","pt": "Escrevi uma ou duas frases sobre o risco de segurança de abrir uma porta"},"Challenge D: Document the client network": {"es": "Reto D: Documenta la red del cliente","pt": "Desafio D: Documente a rede do cliente"},"Write a short handoff document for your SOHO client, the way a real technician would leave one behind, so someone else could manage the network later.": {"es": "Escribe un documento breve de entrega para tu cliente SOHO, como el que dejaría un técnico real, para que otra persona pueda administrar la red más adelante.","pt": "Escreva um breve documento de entrega para o seu cliente SOHO, como um técnico de verdade deixaria, para que outra pessoa possa administrar a rede depois."},"Listed every device with its IP address": {"es": "Hice una lista de cada dispositivo con su dirección IP","pt": "Listei cada dispositivo com seu endereço IP"},"Recorded both SSIDs and the security type used (not the passwords)": {"es": "Anoté ambos SSID y el tipo de seguridad usado (no las contraseñas)","pt": "Registrei os dois SSIDs e o tipo de segurança usado (não as senhas)"},"Included a labeled diagram of the final network": {"es": "Incluí un diagrama etiquetado de la red final","pt": "Incluí um diagrama identificado da rede final"},"Noted any differences between the Packet Tracer sim and the real hardware": {"es": "Anoté cualquier diferencia entre la simulación de Packet Tracer y el hardware real","pt": "Anotei as diferenças entre a simulação do Packet Tracer e o hardware real"},"Activity 1: Draw Your Home Network Topology": {"es": "Actividad 1: Dibuja la topología de tu red doméstica","pt": "Atividade 1: Desenhe a topologia da sua rede doméstica"},"Activity 3: Packet Tracer with a junior": {"es": "Actividad 3: Packet Tracer con un junior","pt": "Atividade 3: Packet Tracer com um junior"},"Activity 2: School Network Site Survey": {"es": "Actividad 2: Inspección de la red escolar","pt": "Atividade 2: Levantamento da rede escolar"},"Activity 4: SOHO Config in Packet Tracer": {"es": "Actividad 4: Configuración SOHO en Packet Tracer","pt": "Atividade 4: Configuração SOHO no Packet Tracer"},"Activity 5: Build the Physical SOHO Network": {"es": "Actividad 5: Arma la red SOHO física","pt": "Atividade 5: Monte a rede SOHO física"},"Topology Diagram": {"es": "Diagrama de topología","pt": "Diagrama de topologia"},"Make sure all of your activities are submitted in Canvas.": {"es": "Asegúrate de haber entregado todas tus actividades en Canvas.","pt": "Confira se todas as suas atividades foram enviadas no Canvas."}};
+  var LANGS=["en","es","pt"], STORE="it-exploratory-lang", lang="en", subs=[], nodes=[], attrs=[], title0=document.title;
+  try{var s=localStorage.getItem(STORE);if(LANGS.indexOf(s)>-1)lang=s;else{var nl=(navigator.language||"").slice(0,2).toLowerCase();if(nl==="es"||nl==="pt")lang=nl;}}catch(e){}
+  var SKIP=".langrow,#bar,#ticks,#agenda,#now,#clock,#dayRange,[data-badge],[data-when],script,style";
+  var HOLD="input,select,textarea,button,"+SKIP; // never overwrite an element that contains these
+  function norm(s){return s.replace(/\s+/g," ").trim();}
+  function walk(el){
+    if(el.matches(SKIP))return;
+    var al=el.getAttribute("aria-label");
+    if(al&&DICT[al])attrs.push({el:el,a:"aria-label",en:al});
+    if(!el.querySelector(HOLD)){
+      var k=norm(el.textContent);
+      if(k&&DICT[k]){nodes.push({el:el,k:k,en:el.innerHTML});return;}
+    }
+    for(var c=el.firstElementChild;c;c=c.nextElementSibling)walk(c);
+  }
+  function T(s,v){
+    var e=DICT[s],o=(lang!=="en"&&e&&e[lang])||s;
+    if(v)o=o.replace(/\{(\w+)\}/g,function(m,k){return k in v?v[k]:m;});
+    return o;
+  }
+  function apply(){
+    nodes.forEach(function(n){n.el.innerHTML=lang==="en"?n.en:(DICT[n.k][lang]||n.en);});
+    attrs.forEach(function(n){n.el.setAttribute(n.a,T(n.en));});
+    document.documentElement.lang=lang;
+    document.title=T(title0);
+    document.querySelectorAll(".langbar").forEach(function(g){g.setAttribute("aria-label",T("Language"));});
+    document.querySelectorAll(".langbar [data-lang]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.lang===lang?"true":"false");});
+  }
+  function set(l){
+    if(LANGS.indexOf(l)<0||l===lang)return;
+    lang=l;try{localStorage.setItem(STORE,l);}catch(e){}
+    apply();subs.forEach(function(f){f();});
+  }
+  walk(document.body);
+  document.querySelectorAll(".langbar [data-lang]").forEach(function(b){b.addEventListener("click",function(){set(b.dataset.lang);});});
+  apply();
+  return {T:T,onChange:function(f){subs.push(f);},lang:function(){return lang;}};
+})();
+</script>
+<script>
+(function(){
+  var T=I18N.T;
+  /* ===== EDIT HERE: submission links ===== */
+  var SUBMIT_LINKS = {
+    act1: "https://blackstonevalleyregional.instructure.com/courses/6336/assignments/358035",
+    act2: "https://blackstonevalleyregional.instructure.com/courses/6336/assignments/358035",
+    act3: "https://blackstonevalleyregional.instructure.com/courses/6336/assignments/358035",
+    act4: "https://blackstonevalleyregional.instructure.com/courses/6336/assignments/358035",
+    act5: "https://blackstonevalleyregional.instructure.com/courses/6336/assignments/358035",
+    extra: "https://blackstonevalleyregional.instructure.com/courses/6336/assignments/358035"
+  };
+
+  /* ===== EDIT HERE: schedule (24-hour times) =====
+     If you rename a block, add the new name to DICT in the language script above. */
+  var DAY_START = "8:00", DAY_END = "13:45";
+  var blocks = [
+    {s:"8:00",  e:"9:00",  name:"Activity 1: Draw Your Home Network Topology", act:"act1", c:"--a1", short:"Topology Diagram"},
+    {s:"9:00",  e:"9:15",  name:"Break", rest:true, short:"Break"},
+    {s:"9:15",  e:"11:07", name:"Activity 3: Packet Tracer with a junior", act:"act3", c:"--a3", short:"Packet Tracer (junior)"},
+    {s:"11:07", e:"11:37", name:"Lunch", rest:true, short:"Lunch"},
+    {s:"11:37", e:"12:15", name:"Activity 2: School Network Site Survey", act:"act2", c:"--a2", short:"Site Survey"},
+    {s:"12:15", e:"13:05", name:"Activity 4: SOHO Config in Packet Tracer", act:"act4", c:"--a4", short:"SOHO Config"},
+    {s:"13:05", e:"13:45", name:"Activity 5: Build the Physical SOHO Network", act:"act5", c:"--a5", short:"Physical Build"}
+  ];
+  var WRAP_MSG = "Make sure all of your activities are submitted in Canvas.";
+  /* ======================================== */
+  document.querySelectorAll("[data-submit]").forEach(function(a){a.href=SUBMIT_LINKS[a.dataset.submit];});
+
+  function mins(t){var p=t.split(":");return +p[0]*60 + +p[1];}
+  function fmt(m){var h=Math.floor(m/60),mm=m%60,ap=h>=12?"PM":"AM";h=h%12||12;return h+":"+(mm<10?"0":"")+mm+" "+ap;}
+  function fmtShort(m){var h=Math.floor(m/60),mm=m%60;h=h%12||12;return h+":"+(mm<10?"0":"")+mm;}
+  var D0=mins(DAY_START), D1=mins(DAY_END), SPAN=D1-D0;
+  blocks.forEach(function(b){b.sm=mins(b.s);b.em=mins(b.e);});
+
+  var bar=document.getElementById("bar"), needle=document.getElementById("needle"),
+      ticks=document.getElementById("ticks"), agenda=document.getElementById("agenda");
+
+  // Text that depends on the language: time ranges, timeline bar, schedule list
+  function labels(){
+    var dr=document.getElementById("dayRange");
+    if(dr) dr.textContent=T("{a} to {b}",{a:fmt(D0),b:fmt(D1)});
+    document.querySelectorAll("[data-when]").forEach(function(el){
+      el.textContent=blocks.filter(function(b){return b.act===el.dataset.when;})
+        .map(function(b){return fmt(b.sm)+" – "+fmt(b.em);})
+        .filter(function(v,i,a){return a.indexOf(v)===i;}).join(" "+T("and")+" ");
+    });
+  }
+  function build(){
+    Array.prototype.slice.call(bar.querySelectorAll(".seg")).forEach(function(s){bar.removeChild(s);});
+    agenda.textContent="";
+    blocks.forEach(function(b){
+      var seg=document.createElement(b.rest?"div":"a");
+      seg.className="seg"+(b.rest?" rest":"");
+      seg.style.flex=(b.em-b.sm)+" 0 0";
+      if(!b.rest){seg.href="#"+b.act;seg.style.background="var("+b.c+")";}
+      seg.title=T(b.name)+" ("+fmt(b.sm)+" – "+fmt(b.em)+")";
+      var sp=document.createElement("span");sp.textContent=T(b.short);seg.appendChild(sp);
+      b.seg=seg; bar.insertBefore(seg,needle);
+
+      var li=document.createElement("li");
+      if(!b.rest) li.style.setProperty("--c","var("+b.c+")");
+      var t=document.createElement("div");t.className="t";t.textContent=fmt(b.sm)+" – "+fmt(b.em);li.appendChild(t);
+      var nm=document.createElement(b.rest?"span":"a");nm.textContent=T(b.name);
+      if(b.rest)nm.className="rest-name";else nm.href="#"+b.act;
+      li.appendChild(nm);
+      if(b.part){var n=document.createElement("div");n.className="note";n.textContent=T(b.part);li.appendChild(n);}
+      b.li=li; agenda.appendChild(li);
+    });
+  }
+  labels(); build();
+  function addTick(t){var sp=document.createElement("span");sp.style.left=((t-D0)/SPAN*100)+"%";sp.textContent=fmtShort(t);ticks.appendChild(sp);}
+  for(var h=D0;h<D1;h+=60) addTick(h);
+  addTick(D1);
+
+  // Live updates
+  var clock=document.getElementById("clock"), nT=document.getElementById("nowTitle"),
+      nS=document.getElementById("nowSub"), nL=document.getElementById("nowLeft"), nP=document.getElementById("nowProg"),
+      nowBox=document.getElementById("now");
+  function tick(){
+    var d=new Date(), m=d.getHours()*60+d.getMinutes()+d.getSeconds()/60;
+    var hh=d.getHours()%12||12, mi=d.getMinutes();
+    clock.textContent=hh+":"+(mi<10?"0":"")+mi;
+    if(m>=D0&&m<=D1){needle.style.display="block";needle.style.left="calc("+((m-D0)/SPAN*100)+"% - 1.5px)";}
+    else needle.style.display="none";
+    var cur=null,next=null;
+    blocks.forEach(function(b){
+      var past=m>=b.em,isCur=m>=b.sm&&m<b.em;
+      b.seg.classList.toggle("done",past);b.li.classList.toggle("past",past);b.li.classList.toggle("current",isCur);
+      if(isCur)cur=b; if(!next&&b.sm>m)next=b;
+    });
+    if(cur){
+      var left=Math.ceil(cur.em-m);
+      nT.textContent=T(cur.name);
+      nS.textContent=(cur.part?T(cur.part)+". ":"")+(next?T("Next up at {t}: {n}",{t:fmt(next.sm),n:T(next.name)}):T("Last block of the day"));
+      nL.innerHTML="<b>"+left+"</b><small>"+T(left===1?"minute left":"minutes left")+"</small>";
+      nP.style.width=((m-cur.sm)/(cur.em-cur.sm)*100)+"%";
+      nowBox.style.setProperty("--now-color",cur.rest?"var(--rest)":"var("+cur.c+")");
+    }else if(m<D0){
+      nT.textContent=T("Starts at {t}",{t:fmt(D0)});
+      nS.textContent=T("First up: {n}",{n:T(blocks[0].name)});
+      var until=Math.ceil(D0-m),uh=Math.floor(until/60),um=until%60;
+      nL.innerHTML="<b>"+(uh?uh+"h "+um+"m":um+"m")+"</b><small>"+T("until start")+"</small>";
+      nP.style.width="0%";
+    }else{
+      nT.textContent=T("That’s a wrap for today");
+      nS.textContent=T(WRAP_MSG);
+      nL.innerHTML="";nP.style.width="100%";
+      nowBox.style.setProperty("--now-color","var(--tape)");
+    }
+  }
+  tick(); setInterval(tick,15000);
+
+  // Checklists
+  var KEY="it-exploratory-soho-checks", state={};
+  try{state=JSON.parse(localStorage.getItem(KEY)||"{}")||{};}catch(e){state={};}
+  var boxes=document.querySelectorAll("input[data-k]");
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+  function badges(){
+    document.querySelectorAll("[data-badge]").forEach(function(bd){
+      var id=bd.getAttribute("data-badge"),all=document.querySelectorAll("#"+id+" input[data-k]"),n=0;
+      all.forEach(function(x){if(x.checked)n++;});
+      bd.textContent=n===all.length?T("Complete ✓"):T("{n} of {m} done",{n:n,m:all.length});
+      bd.classList.toggle("complete",n===all.length);
+    });
+  }
+  boxes.forEach(function(b){
+    b.checked=!!state[b.dataset.k];
+    b.addEventListener("change",function(){state[b.dataset.k]=b.checked;save();badges();});
+  });
+  badges();
+  document.getElementById("reset").addEventListener("click",function(){
+    if(!confirm(T("Clear all checkmarks on this device?")))return;
+    state={};save();boxes.forEach(function(b){b.checked=false;});badges();
+  });
+
+  // Re-draw language-dependent parts when the language changes
+  I18N.onChange(function(){labels();build();tick();badges();});
+
+})();
+</script>
+</body>
+</html>

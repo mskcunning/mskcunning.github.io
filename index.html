@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IT Exploratory – Daily Agendas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#DCE3E8; --surface:#F7F9FA; --surface-2:#EBEFF2; --ink:#1C2A39; --muted:#55657A; --line:#C3CDD6;
+  --tape:#F2C230; --tape-ink:#2A2100;
+  --a1:#7A4FD6; --a2:#12807F; --a3:#C8641A; --a4:#2867C9; --a5:#B03A48;
+  --focus:#1C2A39;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121820; --surface:#1B232D; --surface-2:#242E3A; --ink:#E6EDF3; --muted:#9AA9B9; --line:#334050;
+    --a1:#A88BF0; --a2:#3DB8B5; --a3:#EE8E45; --a4:#6A9EF0; --a5:#EE7A86; --focus:#F2C230;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121820; --surface:#1B232D; --surface-2:#242E3A; --ink:#E6EDF3; --muted:#9AA9B9; --line:#334050;
+  --a1:#A88BF0; --a2:#3DB8B5; --a3:#EE8E45; --a4:#6A9EF0; --a5:#EE7A86; --focus:#F2C230;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.0625rem;line-height:1.55}
+h1,h2,h3{font-family:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif;line-height:1.1;margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:6px}
+.wrap{max-width:60rem;margin:0 auto;padding:2.5rem 1.25rem 4rem}
+
+header.top{margin-bottom:.5rem}
+.kicker{display:inline-block;font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:700;font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;background:var(--tape);color:var(--tape-ink);padding:.15rem .6rem;border-radius:3px;transform:rotate(-1.5deg)}
+header.top h1{font-size:clamp(2.25rem,6vw,3.75rem);font-weight:800;letter-spacing:-.02em;margin:.75rem 0 .35rem}
+header.top p{margin:0;color:var(--muted);max-width:50ch}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:1.1rem;margin-top:2rem}
+.day{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-left:8px solid var(--c);border-radius:6px 14px 14px 6px;padding:1.25rem 1.3rem 1.3rem;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.day:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.12)}
+@media (prefers-reduced-motion: reduce){.day{transition:none}.day:hover{transform:none}}
+.day .num{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--c)}
+.day h2{font-size:1.4rem;font-weight:700;margin:.2rem 0 .1rem}
+.day .count{color:var(--muted);font-size:.85rem;margin-bottom:.75rem}
+.day ul{list-style:none;margin:0 0 1rem;padding:0;display:flex;flex-wrap:wrap;gap:.35rem}
+.day li{background:var(--surface-2);border-radius:99px;padding:.15rem .6rem;font-size:.8rem;color:var(--muted)}
+.day .go{margin-top:auto;font-weight:700;color:var(--c);display:inline-flex;align-items:center;gap:.4rem}
+.day .go::after{content:"→";transition:transform .15s}
+.day:hover .go::after{transform:translateX(4px)}
+@media (prefers-reduced-motion: reduce){.day:hover .go::after{transform:none}}
+
+.soon{background:repeating-linear-gradient(-45deg,var(--surface-2) 0 10px,transparent 10px 20px),var(--surface);border:1px dashed var(--line);border-radius:14px;padding:1.25rem 1.3rem;display:flex;flex-direction:column;justify-content:center;color:var(--muted)}
+.soon .num{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase}
+.soon h2{font-size:1.4rem;font-weight:700;margin:.2rem 0 .3rem;color:var(--ink)}
+.soon p{margin:0;font-size:.9rem}
+
+footer{color:var(--muted);font-size:.85rem;margin-top:2.5rem;border-top:1px dashed var(--line);padding-top:1rem}
+
+.cols>*{min-width:0} /* keeps wide tables/timeline from pushing the page sideways on phones */
+/* Language toggle */
+.langrow{display:flex;justify-content:flex-end;margin:0 0 1rem}
+.langbar{display:inline-flex;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:3px}
+.langbar button{font:700 .85rem/1 "Bricolage Grotesque",system-ui,sans-serif;border:0;background:none;color:var(--muted);padding:.5rem .85rem;border-radius:99px;cursor:pointer}
+.langbar button:hover{color:var(--ink)}
+.langbar button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="langrow">
+    <div class="langbar" role="group" aria-label="Language">
+      <button type="button" data-lang="en" lang="en" aria-pressed="true">English</button>
+      <button type="button" data-lang="es" lang="es" aria-pressed="false">Español</button>
+      <button type="button" data-lang="pt" lang="pt" aria-pressed="false">Português</button>
+    </div>
+  </div>
+
+  <header class="top">
+    <span class="kicker">Information Technology Exploratory</span>
+    <h1>Daily Agendas</h1>
+    <p>Pick a day to see its schedule, activities, and submission links. Each day has a live clock and checkboxes you can tick off as you go.</p>
+  </header>
+
+  <nav class="grid">
+    <a class="day" style="--c:var(--a1)" href="Day1.html">
+      <div class="num">Day 1</div>
+      <h2>PC Hardware &amp; Setup</h2>
+      <div class="count">4 activities + extra credit</div>
+      <ul>
+        <li>Vision Board</li><li>TEMP Chart</li><li>Teardown &amp; Rebuild</li><li>Windows Install</li>
+      </ul>
+      <span class="go">Open agenda</span>
+    </a>
+
+    <a class="day" style="--c:var(--a2)" href="Day2.html">
+      <div class="num">Day 2</div>
+      <h2>Intro to Networking &amp; SOHO</h2>
+      <div class="count">5 activities + extra credit</div>
+      <ul>
+        <li>Home Topology</li><li>Site Survey</li><li>Packet Tracer</li><li>SOHO Config</li><li>Physical Build</li>
+      </ul>
+      <span class="go">Open agenda</span>
+    </a>
+
+    <!-- To add another day: copy an <a class="day"> block above, change the href to your new
+         folder (e.g. href="day3/"), update the number, title, count, and the <li> activity chips. -->
+  </nav>
+
+  <footer>Information Technology Exploratory · Blackstone Valley</footer>
+</div>
+<script>
+/* ===== Language switcher (English / Español / Português) =====
+   Page text is matched by its English wording. To translate new text, add an entry to DICT:
+   "English text as it reads on the page": {"es":"…","pt":"…"}  */
+var I18N=(function(){
+  var DICT={"Information Technology Exploratory": {"es": "Exploratorio de Tecnología de la Información","pt": "Exploratório de Tecnologia da Informação"},"Language": {"es": "Idioma","pt": "Idioma"},"Day timeline": {"es": "Línea de tiempo del día","pt": "Linha do tempo do dia"},"Break": {"es": "Descanso","pt": "Intervalo"},"Lunch": {"es": "Almuerzo","pt": "Almoço"},"Vision Board": {"es": "Tablero de visión","pt": "Quadro de visão"},"TEMP Chart": {"es": "Tabla TEMP","pt": "Tabela TEMP"},"Windows Install": {"es": "Instalación de Windows","pt": "Instalação do Windows"},"Site Survey": {"es": "Inspección","pt": "Levantamento"},"SOHO Config": {"es": "Config. SOHO","pt": "Config. SOHO"},"Physical Build": {"es": "Montaje físico","pt": "Montagem física"},"Next up at {t}: {n}": {"es": "A continuación, a las {t}: {n}","pt": "A seguir, às {t}: {n}"},"Last block of the day": {"es": "Último bloque del día","pt": "Último bloco do dia"},"minute left": {"es": "minuto restante","pt": "minuto restante"},"minutes left": {"es": "minutos restantes","pt": "minutos restantes"},"Starts at {t}": {"es": "Empieza a las {t}","pt": "Começa às {t}"},"First up: {n}": {"es": "Primero: {n}","pt": "Primeiro: {n}"},"until start": {"es": "para empezar","pt": "para começar"},"That’s a wrap for today": {"es": "¡Eso es todo por hoy!","pt": "Por hoje é só!"},"Complete ✓": {"es": "Completo ✓","pt": "Concluído ✓"},"{n} of {m} done": {"es": "{n} de {m} hechos","pt": "{n} de {m} feitos"},"Clear all checkmarks on this device?": {"es": "¿Borrar todas las marcas en este dispositivo?","pt": "Limpar todas as marcações neste dispositivo?"},"{a} to {b}": {"es": "de {a} a {b}","pt": "das {a} às {b}"},"and": {"es": "y","pt": "e"},"IT Exploratory – Daily Agendas": {"es": "Exploratorio de TI – Agendas diarias","pt": "Exploratório de TI – Agendas diárias"},"Daily Agendas": {"es": "Agendas diarias","pt": "Agendas diárias"},"Pick a day to see its schedule, activities, and submission links. Each day has a live clock and checkboxes you can tick off as you go.": {"es": "Elige un día para ver su horario, sus actividades y los enlaces de entrega. Cada día tiene un reloj en vivo y casillas que puedes ir marcando a medida que avanzas.","pt": "Escolha um dia para ver o horário, as atividades e os links de envio. Cada dia tem um relógio ao vivo e caixas de seleção que você pode ir marcando conforme avança."},"Day 1": {"es": "Día 1","pt": "Dia 1"},"Day 2": {"es": "Día 2","pt": "Dia 2"},"PC Hardware & Setup": {"es": "Hardware y configuración de PC","pt": "Hardware e configuração de PC"},"4 activities + extra credit": {"es": "4 actividades + crédito extra","pt": "4 atividades + crédito extra"},"5 activities + extra credit": {"es": "5 actividades + crédito extra","pt": "5 atividades + crédito extra"},"Teardown & Rebuild": {"es": "Desarmar y rearmar","pt": "Desmontar e remontar"},"Intro to Networking & SOHO": {"es": "Introducción a redes y SOHO","pt": "Introdução a redes e SOHO"},"Home Topology": {"es": "Topología del hogar","pt": "Topologia de casa"},"Open agenda": {"es": "Abrir agenda","pt": "Abrir agenda"},"Information Technology Exploratory · Blackstone Valley": {"es": "Exploratorio de Tecnología de la Información · Blackstone Valley","pt": "Exploratório de Tecnologia da Informação · Blackstone Valley"}};
+  var LANGS=["en","es","pt"], STORE="it-exploratory-lang", lang="en", subs=[], nodes=[], attrs=[], title0=document.title;
+  try{var s=localStorage.getItem(STORE);if(LANGS.indexOf(s)>-1)lang=s;else{var nl=(navigator.language||"").slice(0,2).toLowerCase();if(nl==="es"||nl==="pt")lang=nl;}}catch(e){}
+  var SKIP=".langrow,#bar,#ticks,#agenda,#now,#clock,#dayRange,[data-badge],[data-when],script,style";
+  var HOLD="input,select,textarea,button,"+SKIP; // never overwrite an element that contains these
+  function norm(s){return s.replace(/\s+/g," ").trim();}
+  function walk(el){
+    if(el.matches(SKIP))return;
+    var al=el.getAttribute("aria-label");
+    if(al&&DICT[al])attrs.push({el:el,a:"aria-label",en:al});
+    if(!el.querySelector(HOLD)){
+      var k=norm(el.textContent);
+      if(k&&DICT[k]){nodes.push({el:el,k:k,en:el.innerHTML});return;}
+    }
+    for(var c=el.firstElementChild;c;c=c.nextElementSibling)walk(c);
+  }
+  function T(s,v){
+    var e=DICT[s],o=(lang!=="en"&&e&&e[lang])||s;
+    if(v)o=o.replace(/\{(\w+)\}/g,function(m,k){return k in v?v[k]:m;});
+    return o;
+  }
+  function apply(){
+    nodes.forEach(function(n){n.el.innerHTML=lang==="en"?n.en:(DICT[n.k][lang]||n.en);});
+    attrs.forEach(function(n){n.el.setAttribute(n.a,T(n.en));});
+    document.documentElement.lang=lang;
+    document.title=T(title0);
+    document.querySelectorAll(".langbar").forEach(function(g){g.setAttribute("aria-label",T("Language"));});
+    document.querySelectorAll(".langbar [data-lang]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.lang===lang?"true":"false");});
+  }
+  function set(l){
+    if(LANGS.indexOf(l)<0||l===lang)return;
+    lang=l;try{localStorage.setItem(STORE,l);}catch(e){}
+    apply();subs.forEach(function(f){f();});
+  }
+  walk(document.body);
+  document.querySelectorAll(".langbar [data-lang]").forEach(function(b){b.addEventListener("click",function(){set(b.dataset.lang);});});
+  apply();
+  return {T:T,onChange:function(f){subs.push(f);},lang:function(){return lang;}};
+})();
+</script>
+</body>
+</html>
