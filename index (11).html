@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IT Exploratory – Daily Agendas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#DCE3E8; --surface:#F7F9FA; --surface-2:#EBEFF2; --ink:#1C2A39; --muted:#55657A; --line:#C3CDD6;
+  --tape:#F2C230; --tape-ink:#2A2100;
+  --a1:#7A4FD6; --a2:#12807F; --a3:#C8641A; --a4:#2867C9; --a5:#B03A48;
+  --focus:#1C2A39;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121820; --surface:#1B232D; --surface-2:#242E3A; --ink:#E6EDF3; --muted:#9AA9B9; --line:#334050;
+    --a1:#A88BF0; --a2:#3DB8B5; --a3:#EE8E45; --a4:#6A9EF0; --a5:#EE7A86; --focus:#F2C230;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121820; --surface:#1B232D; --surface-2:#242E3A; --ink:#E6EDF3; --muted:#9AA9B9; --line:#334050;
+  --a1:#A88BF0; --a2:#3DB8B5; --a3:#EE8E45; --a4:#6A9EF0; --a5:#EE7A86; --focus:#F2C230;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.0625rem;line-height:1.55}
+h1,h2,h3{font-family:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif;line-height:1.1;margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:6px}
+.wrap{max-width:60rem;margin:0 auto;padding:2.5rem 1.25rem 4rem}
+
+header.top{margin-bottom:.5rem}
+.kicker{display:inline-block;font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:700;font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;background:var(--tape);color:var(--tape-ink);padding:.15rem .6rem;border-radius:3px;transform:rotate(-1.5deg)}
+header.top h1{font-size:clamp(2.25rem,6vw,3.75rem);font-weight:800;letter-spacing:-.02em;margin:.75rem 0 .35rem}
+header.top p{margin:0;color:var(--muted);max-width:50ch}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:1.1rem;margin-top:2rem}
+.day{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-left:8px solid var(--c);border-radius:6px 14px 14px 6px;padding:1.25rem 1.3rem 1.3rem;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.day:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.12)}
+@media (prefers-reduced-motion: reduce){.day{transition:none}.day:hover{transform:none}}
+.day .num{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--c)}
+.day h2{font-size:1.4rem;font-weight:700;margin:.2rem 0 .1rem}
+.day .count{color:var(--muted);font-size:.85rem;margin-bottom:.75rem}
+.day ul{list-style:none;margin:0 0 1rem;padding:0;display:flex;flex-wrap:wrap;gap:.35rem}
+.day li{background:var(--surface-2);border-radius:99px;padding:.15rem .6rem;font-size:.8rem;color:var(--muted)}
+.day .go{margin-top:auto;font-weight:700;color:var(--c);display:inline-flex;align-items:center;gap:.4rem}
+.day .go::after{content:"→";transition:transform .15s}
+.day:hover .go::after{transform:translateX(4px)}
+@media (prefers-reduced-motion: reduce){.day:hover .go::after{transform:none}}
+
+.soon{background:repeating-linear-gradient(-45deg,var(--surface-2) 0 10px,transparent 10px 20px),var(--surface);border:1px dashed var(--line);border-radius:14px;padding:1.25rem 1.3rem;display:flex;flex-direction:column;justify-content:center;color:var(--muted)}
+.soon .num{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase}
+.soon h2{font-size:1.4rem;font-weight:700;margin:.2rem 0 .3rem;color:var(--ink)}
+.soon p{margin:0;font-size:.9rem}
+
+footer{color:var(--muted);font-size:.85rem;margin-top:2.5rem;border-top:1px dashed var(--line);padding-top:1rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="kicker">Information Technology Exploratory</span>
+    <h1>Daily Agendas</h1>
+    <p>Pick a day to see its schedule, activities, and submission links. Each day has a live clock and checkboxes you can tick off as you go.</p>
+  </header>
+
+  <nav class="grid">
+    <a class="day" style="--c:var(--a1)" href="pc-day/">
+      <div class="num">Day 1</div>
+      <h2>PC Hardware &amp; Setup</h2>
+      <div class="count">4 activities + extra credit</div>
+      <ul>
+        <li>Vision Board</li><li>TEMP Chart</li><li>Teardown &amp; Rebuild</li><li>Windows Install</li>
+      </ul>
+      <span class="go">Open agenda</span>
+    </a>
+
+    <a class="day" style="--c:var(--a2)" href="soho-day/">
+      <div class="num">Day 2</div>
+      <h2>Intro to Networking &amp; SOHO</h2>
+      <div class="count">5 activities + extra credit</div>
+      <ul>
+        <li>Home Topology</li><li>Site Survey</li><li>Packet Tracer</li><li>SOHO Config</li><li>Physical Build</li>
+      </ul>
+      <span class="go">Open agenda</span>
+    </a>
+
+    <!-- To add another day: copy an <a class="day"> block above, change the href to your new
+         folder (e.g. href="day3/"), update the number, title, count, and the <li> activity chips. -->
+  </nav>
+
+  <footer>Information Technology Exploratory · Blackstone Valley</footer>
+</div>
+</body>
+</html>
